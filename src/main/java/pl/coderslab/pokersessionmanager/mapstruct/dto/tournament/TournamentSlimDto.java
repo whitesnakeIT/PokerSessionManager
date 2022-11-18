@@ -2,14 +2,8 @@ package pl.coderslab.pokersessionmanager.mapstruct.dto.tournament;
 
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.*;
-import java.time.LocalTime;
-
 @Data
-public class TournamentDtoList {
+public class TournamentSlimDto {
 
     private Long Id;
 
@@ -20,11 +14,5 @@ public class TournamentDtoList {
     private String speed;
 
     private double buyIn;
-
-    private boolean reBuy;
-
-    private int handed;
-
-    LocalTime startingTime;
 
 }

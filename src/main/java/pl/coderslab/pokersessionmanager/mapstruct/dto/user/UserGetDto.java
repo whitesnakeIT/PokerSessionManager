@@ -1,4 +1,4 @@
-package pl.coderslab.pokersessionmanager.mapstruct.dto;
+package pl.coderslab.pokersessionmanager.mapstruct.dto.user;
 
 import lombok.Data;
 
@@ -13,6 +13,9 @@ public class UserGetDto {
 
 
     private String lastName;
+
+
+    private String fullName;
 
     @Email
     @NotNull
