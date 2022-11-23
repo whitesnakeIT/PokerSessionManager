@@ -11,8 +11,9 @@
 <h4><a href="<c:url value="/tournament/all"/>">All tournaments</a></h4>
 
 <h3>user</h3>
-<h4><a href="<c:url value="/user/add"/>">Add new user</a> </h4>
-<h4><a href="<c:url value="/user/all"/>">All users</a> </h4>
+<h4><a href="<c:url value="/registration"/>">Add new user</a> </h4>
+<h4><a href="<c:url value="/login/"/>">Login</a> </h4>
+<h4><a href="<c:url value="/admin/all"/>">All users</a> </h4>
 
 </body>
 </html>

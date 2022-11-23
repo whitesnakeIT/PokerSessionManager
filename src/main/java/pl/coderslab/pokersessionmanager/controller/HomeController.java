@@ -9,7 +9,7 @@ public class HomeController {
 @GetMapping("/")
 //@ResponseBody
     public String showIndex(){
-    return "forward:/index.jsp";
+    return "index";
 }
 @GetMapping("/error")
 @ResponseBody

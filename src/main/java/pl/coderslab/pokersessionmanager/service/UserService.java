@@ -3,9 +3,9 @@ package pl.coderslab.pokersessionmanager.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.User;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserGetDto;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserPostDto;
-import pl.coderslab.pokersessionmanager.mapstruct.mappers.MapStructMapperImpl;
+import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
+import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithPasswordDto;
+import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;
 import pl.coderslab.pokersessionmanager.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -19,7 +19,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final MapStructMapperImpl mapStructMapper;
+    private final UserMapper userMapper;
 
     public void create(User user) {
         userRepository.save(user);
@@ -36,33 +36,39 @@ public class UserService {
     public void delete(User user) {
         userRepository.delete(user);
     }
+
+//    public UserBasicInfoWithOutPasswordDto convertUserToUserBasicInfoWithOutPasswordDto(User user) {
 //
-//    public UserPostDto convertUserToUserPostDto(User user){
+//        return userMapper.userToUserBasicInfoWithOutPasswordDto(user);
+//    }
 //
-//        return mapStructMapper.userToUserPostDto(user);
+//    public UserBasicInfoWithPasswordDto convertUserToUserBasicInfoWithPasswordDto(User user) {
+//
+//        return userMapper.userToUserBasicInfoWithPasswordDto(user);
 //    }
 
 
-    public UserPostDto findUserPostDtoById(Long id){
+    public UserBasicInfoWithPasswordDto findUserBasicInfoWithPasswordDto(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {
 
-            return mapStructMapper.userToUserPostDto(userOptional.get());
+            return userMapper.userToUserBasicInfoWithPasswordDto(userOptional.get());
 
         }
 
-        throw new RuntimeException("I can't find/convert user by user Id." );
+        throw new RuntimeException("I can't find/convert user by user Id.");
     }
-    public UserGetDto findUserGetDtoById(Long id){
+
+    public UserBasicInfoWithOutPasswordDto findUserBasicInfoWithOutPasswordDtoById(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {
 
-            return mapStructMapper.userToUserGetDto(userOptional.get());
+            return userMapper.userToUserBasicInfoWithOutPasswordDto(userOptional.get());
 
         }
 
-        throw new RuntimeException("I can't find/convert user by user Id." );
+        throw new RuntimeException("I can't find/convert user by user Id.");
     }
 }

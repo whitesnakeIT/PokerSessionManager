@@ -7,8 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class UserPostDto {
-
+public class UserBasicInfoWithOutPasswordDto {
     private Long Id;
     @NotEmpty
     private String firstName;
@@ -22,9 +21,5 @@ public class UserPostDto {
     @Email
     @NotNull
     private String email;
-
-    @NotNull
-    private String password;
-
 
 }

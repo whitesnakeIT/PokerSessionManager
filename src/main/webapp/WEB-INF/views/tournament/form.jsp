@@ -11,10 +11,10 @@
 
     <label>
         Type
-        <form:select path="type"><br>
+        <form:select path="type">
             <form:option value="" label="---Choose type---"/>
             <form:options items="${availableTournamentTypes}"/>
-        </form:select>
+        </form:select><br>
         <form:errors path="type"/>
     </label><br>
     <label>
@@ -24,10 +24,10 @@
     </label><br>
     <label>
         Speed
-        <form:select path="speed"><br>
+        <form:select path="speed">
             <form:option value="" label="---Choose speed---"/>
             <form:options items="${availableTournamentSpeed}"/>
-        </form:select>
+        </form:select><br>
         <form:errors path="speed"/>
     </label><br>
     <label>
@@ -44,11 +44,12 @@
         Handed
         <form:input path="handed" type="number" step="1"/><br>
         <form:errors path="handed"/>
-    </label><br> <label>
-    Starting Time
-    <form:input path="tournamentStartDateTime" type="time"/><br>
-    <form:errors path="tournamentStartDateTime"/>
-</label><br>
+    </label><br>
+<%--    <label>--%>
+<%--        Starting Time--%>
+<%--        <form:input path="tournamentStartDateTime" type="time"/><br>--%>
+<%--        <form:errors path="tournamentStartDateTime"/>--%>
+<%--    </label><br>--%>
 
     <input type="submit" value="Save"><br>
 </form:form>

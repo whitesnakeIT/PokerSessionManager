@@ -20,11 +20,11 @@
         <th>Type</th>
         <th>Speed</th>
         <th>Buy In</th>
-<%--        <th>Rebuy</th>--%>
+        <%--        <th>Rebuy</th>--%>
         <%--        <th>Starting Time</th>--%>
-<%--        <th>Handed</th>--%>
-<%--        <th>Edit</th>--%>
-<%--        <th>Delete</th>--%>
+        <%--        <th>Handed</th>--%>
+        <%--        <th>Edit</th>--%>
+        <%--        <th>Delete</th>--%>
     </tr>
     </thead>
     <tbody>
@@ -35,14 +35,14 @@
             <td>${tournament.type}</td>
             <td>${tournament.speed}</td>
             <td>${tournament.buyIn}</td>
-<%--            <td>${tournament.reBuy}</td>--%>
+                <%--            <td>${tournament.reBuy}</td>--%>
                 <%--            <td>${tournament.tournamentStartDateTime}</td>--%>
-<%--            <td>${tournament.handed}</td>--%>
-<%--            <td><a href="<c:url value='/tournament/edit/${tournament.id}'/>">Edit</a></td>--%>
-<%--            <td>--%>
-<%--                <label onclick="return confirm('Are You sure to delete?')">--%>
-<%--                    <a href="<c:url value='/tournament/del/${tournament.id}'/>">Delete</a></label>--%>
-<%--            </td>--%>
+                <%--            <td>${tournament.handed}</td>--%>
+                <%--            <td><a href="<c:url value='/tournament/edit/${tournament.id}'/>">Edit</a></td>--%>
+                <%--            <td>--%>
+                <%--                <label onclick="return confirm('Are You sure to delete?')">--%>
+                <%--                    <a href="<c:url value='/tournament/del/${tournament.id}'/>">Delete</a></label>--%>
+                <%--            </td>--%>
         </tr>
     </c:forEach>
     </tbody>

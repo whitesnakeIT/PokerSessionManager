@@ -5,7 +5,7 @@
     <title>Edit user details</title>
 </head>
 <body>
-<form:form method="post" modelAttribute="userGetDtoById">
+<form:form method="post" modelAttribute="userBasicInfoEdit">
     <label>
         <form:input path="firstName"/>
         <form:errors path="firstName"/>
