@@ -3,7 +3,10 @@ package pl.coderslab.pokersessionmanager.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.pokersessionmanager.entity.User;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.tournament.TournamentSlimDto;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
@@ -16,13 +19,17 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/app")
 public class UserController {
 
     private final TournamentService tournamentService;
 
     private final UserService userService;
 
+//    @GetMapping("/dashboard")
+//    public String showDashboard() {
+//        return "user/dashboard";
+//    }
 
     @GetMapping("/favourite/{userId}/{tournamentPossibleToFavourites}/add")
     public String addNewTournamentToFavouritesPost(@PathVariable Long userId, @PathVariable Long tournamentPossibleToFavourites) {
@@ -49,7 +56,6 @@ public class UserController {
         model.addAttribute("favouriteTournaments", favouriteTournaments);
         model.addAttribute("tournamentsPossibleToFavourites", tournamentsPossibleToFavourites);
         return "/user/favouriteTournamentsList";
-
 
 
     }
@@ -85,6 +91,5 @@ public class UserController {
 
         return "redirect:/user/show-details/" + userId;
     }
-
 
 }

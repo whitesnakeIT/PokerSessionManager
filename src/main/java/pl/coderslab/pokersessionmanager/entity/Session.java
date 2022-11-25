@@ -1,7 +1,6 @@
 package pl.coderslab.pokersessionmanager.entity;
 
 import lombok.Data;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,14 +17,14 @@ public class Session {
     private Long Id;
 
     private String name;
-
     @ManyToMany(cascade = CascadeType.ALL)
-@JoinTable(
-        name = "sessions_tournaments",
-        joinColumns = {@JoinColumn (name = "session_id")},
-        inverseJoinColumns = {@JoinColumn (name = "tournament_id")}
-)
-    List<Tournament> sessionTournaments;
+    @JoinTable(
+            name = "sessions_tournaments",
+            joinColumns = {@JoinColumn(name = "session_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
+    )
+    private List<Tournament> sessionTournaments;
+
 
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name = "user_id")

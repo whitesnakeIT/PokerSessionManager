@@ -8,9 +8,11 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -50,6 +52,12 @@ public class User {
 
     @NotNull
     @NotEmpty
+    @Size(min = 5,max = 15)
+    @Column(unique = true)
+    private String username;
+
+    @NotNull
+    @NotEmpty
     private String password;
 
     private LocalDateTime created;
@@ -64,10 +72,11 @@ public class User {
     //    @NotNull  admin nie moze miec balansu
     private double balance;
 
-    //
-//@OneToOne(cascade = CascadeType.REMOVE)
-//@JoinColumn(name = "user_stats_id")
-//    private UserStats usersStats;
+    private int enabled;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
     @Transient
     public String getFullName() {
