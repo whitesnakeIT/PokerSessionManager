@@ -22,7 +22,7 @@ public class UserBasicInfoWithPasswordDto {
     @Email
     @NotNull
     private String email;
-
+//@Password do zrobienia validator czy haslo takie samo
     @NotNull
     private String password;
 

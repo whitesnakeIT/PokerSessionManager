@@ -19,8 +19,9 @@
 <%--<h4><a href="<c:url value="/app/tournaments/favourites/all"/>"> My favourite tournaments</a></h4>--%>
 <h4><a href="<c:url value="/app/session/add"/>">Add a session</a></h4>
 <h4><a href="<c:url value="/app/session/all"/>">My all sessions</a></h4>
-<h4><a href="<c:url value="/app/user-info/all"/>">My info</a></h4>
-<h4><a href="<c:url value="/app/edit-info/all"/>">Edit my info</a></h4>
+<h4><a href="<c:url value="/app/user/show-details"/>">My info</a></h4>
+<h4><a href="<c:url value="/app/user/edit-details"/>">Edit my info</a></h4>
+<h4><a href="<c:url value="/app/user/edit-password"/>">Edit password</a></h4>
 <h4><a href="<c:url value="/logout"/>">Logout</a> </h4>
 <h4><a href="<c:url value="/test/principal"/>">PRINCIPAL</a> </h4>
 <%--<h4><a href="<c:url value="/app/tournaments/session/all"/>">My all sessions</a></h4>--%>

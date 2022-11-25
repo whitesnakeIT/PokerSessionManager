@@ -9,6 +9,6 @@
 <h4>First Name: <c:out value="${userBasicInfo.firstName}"/> </h4>
 <h4>Last Name: <c:out value="${userBasicInfo.lastName}"/> </h4>
 <h4>Email: <c:out value="${userBasicInfo.email}"/> </h4>
-<h4><a href="<c:url value="/user/edit-details/${userBasicInfo.id}"/>">Edit details</a></h4>
+<h4><a href="<c:url value="/app/user/edit-details"/>">Edit details</a></h4>
 </body>
 </html>
