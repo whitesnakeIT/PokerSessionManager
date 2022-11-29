@@ -60,11 +60,11 @@ public class UserService {
     // update ??
     public boolean updatePassword(User user, String oldPassword, String newPassword, String confirmNewPassword) {
 
-        boolean compareActualAndOldPassword = bCryptPasswordEncoder.matches(oldPassword,user.getPassword());
+        boolean compareActualAndOldPassword = bCryptPasswordEncoder.matches(oldPassword, user.getPassword());
 
 
-        boolean compareActualAndNewPassword = bCryptPasswordEncoder.matches(newPassword,user.getPassword());
-        boolean compareActualAndConfirmNewPassword = bCryptPasswordEncoder.matches(confirmNewPassword,user.getPassword());
+        boolean compareActualAndNewPassword = bCryptPasswordEncoder.matches(newPassword, user.getPassword());
+        boolean compareActualAndConfirmNewPassword = bCryptPasswordEncoder.matches(confirmNewPassword, user.getPassword());
 
 
         boolean compareNewPasswordAndConfirmNewPassword = newPassword.equals(confirmNewPassword);
@@ -84,7 +84,7 @@ public class UserService {
 
         if (!compareNewPasswordAndConfirmNewPassword) {
             System.out.println("Stare ok ale 2 rozne");
-        return false;
+            return false;
         }
 
         user.setPassword(bCryptPasswordEncoder.encode(newPassword));
@@ -94,8 +94,17 @@ public class UserService {
     }
 
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public User findById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            loadFavouriteTournamentsToUser(user);
+            loadSuggestedTournamentsToUser(user);
+//            loadSessionsToUser(user);
+            return user;
+        }
+        throw new RuntimeException("I can't find/convert user by user Id.");
+
     }
 
     public List<User> findAll() {
@@ -154,10 +163,13 @@ public class UserService {
     public void loadFavouriteTournamentsToUser(User user) {
         Hibernate.initialize(user.getFavouriteTournaments());
     }
-
-    public void loadSessionsToUser(User user) {
-        Hibernate.initialize(user.getSessions());
+ public void loadSuggestedTournamentsToUser(User user) {
+        Hibernate.initialize(user.getSuggestedTournaments());
     }
+
+//    public void loadSessionsToUser(User user) {
+//        Hibernate.initialize(user.getSessions());
+//    }
 
     //  moze lepiej w serwisie ?
 //    public User loadLoggedUser(@AuthenticationPrincipal CurrentUser loggedUser)

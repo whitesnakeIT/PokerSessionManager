@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 .antMatchers("/logout").authenticated()
-                .antMatchers("/app/**").hasAnyRole("USER","ADMIN")
+                .antMatchers("/app/**").hasRole("USER")
                 .antMatchers("/security/**").hasAnyRole("ADMIN")
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
 //                .antMatchers("/**").permitAll()

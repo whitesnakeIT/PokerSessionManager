@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class UserBasicInfoWithOutPasswordDto {
-    private Long Id;
+    private Long id;
     @NotEmpty
     private String firstName;
 

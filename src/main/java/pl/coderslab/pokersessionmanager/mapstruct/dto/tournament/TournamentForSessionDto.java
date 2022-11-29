@@ -8,6 +8,8 @@ import java.time.LocalTime;
 @Data
 public class TournamentForSessionDto {
 
+    private Long id;
+
     private String name;
 
     private String type;

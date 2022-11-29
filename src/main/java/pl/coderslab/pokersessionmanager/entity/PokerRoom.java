@@ -1,7 +1,7 @@
 package pl.coderslab.pokersessionmanager.entity;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.URL;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -25,6 +25,6 @@ public class PokerRoom {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "poker_room_id")
-    private List<Tournament> tournamentList;
+    private List<TournamentGlobal> tournamentGlobalList;
 
 }

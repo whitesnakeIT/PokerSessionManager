@@ -18,8 +18,6 @@ public class RegistrationController {
 
     @GetMapping("/registration")
     public String registerNewUserGet(@ModelAttribute(name = "newUser") User newUser) {
-//        model.addAttribute("newUser", new User());
-//        model.asMap().forEach((k, v) -> System.out.println("key " + k + " Value " + v));
         return "registration/registrationForm";
     }
 
@@ -30,6 +28,6 @@ public class RegistrationController {
         }
         userService.create(newUser);
 
-        return "redirect:/admin/all";
+        return "redirect:/";
     }
 }

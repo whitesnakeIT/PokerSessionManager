@@ -1,18 +1,13 @@
 package pl.coderslab.pokersessionmanager.model;
 
 import lombok.Data;
-import pl.coderslab.pokersessionmanager.entity.Tournament;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 
 @Data
 public  class User {
 
 
-    private Long Id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String fullName;

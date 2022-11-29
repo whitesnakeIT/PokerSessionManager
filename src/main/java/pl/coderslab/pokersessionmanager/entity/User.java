@@ -2,6 +2,8 @@ package pl.coderslab.pokersessionmanager.entity;
 
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.validator.Adult;
 
 import javax.persistence.*;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,20 +23,10 @@ import java.util.Set;
 public class User {
 
     public static final String TABLE_NAME = "users";
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "user_favourite_tournaments",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
-    )
-    List<Tournament> favouriteTournaments;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    List<Session> sessions;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @NotEmpty
     private String firstName;
@@ -52,7 +45,7 @@ public class User {
 
     @NotNull
     @NotEmpty
-    @Size(min = 5,max = 15)
+    @Size(min = 5, max = 15)
     @Column(unique = true)
     private String username;
 
@@ -73,10 +66,33 @@ public class User {
     private double balance;
 
     private int enabled;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_favourite_tournaments",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "tournament_id", referencedColumnName = "id")}
+    )
+    private List<TournamentGlobal> favouriteTournaments = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name ="user_id")
+    private List<TournamentSuggestion> suggestedTournaments = new ArrayList<>();
+
+//
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "user_id")
+//    private List<Session> sessions;
+
+
+//    @OneToMany(mappedBy = "user")
+//    private List<Session> sessions;
+
 
     @Transient
     public String getFullName() {

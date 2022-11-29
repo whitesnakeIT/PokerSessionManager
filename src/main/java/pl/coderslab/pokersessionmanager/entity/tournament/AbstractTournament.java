@@ -1,19 +1,16 @@
-package pl.coderslab.pokersessionmanager.entity;
+package pl.coderslab.pokersessionmanager.entity.tournament;
 
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
 
-@Entity
+//@Entity
 @Data
-@Table(name = Tournament.TABLE_NAME)
-public class Tournament {
-    public static final String TABLE_NAME = "tournaments";
-
+@MappedSuperclass
+//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class AbstractTournament {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
@@ -38,8 +35,6 @@ public class Tournament {
     private int handed;
     //    @NotNull  for creating we dont't need starting date
     private LocalDateTime tournamentStartDateTime;
-    @ManyToMany(mappedBy = "sessionTournaments")
-    private List<Session> sessions;
 
 
 }
