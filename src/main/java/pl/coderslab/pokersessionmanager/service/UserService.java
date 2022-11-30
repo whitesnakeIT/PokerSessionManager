@@ -100,7 +100,8 @@ public class UserService {
             User user = userOptional.get();
             loadFavouriteTournamentsToUser(user);
             loadSuggestedTournamentsToUser(user);
-//            loadSessionsToUser(user);
+            loadSessionsToUser(user);
+
             return user;
         }
         throw new RuntimeException("I can't find/convert user by user Id.");
@@ -167,9 +168,8 @@ public class UserService {
         Hibernate.initialize(user.getSuggestedTournaments());
     }
 
-//    public void loadSessionsToUser(User user) {
-//        Hibernate.initialize(user.getSessions());
-//    }
+    public void loadSessionsToUser(User user) { Hibernate.initialize(user.getSessions());
+    }
 
     //  moze lepiej w serwisie ?
 //    public User loadLoggedUser(@AuthenticationPrincipal CurrentUser loggedUser)

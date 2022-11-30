@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 //@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractTournament {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
@@ -36,5 +37,12 @@ public abstract class AbstractTournament {
     //    @NotNull  for creating we dont't need starting date
     private LocalDateTime tournamentStartDateTime;
 
+    @Transient
+    private String concatFields;
 
+    public String getConcatFields() {
+        return name + " " + type + " " + speed;
+
+
+    }
 }

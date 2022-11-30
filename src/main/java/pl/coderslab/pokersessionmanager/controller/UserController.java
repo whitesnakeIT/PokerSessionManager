@@ -52,8 +52,13 @@ public class UserController {
     public String getFavouriteTournaments(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
         User user = loggedUser.getUser();
 
-        List<TournamentSlimDto> favouriteTournaments = tournamentService.findFavouriteTournaments(user.getId());
-        List<TournamentSlimDto> tournamentsPossibleToFavourites = tournamentService.getListOfTournamentsPossibleToBeFavourites(user.getId());
+        List<TournamentSlimDto> favouriteTournaments =
+                tournamentService.convertTournamentToSlimDto(
+                        tournamentService.
+                                findFavouriteTournaments(user.getId()));
+        List<TournamentSlimDto> tournamentsPossibleToFavourites =
+                tournamentService.convertTournamentToSlimDto(
+                        tournamentService.getListOfTournamentsPossibleToBeFavourites(user.getId()));
         model.addAttribute("favouriteTournaments", favouriteTournaments);
         model.addAttribute("tournamentsPossibleToFavourites", tournamentsPossibleToFavourites);
         return "user/tournament/favouriteTournamentList";

@@ -55,7 +55,7 @@ public class TournamentController {
 
     @PostMapping("/edit/{id}")
     public String editTournamentPost(@Valid TournamentGlobal tournament,
-                                     BindingResult result) {
+                                     BindingResult result){
         if (result.hasErrors()) {
             return "tournament/form";
         }
@@ -64,7 +64,7 @@ public class TournamentController {
     }
 
     @GetMapping("/del/{tournamentId}")
-    public String deleteTournament(@PathVariable Long tournamentId) {
+    public String deleteTournament(@PathVariable Long tournamentId){
         tournamentService.delete(tournamentId);
         return "redirect:/tournament/all";
     }

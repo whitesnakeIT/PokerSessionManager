@@ -72,4 +72,7 @@ public interface TournamentRepository extends JpaRepository<TournamentGlobal, Lo
     @Modifying
     @Query(value = "delete from user_suggestions_tournaments where  user_id = (:userId) and  id = (:tournamentId) ", nativeQuery = true)
     void deleteTournamentFromSuggestion(@Param("userId") Long userId, @Param("tournamentId") Long tournamentId);
+
+    @Query(value = "select tournament_id from sessions_tournaments where session_id = (:sessionId)", nativeQuery = true)
+    List<TournamentGlobal> findTournamentsInSession(@Param("sessionId") Long sessionId);
 }

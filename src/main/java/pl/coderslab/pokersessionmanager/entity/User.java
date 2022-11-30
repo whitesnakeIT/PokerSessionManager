@@ -90,9 +90,11 @@ public class User {
 //    private List<Session> sessions;
 
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Session> sessions;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Session> sessions;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserStats userStats;
 
     @Transient
     public String getFullName() {

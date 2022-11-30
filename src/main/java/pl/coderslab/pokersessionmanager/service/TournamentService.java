@@ -1,18 +1,13 @@
 package pl.coderslab.pokersessionmanager.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
-import pl.coderslab.pokersessionmanager.entity.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.enums.TournamentSpeed;
 import pl.coderslab.pokersessionmanager.enums.TournamentType;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.tournament.TournamentSlimDto;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.tournament.TournamentSuggestionDto;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.TournamentMapper;
-import pl.coderslab.pokersessionmanager.model.CurrentUser;
 import pl.coderslab.pokersessionmanager.repository.TournamentRepository;
 
 import javax.transaction.Transactional;
@@ -20,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -54,42 +48,42 @@ public class TournamentService {
     }
 
 
-    public List<TournamentSlimDto> convertTournamentToDto(List<TournamentGlobal> tournaments) {
+    public List<TournamentSlimDto> convertTournamentToSlimDto(List<TournamentGlobal> tournaments) {
         return tournamentMapper.tournamentListToTournamentSlimDto(tournaments);
     }
 
-    public TournamentSlimDto convertTournamentToDto(TournamentGlobal tournament) {
+    public TournamentSlimDto convertTournamentToSlimDto(TournamentGlobal tournament) {
         return tournamentMapper.tournamentToTournamentSlimDto(tournament);
     }
 
-    public List<TournamentSlimDto> findFavouriteTournaments(Long userId) {
+    public List<TournamentGlobal> findFavouriteTournaments(Long userId) {
 
         List<TournamentGlobal> favouriteTournaments = tournamentRepository.findFavouriteTournaments(userId);
 
-        List<TournamentSlimDto> favouriteTournamentsSlim = convertTournamentToDto(favouriteTournaments);
+        List<TournamentSlimDto> favouriteTournamentsSlim = convertTournamentToSlimDto(favouriteTournaments);
 
-        return favouriteTournamentsSlim;
+        return tournamentRepository.findFavouriteTournaments(userId);
 
     }
 
     //turnieje które nie są ulubione przez żadnego gracza
-    public List<TournamentSlimDto> findNonFavouriteTournaments() {
+    public List<TournamentGlobal> findNonFavouriteTournaments() {
         List<TournamentGlobal> nonFavouriteTournaments = tournamentRepository.findNonFavouriteTournaments();
 
-        List<TournamentSlimDto> nonFavouriteTournamentsSlim = convertTournamentToDto(nonFavouriteTournaments);
+        List<TournamentSlimDto> nonFavouriteTournamentsSlim = convertTournamentToSlimDto(nonFavouriteTournaments);
 
-        return nonFavouriteTournamentsSlim;
+        return tournamentRepository.findNonFavouriteTournaments();
     }
 
     // turnieje które są w ulubionych ale u innych graczy niż zalogowany
-    public List<TournamentSlimDto> findFavouriteTournamentsNotBelongToUser(Long userId) {
+    public List<TournamentGlobal> findFavouriteTournamentsNotBelongToUser(Long userId) {
         List<TournamentGlobal> favouriteTournamentsNotBelongToUser = tournamentRepository.findFavouriteTournamentsNotBelongToUser(userId);
-        List<TournamentSlimDto> favouriteTournamentsNotBelongToUserSlim = convertTournamentToDto(favouriteTournamentsNotBelongToUser);
-        return favouriteTournamentsNotBelongToUserSlim;
+        List<TournamentSlimDto> favouriteTournamentsNotBelongToUserSlim = convertTournamentToSlimDto(favouriteTournamentsNotBelongToUser);
+        return tournamentRepository.findFavouriteTournamentsNotBelongToUser(userId);
     }
 
-    public List<TournamentSlimDto> getListOfTournamentsPossibleToBeFavourites(Long userId) {
-        List<TournamentSlimDto> tournamentsPossibleToFavourites = new ArrayList<>();
+    public List<TournamentGlobal> getListOfTournamentsPossibleToBeFavourites(Long userId) {
+        List<TournamentGlobal> tournamentsPossibleToFavourites = new ArrayList<>();
         tournamentsPossibleToFavourites.addAll(findNonFavouriteTournaments());
         tournamentsPossibleToFavourites.addAll(findFavouriteTournamentsNotBelongToUser(userId));
         return tournamentsPossibleToFavourites;
@@ -145,11 +139,18 @@ public class TournamentService {
     }
 
     public void deleteTournamentFromSuggestion(Long userId, Long tournamentId) {
-        tournamentRepository.deleteTournamentFromSuggestion(userId,tournamentId);
+        tournamentRepository.deleteTournamentFromSuggestion(userId, tournamentId);
     }
 
 
-//    public void addTournamentToSuggestions(TournamentSuggestion tournamentSuggestion){
-//        tournamentRepository.addTournamentToSuggestions(tournamentSuggestion);
-//    }
+    public List<TournamentGlobal> getAvailableTournamentsForSessionOrderByFavourites(Long userId) {
+        List<TournamentGlobal> availableTournamentForSession = new ArrayList<>(findFavouriteTournaments(userId));
+        availableTournamentForSession.addAll(getListOfTournamentsPossibleToBeFavourites(userId));
+        return availableTournamentForSession;
+    }
+
+
+    public List<TournamentGlobal> findTournamentsInSession(Long sessionId) {
+        return tournamentRepository.findTournamentsInSession(sessionId);
+    }
 }

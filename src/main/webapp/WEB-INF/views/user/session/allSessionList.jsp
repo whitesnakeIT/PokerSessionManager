@@ -5,12 +5,16 @@
     <title>All sessions</title>
 </head>
 <body>
+<c:if test="${allUserSessions.size()>0}">
+
 <table border="1">
     <thead>
     <tr>
         <th>Id</th>
         <th>Name</th>
         <th>Session Tournaments</th>
+        <th>Count</th>
+        <th>Session cost</th>
         <th>Edit</th>
         <th>Delete</th>
     </tr>
@@ -20,8 +24,13 @@
         <tr>
             <td>${session.id}</td>
             <td>${session.name}</td>
-            <td>---------</td>
-
+            <td>
+                <c:forEach items="${session.sessionTournaments}" var="sessionTournament" varStatus="loop">
+                            ${sessionTournament.concatFields}<br>
+                </c:forEach>
+            </td>
+            <td>${session.tournamentCount}</td>
+            <td>${session.totalCost}</td>
             <td><a href="<c:url value='/app/user/session/edit/${session.id}'/>">Edit</a></td>
             <td>
                 <label onclick="return confirm('Are You sure to delete?')">
@@ -32,6 +41,10 @@
     </c:forEach>
     </tbody>
 </table>
+</c:if>
+<c:if test="${empty allUserSessions}">
+    <p>You don't have any sessions.</p>
+</c:if>
 </body>
 <h4><a href="<c:url value="/app/user/session/add"/>">Add new Session</a></h4>
 

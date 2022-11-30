@@ -3,9 +3,7 @@ package pl.coderslab.pokersessionmanager.mapstruct.dto.tournament;
 import lombok.Data;
 
 @Data
-public class TournamentSlimDto {
-
-    private Long Id;
+public class TournamentInfoForAddForm {
 
     private String name;
 
@@ -13,9 +11,9 @@ public class TournamentSlimDto {
 
     private String speed;
 
-    private double buyIn;
-
     private String concatFields;
 
+    public String getConcatFields() {
+        return name + " " + type + " " + speed;
     }
-
+}
