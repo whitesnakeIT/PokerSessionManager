@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.User;
+import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.tournament.TournamentSlimDto;
 import pl.coderslab.pokersessionmanager.model.CurrentUser;
@@ -54,6 +55,8 @@ public class SessionController {
         }
         User user = userService.findById(loggedUser.getUser().getId());
         session.setUser(user);
+        session.setTournamentCount(session.getSessionTournaments().size());
+        session.setTotalCost(session.getSessionTournaments().stream().mapToDouble(AbstractTournament::getBuyIn).sum());
         sessionService.create(session);
         return "redirect:/app/user/session/all";
 

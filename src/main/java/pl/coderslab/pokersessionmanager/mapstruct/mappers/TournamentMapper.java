@@ -1,15 +1,10 @@
 package pl.coderslab.pokersessionmanager.mapstruct.mappers;
 
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.tournament.TournamentForSessionDto;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.tournament.TournamentSlimDto;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.tournament.TournamentSuggestionDto;
-
 
 import java.util.List;
 
@@ -19,19 +14,29 @@ public interface TournamentMapper {
 
     TournamentSlimDto tournamentToTournamentSlimDto(TournamentGlobal tournament);
 
-    List<TournamentSlimDto> tournamentListToTournamentSlimDto(List<TournamentGlobal> tournamentList);
+    List<TournamentSlimDto> tournamentToTournamentSlimDto(List<TournamentGlobal> tournamentList);
 
+    TournamentSlimDto tournamentLocalToTournamentSlimDto(TournamentLocal tournamentLocal);
 
-    TournamentForSessionDto tournamentToTournamentForSessionDto(TournamentGlobal tournament);
-
-
-    List<TournamentForSessionDto> tournamentToTournamentForSessionDto(List<TournamentGlobal> tournament);
-
+    List<TournamentSlimDto> tournamentLocalToTournamentSlimDto(List<TournamentLocal> tournaments);
 
     TournamentGlobal tournamentSuggestionToTournament(TournamentSuggestion tournamentSuggestion);
 
+    List<TournamentGlobal> tournamentSuggestionToTournament(List<TournamentSuggestion> tournamentSuggestionList);
+
     TournamentSuggestion tournamentToTournamentSuggestion(TournamentGlobal tournament);
 
+    List<TournamentSuggestion> tournamentToTournamentSuggestion(List<TournamentGlobal> tournaments);
 
-    TournamentGlobal updateTournamentFromTournamentSuggestion(TournamentSuggestion tournamentSuggestion, @MappingTarget TournamentGlobal tournamentGlobal);
+    TournamentGlobal tournamentLocalToTournament(TournamentLocal tournamentLocal);
+
+    List<TournamentGlobal> tournamentLocalToTournament(List<TournamentLocal> tournamentLocalList);
+
+    TournamentLocal tournamentToTournamentLocal(TournamentGlobal tournament);
+
+    List<TournamentLocal> tournamentToTournamentLocal(List<TournamentGlobal> tournaments);
+
 }
+
+
+

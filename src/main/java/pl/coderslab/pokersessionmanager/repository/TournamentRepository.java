@@ -52,6 +52,13 @@ public interface TournamentRepository extends JpaRepository<TournamentGlobal, Lo
     void addTournamentToFavourites(@Param("userId") Long userId, @Param("tournamentId") Long tournamentId);
 
     @Modifying
+    @Query(value = "insert  into  user_favourite_tournaments " +
+            "(user_id,tournament_id) values " +
+            "((:userId),(:tournamentId))",
+            nativeQuery = true)
+    void addTournamentLocalToFavourites(@Param("userId") Long userId, @Param("tournamentId") Long tournamentId);
+
+    @Modifying
     @Query(value = "insert into user_suggestions_tournaments " +
             "(buy_in, handed, name, re_buy, speed, tournament_start_date_time, type, user_id)" +
             " values ((:buyIn),(:handed),(:name),(:reBuy),(:speed),(:tournamentStartDateTime),(:type),(:userId))",
@@ -66,13 +73,36 @@ public interface TournamentRepository extends JpaRepository<TournamentGlobal, Lo
                                     @Param("userId") Long userId
     );
 
+    @Modifying
+    @Query(value = "insert into user_local_tournaments " +
+            "(buy_in, handed, name, re_buy, speed, tournament_start_date_time, type, user_id)" +
+            " values ((:buyIn),(:handed),(:name),(:reBuy),(:speed),(:tournamentStartDateTime),(:type),(:userId))",
+            nativeQuery = true)
+    void addTournamentToLocal(@Param("buyIn") double buyIn,
+                              @Param("handed") int handed,
+                              @Param("name") String name,
+                              @Param("reBuy") boolean reBuy,
+                              @Param("speed") String speed,
+                              @Param("tournamentStartDateTime") LocalDateTime tournamentStartDateTime,
+                              @Param("type") String type,
+                              @Param("userId") Long userId
+    );
+
     @Query(value = "select * from user_suggestions_tournaments where user_id = (:userId)", nativeQuery = true)
     List<TournamentGlobal> findSuggestTournaments(@Param("userId") Long userId);
+
+    @Query(value = "select * from user_local_tournaments where user_id = (:userId)", nativeQuery = true)
+    List<TournamentGlobal> findLocalTournaments(@Param("userId") Long userId);
 
     @Modifying
     @Query(value = "delete from user_suggestions_tournaments where  user_id = (:userId) and  id = (:tournamentId) ", nativeQuery = true)
     void deleteTournamentFromSuggestion(@Param("userId") Long userId, @Param("tournamentId") Long tournamentId);
 
-    @Query(value = "select tournament_id from sessions_tournaments where session_id = (:sessionId)", nativeQuery = true)
-    List<TournamentGlobal> findTournamentsInSession(@Param("sessionId") Long sessionId);
+    @Modifying
+    @Query(value = "delete from user_local_tournaments where  user_id = (:userId) and  id = (:tournamentId) ", nativeQuery = true)
+    void deleteTournamentFromLocal(@Param("userId") Long userId, @Param("tournamentId") Long tournamentId);
+
+
+
+
 }

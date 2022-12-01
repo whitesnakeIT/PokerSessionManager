@@ -1,8 +1,10 @@
 package pl.coderslab.pokersessionmanager.entity;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.validator.Adult;
 
@@ -15,10 +17,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Table(name = User.TABLE_NAME)
 public class User {
 
@@ -78,19 +84,22 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id", referencedColumnName = "id")}
     )
+    @ToString.Exclude
     private List<TournamentGlobal> favouriteTournaments = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name ="user_id")
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private List<TournamentSuggestion> suggestedTournaments = new ArrayList<>();
 
-//
-//    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "user_id")
-//    private List<Session> sessions;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    @ToString.Exclude
+    private List<TournamentLocal> localTournaments = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private List<Session> sessions;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -106,5 +115,16 @@ public class User {
         created = LocalDateTime.now();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return id != null && Objects.equals(id, user.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

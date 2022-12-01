@@ -1,4 +1,4 @@
-package pl.coderslab.pokersessionmanager.controller;
+package pl.coderslab.pokersessionmanager.controller.tournament;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/tournament")
 @RequiredArgsConstructor
-public class TournamentController {
+public class TournamentGlobalController {
 
     private final TournamentService tournamentService;
 
@@ -55,7 +55,7 @@ public class TournamentController {
 
     @PostMapping("/edit/{id}")
     public String editTournamentPost(@Valid TournamentGlobal tournament,
-                                     BindingResult result){
+                                     BindingResult result) {
         if (result.hasErrors()) {
             return "tournament/form";
         }
@@ -64,7 +64,7 @@ public class TournamentController {
     }
 
     @GetMapping("/del/{tournamentId}")
-    public String deleteTournament(@PathVariable Long tournamentId){
+    public String deleteTournament(@PathVariable Long tournamentId) {
         tournamentService.delete(tournamentId);
         return "redirect:/tournament/all";
     }

@@ -3,6 +3,7 @@ package pl.coderslab.pokersessionmanager.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.enums.TournamentSpeed;
 import pl.coderslab.pokersessionmanager.enums.TournamentType;
@@ -49,11 +50,19 @@ public class TournamentService {
 
 
     public List<TournamentSlimDto> convertTournamentToSlimDto(List<TournamentGlobal> tournaments) {
-        return tournamentMapper.tournamentListToTournamentSlimDto(tournaments);
+        return tournamentMapper.tournamentToTournamentSlimDto(tournaments);
     }
 
     public TournamentSlimDto convertTournamentToSlimDto(TournamentGlobal tournament) {
         return tournamentMapper.tournamentToTournamentSlimDto(tournament);
+    }
+
+    public List<TournamentSlimDto> convertTournamentLocalToSlimDto(List<TournamentLocal> tournaments) {
+        return tournamentMapper.tournamentLocalToTournamentSlimDto(tournaments);
+    }
+
+    public TournamentSlimDto convertTournamentLocalToSlimDto(TournamentLocal tournament) {
+        return tournamentMapper.tournamentLocalToTournamentSlimDto(tournament);
     }
 
     public List<TournamentGlobal> findFavouriteTournaments(Long userId) {
@@ -119,6 +128,10 @@ public class TournamentService {
         tournamentRepository.addTournamentToFavourites(userId, tournamentId);
     }
 
+    public void addTournamentLocalToFavourites(Long userId, Long tournamentLocalId) {
+        tournamentRepository.addTournamentLocalToFavourites(userId, tournamentLocalId);
+    }
+
     public void addTournamentToSuggestions(TournamentSuggestion tournamentSuggestion, Long userId) {
         tournamentRepository.addTournamentToSuggestions(tournamentSuggestion.getBuyIn(),
                 tournamentSuggestion.getHanded(),
@@ -142,6 +155,29 @@ public class TournamentService {
         tournamentRepository.deleteTournamentFromSuggestion(userId, tournamentId);
     }
 
+    public void addTournamentToLocal(TournamentLocal tournamentLocal, Long userId) {
+        tournamentRepository.addTournamentToLocal(tournamentLocal.getBuyIn(),
+                tournamentLocal.getHanded(),
+                tournamentLocal.getName(),
+                tournamentLocal.isReBuy(),
+                tournamentLocal.getSpeed(),
+                tournamentLocal.getTournamentStartDateTime(),
+                tournamentLocal.getType(),
+                userId);
+    }
+
+    public List<TournamentLocal> findLocalTournaments(Long userId) {
+
+        List<TournamentGlobal> tournamentsToConvert = tournamentRepository.findLocalTournaments(userId);
+        List<TournamentLocal> tournamentsLocal = tournamentsToConvert.stream().map
+                (tournamentMapper::tournamentToTournamentLocal).toList();
+        return tournamentsLocal;
+    }
+
+    public void deleteTournamentFromLocal(Long userId, Long tournamentId) {
+        tournamentRepository.deleteTournamentFromLocal(userId, tournamentId);
+    }
+
 
     public List<TournamentGlobal> getAvailableTournamentsForSessionOrderByFavourites(Long userId) {
         List<TournamentGlobal> availableTournamentForSession = new ArrayList<>(findFavouriteTournaments(userId));
@@ -150,7 +186,4 @@ public class TournamentService {
     }
 
 
-    public List<TournamentGlobal> findTournamentsInSession(Long sessionId) {
-        return tournamentRepository.findTournamentsInSession(sessionId);
-    }
 }

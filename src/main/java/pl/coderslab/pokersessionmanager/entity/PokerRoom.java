@@ -23,8 +23,8 @@ public class PokerRoom {
     @NotEmpty
     private String url;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "poker_room_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pokerRoom")
+
     private List<TournamentGlobal> tournamentGlobalList;
 
 }
