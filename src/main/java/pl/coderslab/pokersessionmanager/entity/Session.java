@@ -1,9 +1,11 @@
 package pl.coderslab.pokersessionmanager.entity;
 
 import lombok.Data;
-import org.hibernate.annotations.Cascade;
+import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
@@ -17,18 +19,42 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
+    @NotEmpty
     private String name;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-@JoinTable(
-        name = "sessions_tournaments",
-        joinColumns = {@JoinColumn (name = "session_id")},
-        inverseJoinColumns = {@JoinColumn (name = "tournament_id")}
-)
-    List<Tournament> sessionTournaments;
+    private double totalCost = 0;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    private Integer tournamentCount;
+    @NotEmpty
+    @ManyToMany
+    @JoinTable(
+            name = "sessions_tournaments",
+            joinColumns = {@JoinColumn(name = "session_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
+    )
+    private List<TournamentGlobal> sessionTournaments;
+    @ManyToOne
+    private User user;
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "Id=" + Id +
+                ", name='" + name + '\'' +
+                ", sessionTournaments=" + sessionTournaments +
+                '}';
+    }
+
+    public double getTotalCost() {
+
+        double sum = sessionTournaments.stream().mapToDouble(AbstractTournament::getBuyIn
+        ).sum();
+        return Math.round(sum * 100d) / 100d;
+    }
+
+    public Integer getTournamentCount() {
+        return sessionTournaments.size();
+    }
+
 
 }

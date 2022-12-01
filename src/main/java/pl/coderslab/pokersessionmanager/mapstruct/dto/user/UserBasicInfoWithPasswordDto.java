@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class UserBasicInfoWithPasswordDto {
 
-    private Long Id;
+    private Long id;
     @NotEmpty
     private String firstName;
 
@@ -22,7 +22,7 @@ public class UserBasicInfoWithPasswordDto {
     @Email
     @NotNull
     private String email;
-
+//@Password do zrobienia validator czy haslo takie samo
     @NotNull
     private String password;
 

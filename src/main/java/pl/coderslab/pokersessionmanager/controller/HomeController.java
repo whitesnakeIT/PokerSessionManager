@@ -11,9 +11,11 @@ public class HomeController {
     public String showIndex(){
     return "index";
 }
-@GetMapping("/error")
-@ResponseBody
-    public String showError(){
-    return "error?";
-}
+
+
+//@GetMapping("/error")
+//@ResponseBody
+//    public String showError(){
+//    return "error?";
+//}
 }

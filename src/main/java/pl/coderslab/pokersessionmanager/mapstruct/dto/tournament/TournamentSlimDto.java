@@ -15,4 +15,7 @@ public class TournamentSlimDto {
 
     private double buyIn;
 
-}
+    private String concatFields;
+
+    }
+

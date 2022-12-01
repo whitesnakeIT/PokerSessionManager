@@ -20,17 +20,22 @@
         Date of birth <br>
         <input type="date" name="birthdayDate"/><br>
     </label>
-        <form:errors path="birthdayDate"/><br>
+    <form:errors path="birthdayDate"/><br>
     <label>
         Email<br>
         <form:input path="email"/><br>
     </label>
     <form:errors path="email"/><br>
     <label>
+        Username <br>
+        <form:input path="username"/><br>
+        <form:errors path="username"/><br>
+    </label>
+    <label>
         Password <br>
         <form:input path="password"/><br>
+        <form:errors path="password"/><br>
     </label>
-    <form:errors path="password"/><br>
 
     <input type="submit" value="Register">
 
