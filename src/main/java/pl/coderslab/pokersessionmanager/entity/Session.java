@@ -32,7 +32,7 @@ public class Session {
             joinColumns = {@JoinColumn(name = "session_id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
     )
-    private List<TournamentGlobal> sessionTournaments;
+    private List<AbstractTournament> sessionTournaments;
     @ManyToOne
     private User user;
 

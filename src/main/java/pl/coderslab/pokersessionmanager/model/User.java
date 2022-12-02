@@ -4,7 +4,7 @@ import lombok.Data;
 
 
 @Data
-public  class User {
+public abstract class User {
 
 
     private Long id;

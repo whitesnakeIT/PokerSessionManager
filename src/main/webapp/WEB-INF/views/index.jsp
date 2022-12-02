@@ -34,7 +34,7 @@
 <%--<h4><a href="<c:url value="tournament/all"/>">All tournament</a></h4>--%>
 
 <h3>test</h3>
-<h4><a href="<c:url value="/test/test"/>">Security</a> </h4>
+<h4><a href="<c:url value="/test/test"/>">TEST</a> </h4>
 
 <%--<h4><a href="<c:url value="/security/"/>">Security</a> </h4>--%>
 

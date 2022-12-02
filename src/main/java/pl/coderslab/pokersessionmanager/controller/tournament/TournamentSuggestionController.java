@@ -35,28 +35,28 @@ public class TournamentSuggestionController {
             return "tournament/form";
         }
         User user = loggedUser.getUser();
-        tournamentService.addTournamentToSuggestions(tournamentSuggestion, user.getId());
+//        tournamentService.addTournamentToSuggestions(tournamentSuggestion, user.getId());
 
 
         return "redirect:/app/tournaments/suggest/all";
     }
 
-    @GetMapping("/all")
-    public String getSuggestTournaments(@AuthenticationPrincipal CurrentUser loggedUser, Model model) {
-        User user = loggedUser.getUser();
-        List<TournamentSuggestion> suggestionTournamentList = tournamentService.findSuggestTournaments(user.getId());
-        model.addAttribute("suggestionTournamentList", suggestionTournamentList);
-        return "user/tournament/suggestionTournamentList";
-
-    }
-
-    @GetMapping("/delete/{tournamentId}")
-    public String deleteTournamentFromSuggestions(@AuthenticationPrincipal CurrentUser loggedUser, @PathVariable Long tournamentId) {
-        User user = loggedUser.getUser();
-
-        tournamentService.deleteTournamentFromSuggestion(user.getId(), tournamentId);
-        return "redirect:/app/tournaments/suggest/all";
-    }
+//    @GetMapping("/all")
+//    public String getSuggestTournaments(@AuthenticationPrincipal CurrentUser loggedUser, Model model) {
+//        User user = loggedUser.getUser();
+//        List<TournamentSuggestion> suggestionTournamentList = tournamentService.findSuggestTournaments(user.getId());
+//        model.addAttribute("suggestionTournamentList", suggestionTournamentList);
+//        return "user/tournament/suggestionTournamentList";
+//
+//    }
+//
+//    @GetMapping("/delete/{tournamentId}")
+//    public String deleteTournamentFromSuggestions(@AuthenticationPrincipal CurrentUser loggedUser, @PathVariable Long tournamentId) {
+//        User user = loggedUser.getUser();
+//
+//        tournamentService.deleteTournamentFromSuggestion(user.getId(), tournamentId);
+//        return "redirect:/app/tournaments/suggest/all";
+//    }
 
     @ModelAttribute("availableTournamentTypes")
     public List<String> getAvailableTournamentTypes() {

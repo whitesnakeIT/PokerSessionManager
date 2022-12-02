@@ -40,33 +40,33 @@
 <c:if test="${empty favouriteTournaments}">
     <p>You don't have favourite tournament</p>
 </c:if>
-<h1>Local tournaments</h1>
+<%--<h1>Local tournaments</h1>--%>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Speed</th>
-        <th>Buy In</th>
-        <th>Add to favourite</th>
+<%--<table border="1">--%>
+<%--    <thead>--%>
+<%--    <tr>--%>
+<%--        <th>Name</th>--%>
+<%--        <th>Type</th>--%>
+<%--        <th>Speed</th>--%>
+<%--        <th>Buy In</th>--%>
+<%--        <th>Add to favourite</th>--%>
 
-    </tr>
-    </thead>
-    <tbody>
-    <c:forEach items="${localTournaments}" var="localTournament" varStatus="loop">
-        <tr>
-            <td>${localTournament.name}</td>
-            <td>${localTournament.type}</td>
-            <td>${localTournament.speed}</td>
-            <td>${localTournament.buyIn}</td>
-            <td><a href="<c:url value='/app/tournaments/favourite/add/${localTournament.id}'/>">Add</a>
-            </td>
+<%--    </tr>--%>
+<%--    </thead>--%>
+<%--    <tbody>--%>
+<%--    <c:forEach items="${localTournaments}" var="localTournament" varStatus="loop">--%>
+<%--        <tr>--%>
+<%--            <td>${localTournament.name}</td>--%>
+<%--            <td>${localTournament.type}</td>--%>
+<%--            <td>${localTournament.speed}</td>--%>
+<%--            <td>${localTournament.buyIn}</td>--%>
+<%--            <td><a href="<c:url value='/app/tournaments/favourite/add/${localTournament.id}'/>">Add</a>--%>
+<%--            </td>--%>
 
-        </tr>
-    </c:forEach>
-    </tbody>
-</table>
+<%--        </tr>--%>
+<%--    </c:forEach>--%>
+<%--    </tbody>--%>
+<%--</table>--%>
 
 <h1>Global tournaments</h1>
 

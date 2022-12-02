@@ -3,6 +3,7 @@ package pl.coderslab.pokersessionmanager.entity;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
@@ -84,22 +85,18 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id", referencedColumnName = "id")}
     )
-    @ToString.Exclude
-    private List<TournamentGlobal> favouriteTournaments = new ArrayList<>();
+    private List<AbstractTournament> favouriteTournaments = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    @ToString.Exclude
-    private List<TournamentSuggestion> suggestedTournaments = new ArrayList<>();
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private List<AbstractTournament> suggestedTournaments = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    @ToString.Exclude
-    private List<TournamentLocal> localTournaments = new ArrayList<>();
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private List<AbstractTournament> localTournaments = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user")
-    @ToString.Exclude
     private List<Session> sessions;
 
     @OneToOne(cascade = CascadeType.ALL)

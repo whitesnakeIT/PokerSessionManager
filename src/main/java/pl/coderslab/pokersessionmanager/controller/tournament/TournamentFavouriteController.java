@@ -50,25 +50,25 @@ public class TournamentFavouriteController {
     }
 
 
-    @GetMapping("/all")
-    public String getFavouriteTournaments(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
-        User user = loggedUser.getUser();
-
-        List<TournamentSlimDto> favouriteTournaments =
-                tournamentService.convertTournamentToSlimDto(
-                        tournamentService.
-                                findFavouriteTournaments(user.getId()));
-        List<TournamentSlimDto> tournamentsPossibleToFavourites =
-                tournamentService.convertTournamentToSlimDto(
-                        tournamentService.getListOfTournamentsPossibleToBeFavourites(user.getId()));
-        List<TournamentSlimDto> localTournaments =
-                tournamentService.convertTournamentLocalToSlimDto(
-                        (tournamentService.findLocalTournaments(user.getId())));
-        model.addAttribute("favouriteTournaments", favouriteTournaments);
-        model.addAttribute("tournamentsPossibleToFavourites", tournamentsPossibleToFavourites);
-        model.addAttribute("localTournaments", localTournaments);
-        return "user/tournament/favouriteTournamentList";
-    }
+//    @GetMapping("/all")
+//    public String getFavouriteTournaments(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
+//        User user = loggedUser.getUser();
+//
+//        List<TournamentSlimDto> favouriteTournaments =
+//                tournamentService.convertTournamentToSlimDto(
+//                        tournamentService.
+//                                findFavouriteTournaments(user.getId()));
+//        List<TournamentSlimDto> tournamentsPossibleToFavourites =
+//                tournamentService.convertTournamentToSlimDto(
+//                        tournamentService.getListOfTournamentsPossibleToBeFavourites(user.getId()));
+//        List<TournamentSlimDto> localTournaments =
+//                tournamentService.convertTournamentLocalToSlimDto(
+//                        (tournamentService.findLocalTournaments(user.getId())));
+//        model.addAttribute("favouriteTournaments", favouriteTournaments);
+//        model.addAttribute("tournamentsPossibleToFavourites", tournamentsPossibleToFavourites);
+//        model.addAttribute("localTournaments", localTournaments);
+//        return "user/tournament/favouriteTournamentList";
+//    }
 
     @ModelAttribute("availableTournamentTypes")
     public List<String> getAvailableTournamentTypes() {

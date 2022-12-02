@@ -87,22 +87,22 @@ public class SessionController {
 
     }
 
-    @ModelAttribute("availableSessionTournaments")
-    public List<TournamentGlobal> getAvailableTournamentsForSessionOrderByFavourites(@AuthenticationPrincipal CurrentUser loggedUser) {
-        return tournamentService.getAvailableTournamentsForSessionOrderByFavourites(loggedUser.getUser().getId());
-    }
-
-    @ModelAttribute("availableSessionTournamentsSlim")
-    public List<TournamentSlimDto> getAvailableTournamentsForSessionOrderByFavouritesSlim(@AuthenticationPrincipal CurrentUser loggedUser) {
-
-        List<TournamentGlobal> availableTournamentsForSession = tournamentService.getAvailableTournamentsForSessionOrderByFavourites(loggedUser.getUser().getId());
-        List<TournamentSlimDto> sessionSlimTournaments = availableTournamentsForSession
-                .stream()
-                .map(tournamentService::convertTournamentToSlimDto)
-                .collect(Collectors.toList());
-        return sessionSlimTournaments;
-
-    }
+//    @ModelAttribute("availableSessionTournaments")
+//    public List<TournamentGlobal> getAvailableTournamentsForSessionOrderByFavourites(@AuthenticationPrincipal CurrentUser loggedUser) {
+//        return tournamentService.getAvailableTournamentsForSessionOrderByFavourites(loggedUser.getUser().getId());
+//    }
+//
+//    @ModelAttribute("availableSessionTournamentsSlim")
+//    public List<TournamentSlimDto> getAvailableTournamentsForSessionOrderByFavouritesSlim(@AuthenticationPrincipal CurrentUser loggedUser) {
+//
+//        List<TournamentGlobal> availableTournamentsForSession = tournamentService.getAvailableTournamentsForSessionOrderByFavourites(loggedUser.getUser().getId());
+//        List<TournamentSlimDto> sessionSlimTournaments = availableTournamentsForSession
+//                .stream()
+//                .map(tournamentService::convertTournamentToSlimDto)
+//                .collect(Collectors.toList());
+//        return sessionSlimTournaments;
+//
+//    }
 
     @ModelAttribute("userFavouriteTournamentSize")
     public Integer getUserFavouriteTournamentSize(@AuthenticationPrincipal CurrentUser loggedUser) {

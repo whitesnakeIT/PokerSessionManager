@@ -1,6 +1,7 @@
 package pl.coderslab.pokersessionmanager.entity;
 
 import org.hibernate.validator.constraints.URL;
+import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 
 import javax.persistence.*;
@@ -25,6 +26,6 @@ public class PokerRoom {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pokerRoom")
 
-    private List<TournamentGlobal> tournamentGlobalList;
+    private List<AbstractTournament> tournamentList;
 
 }

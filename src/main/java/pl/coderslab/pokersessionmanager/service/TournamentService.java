@@ -132,51 +132,51 @@ public class TournamentService {
         tournamentRepository.addTournamentLocalToFavourites(userId, tournamentLocalId);
     }
 
-    public void addTournamentToSuggestions(TournamentSuggestion tournamentSuggestion, Long userId) {
-        tournamentRepository.addTournamentToSuggestions(tournamentSuggestion.getBuyIn(),
-                tournamentSuggestion.getHanded(),
-                tournamentSuggestion.getName(),
-                tournamentSuggestion.isReBuy(),
-                tournamentSuggestion.getSpeed(),
-                tournamentSuggestion.getTournamentStartDateTime(),
-                tournamentSuggestion.getType(),
-                userId);
-    }
+//    public void addTournamentToSuggestions(TournamentSuggestion tournamentSuggestion, Long userId) {
+//        tournamentRepository.addTournamentToSuggestions(tournamentSuggestion.getBuyIn(),
+//                tournamentSuggestion.getHanded(),
+//                tournamentSuggestion.getName(),
+//                tournamentSuggestion.isReBuy(),
+//                tournamentSuggestion.getSpeed(),
+////                tournamentSuggestion.getTournamentStartDateTime(),
+//                tournamentSuggestion.getType(),
+//                userId);
+//    }
 
-    public List<TournamentSuggestion> findSuggestTournaments(Long userId) {
+//    public List<TournamentSuggestion> findSuggestTournaments(Long userId) {
+//
+//        List<TournamentGlobal> tournamentsToConvert = tournamentRepository.findSuggestTournaments(userId);
+//        List<TournamentSuggestion> tournamentSuggestion = tournamentsToConvert.stream().map
+//                (tournamentMapper::tournamentToTournamentSuggestion).toList();
+//        return tournamentSuggestion;
+//    }
 
-        List<TournamentGlobal> tournamentsToConvert = tournamentRepository.findSuggestTournaments(userId);
-        List<TournamentSuggestion> tournamentSuggestion = tournamentsToConvert.stream().map
-                (tournamentMapper::tournamentToTournamentSuggestion).toList();
-        return tournamentSuggestion;
-    }
+//    public void deleteTournamentFromSuggestion(Long userId, Long tournamentId) {
+//        tournamentRepository.deleteTournamentFromSuggestion(userId, tournamentId);
+//    }
 
-    public void deleteTournamentFromSuggestion(Long userId, Long tournamentId) {
-        tournamentRepository.deleteTournamentFromSuggestion(userId, tournamentId);
-    }
+//    public void addTournamentToLocal(TournamentLocal tournamentLocal, Long userId) {
+//        tournamentRepository.addTournamentToLocal(tournamentLocal.getBuyIn(),
+//                tournamentLocal.getHanded(),
+//                tournamentLocal.getName(),
+//                tournamentLocal.isReBuy(),
+//                tournamentLocal.getSpeed(),
+//                tournamentLocal.getTournamentStartDateTime(),
+//                tournamentLocal.getType(),
+//                userId);
+//    }
 
-    public void addTournamentToLocal(TournamentLocal tournamentLocal, Long userId) {
-        tournamentRepository.addTournamentToLocal(tournamentLocal.getBuyIn(),
-                tournamentLocal.getHanded(),
-                tournamentLocal.getName(),
-                tournamentLocal.isReBuy(),
-                tournamentLocal.getSpeed(),
-                tournamentLocal.getTournamentStartDateTime(),
-                tournamentLocal.getType(),
-                userId);
-    }
-
-    public List<TournamentLocal> findLocalTournaments(Long userId) {
-
-        List<TournamentGlobal> tournamentsToConvert = tournamentRepository.findLocalTournaments(userId);
-        List<TournamentLocal> tournamentsLocal = tournamentsToConvert.stream().map
-                (tournamentMapper::tournamentToTournamentLocal).toList();
-        return tournamentsLocal;
-    }
-
-    public void deleteTournamentFromLocal(Long userId, Long tournamentId) {
-        tournamentRepository.deleteTournamentFromLocal(userId, tournamentId);
-    }
+//    public List<TournamentLocal> findLocalTournaments(Long userId) {
+//
+//        List<TournamentGlobal> tournamentsToConvert = tournamentRepository.findLocalTournaments(userId);
+//        List<TournamentLocal> tournamentsLocal = tournamentsToConvert.stream().map
+//                (tournamentMapper::tournamentToTournamentLocal).toList();
+//        return tournamentsLocal;
+//    }
+//
+//    public void deleteTournamentFromLocal(Long userId, Long tournamentId) {
+//        tournamentRepository.deleteTournamentFromLocal(userId, tournamentId);
+//    }
 
 
     public List<TournamentGlobal> getAvailableTournamentsForSessionOrderByFavourites(Long userId) {

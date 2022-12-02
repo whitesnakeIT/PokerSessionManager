@@ -36,28 +36,28 @@ public class TournamentLocalController {
             return "tournament/form";
         }
         User user = loggedUser.getUser();
-        tournamentService.addTournamentToLocal(tournamentLocal, user.getId());
+//        tournamentService.addTournamentToLocal(tournamentLocal, user.getId());
 
 
         return "redirect:/app/tournaments/local/all";
     }
 
-    @GetMapping("/all")
-    public String getLocalTournaments(@AuthenticationPrincipal CurrentUser loggedUser, Model model) {
-        User user = loggedUser.getUser();
-        List<TournamentLocal> localTournamentList = tournamentService.findLocalTournaments(user.getId());
-        model.addAttribute("localTournamentList", localTournamentList);
-        return "user/tournament/localTournamentList";
+//    @GetMapping("/all")
+//    public String getLocalTournaments(@AuthenticationPrincipal CurrentUser loggedUser, Model model) {
+//        User user = loggedUser.getUser();
+//        List<TournamentLocal> localTournamentList = tournamentService.findLocalTournaments(user.getId());
+//        model.addAttribute("localTournamentList", localTournamentList);
+//        return "user/tournament/localTournamentList";
+//
+//    }
 
-    }
-
-    @GetMapping("/delete/{tournamentId}")
-    public String deleteTournamentFromLocal(@AuthenticationPrincipal CurrentUser loggedUser, @PathVariable Long tournamentId) {
-        User user = loggedUser.getUser();
-
-        tournamentService.deleteTournamentFromLocal(user.getId(), tournamentId);
-        return "redirect:/app/tournaments/local/all";
-    }
+//    @GetMapping("/delete/{tournamentId}")
+//    public String deleteTournamentFromLocal(@AuthenticationPrincipal CurrentUser loggedUser, @PathVariable Long tournamentId) {
+//        User user = loggedUser.getUser();
+//
+//        tournamentService.deleteTournamentFromLocal(user.getId(), tournamentId);
+//        return "redirect:/app/tournaments/local/all";
+//    }
 
     @ModelAttribute("availableTournamentTypes")
     public List<String> getAvailableTournamentTypes() {

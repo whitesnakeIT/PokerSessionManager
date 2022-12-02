@@ -4,6 +4,7 @@ INSERT INTO poker_session_manager.poker_rooms (id, name, url) VALUES (3, 'PartyP
 
 
 INSERT INTO poker_session_manager.roles (id, name) VALUES (1, 'ROLE_USER');
+INSERT INTO poker_session_manager.roles (id, name) VALUES (2, 'ROLE_MODERATOR');
 INSERT INTO poker_session_manager.roles (id, name) VALUES (3, 'ROLE_ADMIN');
 
 
@@ -21,12 +22,18 @@ INSERT INTO poker_session_manager.users (id, balance, birthday_date, created, em
 INSERT INTO poker_session_manager.users (id, balance, birthday_date, created, email, first_name, last_name, password, super_admin, enabled, username, user_stats_id) VALUES (8, 0, '2000-01-01', '2022-11-25 22:00:14.549140', 'qq@qq.qq', 'qq', 'qqqq', '$2a$10$VBhCQQ0TczBIdY/N1wxnMu2T2o5deFodT5c5jKzzqa64WdsdjNwzK', false, 1, 'qqqqq', 2);
 
 
-INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_start_date_time, type, poker_room_id) VALUES (1, 100, 6, '6-handed bounty 100 $', true, 'turbo', null, 'progressive-bounty', 1);
-INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_start_date_time, type, poker_room_id) VALUES (2, 55, 9, '9-handed Special 55 $', true, 'slow', null, 'normal', 2);
-INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_start_date_time, type, poker_room_id) VALUES (3, 33.33, 8, '8-handed freezout 33.33 $', false, 'slow', null, 'normal', 3);
-INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_start_date_time, type, poker_room_id) VALUES (4, 10, 2, 'Heads-up zoom 10$', true, 'zoom', null, 'zoom', 1);
-INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_start_date_time, type, poker_room_id) VALUES (5, 21, 8, '8-handed bounty 21$', true, 'regular', null, 'progressive-bounty', 2);
-INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_start_date_time, type, poker_room_id) VALUES (6, 10.5, 8, '8-handed bounty 10.5$', true, 'regular', null, 'progressive-bounty', 2);
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('global', 1, 100, 6, '6-handed Bounty 100$', true, 'turbo',  'progressive-bounty', 1,null);
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('global', 2, 55, 9, '9-handed Special 55$', true, 'slow',  'normal', 2,null);
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('global', 3, 33.33, 8, '8-handed Freezout 33.33$', false, 'slow',  'normal', 3,null);
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('global', 4, 10, 2, 'Heads-up Zoom 10$', true, 'zoom',  'zoom', 1,null);
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('global', 5, 21, 8, '8-handed Bounty 21$', true, 'regular',  'progressive-bounty', 2,null);
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('global', 6, 10.5, 8, '8-handed Bounty 10.5$', true, 'regular',  'progressive-bounty', 2,null);
+
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('local', 7, 100, 4, '4-handed Freezout 100$', false, 'slow',  'normal', 3,7);
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('local', 8, 200, 5, 'Heads-up Zoom 200$', true, 'zoom',  'zoom', 1,7);
+
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('suggestion', 9, 300, 6, '6-handed Bounty 300$', true, 'regular',  'progressive-bounty', 2,7);
+INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, user_id) VALUES ('suggestion', 10, 400, 7, '7-handed Bounty 400$', true, 'regular',  'progressive-bounty', 2,7);
 
 INSERT INTO poker_session_manager.user_favourite_tournaments (user_id, tournament_id) VALUES (3, 2);
 INSERT INTO poker_session_manager.user_favourite_tournaments (user_id, tournament_id) VALUES (3, 4);

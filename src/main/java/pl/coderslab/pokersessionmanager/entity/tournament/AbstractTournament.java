@@ -9,15 +9,19 @@ import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-//@Entity
+@Entity
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-@MappedSuperclass
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name =AbstractTournament.TOURNAMENT_TYPE_COLUMN,discriminatorType = DiscriminatorType.STRING)
+@Table(name = AbstractTournament.TABLE_NAME)
 public abstract class AbstractTournament {
 
+    public static final String TABLE_NAME = "tournaments";
+
+    public static final String TOURNAMENT_TYPE_COLUMN = "tournament_genus";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
@@ -32,7 +36,7 @@ public abstract class AbstractTournament {
     private String speed;
     @NotNull
     @DecimalMin(value = "0.01")
-    @DecimalMax(value = "5000.00")
+    @DecimalMax(value = "10000.00")
     private double buyIn;
     @NotNull
     private boolean reBuy;
@@ -41,7 +45,7 @@ public abstract class AbstractTournament {
     @Max(10)
     private int handed;
     //    @NotNull  for creating we dont't need starting date
-    private LocalDateTime tournamentStartDateTime;
+//    private LocalDateTime tournamentStartDateTime;
 
     @Transient
     private String concatFields;
