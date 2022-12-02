@@ -30,7 +30,7 @@
 <%--<h3>Annonymous</h3>--%>
 
 <%--<h4><a href="<c:url value="/registration"/>">Add new user</a> </h4>--%>
-<%--<h4><a href="<c:url value="/login"/>">Login</a> </h4>--%>
+<h4><a href="<c:url value="/login"/>">Login</a> </h4>
 <%--<h4><a href="<c:url value="tournament/all"/>">All tournament</a></h4>--%>
 
 <h3>test</h3>

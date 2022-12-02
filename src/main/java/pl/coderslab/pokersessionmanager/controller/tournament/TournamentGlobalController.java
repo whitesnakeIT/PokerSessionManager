@@ -27,28 +27,32 @@ public class TournamentGlobalController {
     }
 
     @PostMapping("/add")
-    public String addNewTournamentGet(@Valid @ModelAttribute(name = "tournament") TournamentGlobal tournament, BindingResult result) {
+    public String addNewTournamentGet(@Valid @ModelAttribute(name = "tournament") TournamentGlobal tournament,
+                                      BindingResult result) {
         if (result.hasErrors()) {
             return "tournament/form";
         }
+
         tournamentService.create(tournament);
         return "redirect:/tournament/all";
     }
 
     @GetMapping("/all")
     public String getAllTournaments(Model model) {
-        List<TournamentGlobal> tournamentList = tournamentService.findAll();
+        List<TournamentGlobal> tournamentList = tournamentService.findGlobalTournaments();
         model.addAttribute(tournamentList);
         return "tournament/globalTournamentList";
     }
+
 //    @GetMapping("/global")
 //    public String getAllTournamentsNotLoggedUser(Model model){
-//
+//        List<TournamentGlobal> globalTournaments = tournamentService.findGlobalTournaments();
+//        return ""
 //    }
 
     @GetMapping("/edit/{id}")
     public String editTournamentGet(@PathVariable Long id, Model model) {
-        TournamentGlobal tournament = tournamentService.findById(id);
+        TournamentGlobal tournament = (TournamentGlobal) tournamentService.findById(id);
         model.addAttribute("tournament", tournament);
         return "tournament/form";
     }

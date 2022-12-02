@@ -23,8 +23,10 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests()
+                .antMatchers("/tournament/all").permitAll()
                 .antMatchers("/logout").authenticated()
                 .antMatchers("/app/**").hasRole("USER")
+                .antMatchers("/tournament/**").hasRole("ADMIN") // edycja turnieów tylko admin
                 .antMatchers("/security/**").hasAnyRole("ADMIN")
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
 //                .antMatchers("/**").permitAll()

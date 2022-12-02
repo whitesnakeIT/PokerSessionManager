@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.tournament.TournamentSlimDto;
 import pl.coderslab.pokersessionmanager.model.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.SessionService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
@@ -18,7 +16,6 @@ import pl.coderslab.pokersessionmanager.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -55,8 +52,7 @@ public class SessionController {
         }
         User user = userService.findById(loggedUser.getUser().getId());
         session.setUser(user);
-        session.setTournamentCount(session.getSessionTournaments().size());
-        session.setTotalCost(session.getSessionTournaments().stream().mapToDouble(AbstractTournament::getBuyIn).sum());
+
         sessionService.create(session);
         return "redirect:/app/user/session/all";
 
@@ -87,11 +83,11 @@ public class SessionController {
 
     }
 
-//    @ModelAttribute("availableSessionTournaments")
-//    public List<TournamentGlobal> getAvailableTournamentsForSessionOrderByFavourites(@AuthenticationPrincipal CurrentUser loggedUser) {
-//        return tournamentService.getAvailableTournamentsForSessionOrderByFavourites(loggedUser.getUser().getId());
-//    }
-//
+    @ModelAttribute("availableSessionTournaments")
+    public List<AbstractTournament> getAvailableTournamentsForSessionOrderByFavourites(@AuthenticationPrincipal CurrentUser loggedUser) {
+        return tournamentService.getAvailableTournamentsForSessionOrderByFavourites(loggedUser.getUser().getId());
+    }
+
 //    @ModelAttribute("availableSessionTournamentsSlim")
 //    public List<TournamentSlimDto> getAvailableTournamentsForSessionOrderByFavouritesSlim(@AuthenticationPrincipal CurrentUser loggedUser) {
 //
@@ -104,13 +100,13 @@ public class SessionController {
 //
 //    }
 
-    @ModelAttribute("userFavouriteTournamentSize")
-    public Integer getUserFavouriteTournamentSize(@AuthenticationPrincipal CurrentUser loggedUser) {
-        Integer favouriteTournamentSize = userService.findById(loggedUser.getUser().getId())
-                .getFavouriteTournaments().size();
-        return favouriteTournamentSize;
-
-    }
+//    @ModelAttribute("userFavouriteTournamentSize")
+//    public Integer getUserFavouriteTournamentSize(@AuthenticationPrincipal CurrentUser loggedUser) {
+//        Integer favouriteTournamentSize = userService.findById(loggedUser.getUser().getId())
+//                .getFavouriteTournaments().size();
+//        return favouriteTournamentSize;
+//
+//    }
 
 }
 

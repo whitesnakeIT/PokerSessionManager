@@ -19,6 +19,7 @@ public class TournamentLocal extends AbstractTournament {
     public static final String TOURNAMENT_GENUS = "local";
 
     @ManyToOne
+    @ToString.Exclude
     private User user;
 
 

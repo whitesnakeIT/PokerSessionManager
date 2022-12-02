@@ -20,6 +20,7 @@ public class TournamentSuggestion extends AbstractTournament {
     public static final String TOURNAMENT_GENUS = "suggestion";
 
     @ManyToOne
+    @ToString.Exclude
     private User user;
 }
 
