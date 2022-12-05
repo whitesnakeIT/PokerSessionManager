@@ -1,12 +1,12 @@
-package pl.coderslab.pokersessionmanager.entity;
+package pl.coderslab.pokersessionmanager.entity.user;
 
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.coderslab.pokersessionmanager.entity.Role;
+import pl.coderslab.pokersessionmanager.entity.Session;
+import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
-import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
-import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.validator.Adult;
 
 import javax.persistence.*;
@@ -25,7 +25,6 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Table(name = User.TABLE_NAME)
 public class User {
 
@@ -67,8 +66,6 @@ public class User {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdayDate;
 
-    private boolean superAdmin;
-
     //    @NotNull  admin nie moze miec balansu
     private double balance;
 
@@ -101,6 +98,10 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     private UserStats userStats;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private List<PokerRoom> pokerRoomsLocal;
 
     @Transient
     public String getFullName() {

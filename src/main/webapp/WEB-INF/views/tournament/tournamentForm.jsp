@@ -45,6 +45,14 @@
         <form:input path="handed" type="number" step="1"/><br>
         <form:errors path="handed"/>
     </label><br>
+    <label>
+        Poker Room
+        <form:select path="pokerRoom">
+            <form:option value="" label="---Choose Poker Room--"/>
+            <form:options items="${availablePokerRooms}" itemLabel="name" itemValue="id"/>
+        </form:select><br>
+        <form:errors path="pokerRoom"/>
+    </label><br>
 <%--    <label>--%>
 <%--        Starting Time--%>
 <%--        <form:input path="tournamentStartDateTime" type="time"/><br>--%>
@@ -54,5 +62,6 @@
     <input type="submit" value="Save"><br>
 </form:form>
 <h4><a href="<c:url value="/tournament/all"/>">List of Tournaments</a></h4>
+<h4><a href="<c:url value="/app/poker_room/add"/>">Add poker room</a></h4>
 </body>
 </html>

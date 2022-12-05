@@ -1,7 +1,7 @@
 package pl.coderslab.pokersessionmanager.mapstruct.dto.user;
 
 import lombok.Data;
-import pl.coderslab.pokersessionmanager.entity.UserStats;
+import pl.coderslab.pokersessionmanager.entity.user.UserStats;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;

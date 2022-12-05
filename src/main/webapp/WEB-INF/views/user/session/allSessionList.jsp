@@ -31,10 +31,10 @@
             </td>
             <td>${session.tournamentCount}</td>
             <td>${session.totalCost}</td>
-            <td><a href="<c:url value='/app/user/session/edit/${session.id}'/>">Edit</a></td>
+            <td><a href="<c:url value='/app/session/edit/${session.id}'/>">Edit</a></td>
             <td>
                 <label onclick="return confirm('Are You sure to delete?')">
-                    <a href="<c:url value='/app/user/session/delete/${session.id}'/>">Delete</a></label>
+                    <a href="<c:url value='/app/session/delete/${session.id}'/>">Delete</a></label>
             </td>
 
         </tr>
@@ -46,7 +46,7 @@
     <p>You don't have any sessions.</p>
 </c:if>
 </body>
-<h4><a href="<c:url value="/app/user/session/add"/>">Add new Session</a></h4>
+<h4><a href="<c:url value="/app/session/add"/>">Add new Session</a></h4>
 
 <h4><a href="<c:url value="/"/>">Main menu</a></h4>
 

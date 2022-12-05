@@ -1,6 +1,6 @@
-INSERT INTO poker_session_manager.poker_rooms (id, name, url) VALUES (1, 'PokerStars', 'https://www.pokerstars.com/');
-INSERT INTO poker_session_manager.poker_rooms (id, name, url) VALUES (2, 'GGPoker', 'https://www.ggpoker.com/');
-INSERT INTO poker_session_manager.poker_rooms (id, name, url) VALUES (3, 'PartyPoker', 'https://www.partypoker.com/');
+INSERT INTO poker_session_manager.poker_rooms (id, name, url, scope) VALUES (1, 'PokerStars', 'https://www.pokerstars.com/','global');
+INSERT INTO poker_session_manager.poker_rooms (id, name, url, scope) VALUES (2, 'GGPoker', 'https://www.ggpoker.com/','global');
+INSERT INTO poker_session_manager.poker_rooms (id, name, url, scope) VALUES (3, 'PartyPoker', 'https://www.partypoker.com/','global');
 
 
 INSERT INTO poker_session_manager.roles (id, name) VALUES (1, 'ROLE_USER');

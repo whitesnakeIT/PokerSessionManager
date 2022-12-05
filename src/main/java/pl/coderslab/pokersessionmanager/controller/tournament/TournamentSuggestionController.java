@@ -6,9 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.pokersessionmanager.entity.User;
+import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.model.CurrentUser;
+import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 
 import javax.validation.Valid;
@@ -20,10 +22,12 @@ import java.util.List;
 public class TournamentSuggestionController {
     private final TournamentService tournamentService;
 
+    private final PokerRoomService pokerRoomService;
+
     @GetMapping("/add")
     public String addTournamentsToSuggestions(Model model) {
         model.addAttribute("tournament", new TournamentSuggestion());
-        return "tournament/form";
+        return "tournament/tournamentForm";
     }
 
     @PostMapping("/add")
@@ -32,7 +36,7 @@ public class TournamentSuggestionController {
                                              BindingResult result) {
 
         if (result.hasErrors()) {
-            return "tournament/form";
+            return "tournament/tournamentForm";
         }
         User user = loggedUser.getUser();
         tournamentSuggestion.setUser(user);
@@ -67,4 +71,8 @@ public class TournamentSuggestionController {
         return tournamentService.getAvailableTournamentSpeed();
     }
 
+    @ModelAttribute("availablePokerRooms")
+    public List<PokerRoom> getAvailablePokerRooms() {
+        return pokerRoomService.findAll();
+    }
 }

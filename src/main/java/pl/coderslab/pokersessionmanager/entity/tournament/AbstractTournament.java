@@ -1,21 +1,21 @@
 package pl.coderslab.pokersessionmanager.entity.tournament;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
-import pl.coderslab.pokersessionmanager.entity.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name =AbstractTournament.TOURNAMENT_TYPE_COLUMN,discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = AbstractTournament.TOURNAMENT_TYPE_COLUMN, discriminatorType = DiscriminatorType.STRING)
 @Table(name = AbstractTournament.TABLE_NAME)
 public abstract class AbstractTournament {
 
@@ -24,7 +24,7 @@ public abstract class AbstractTournament {
     public static final String TOURNAMENT_TYPE_COLUMN = "tournament_genus";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
     @NotNull
     @NotEmpty
     private String name;
@@ -61,29 +61,18 @@ public abstract class AbstractTournament {
 
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-//        TournamentGlobal that = (TournamentGlobal) o;
-//        return getId() != null && Objects.equals(getId(), that.getId());
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return getClass().hashCode();
-//    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         AbstractTournament that = (AbstractTournament) o;
-        return Id != null && Objects.equals(Id, that.Id);
+        return id != null && Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
         return getClass().hashCode();
     }
+
+
 }

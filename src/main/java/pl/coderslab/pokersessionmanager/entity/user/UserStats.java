@@ -1,7 +1,6 @@
-package pl.coderslab.pokersessionmanager.entity;
+package pl.coderslab.pokersessionmanager.entity.user;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
@@ -13,7 +12,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Table(name = UserStats.TABLE_NAME)
 public class UserStats {
 

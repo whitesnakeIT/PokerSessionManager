@@ -5,7 +5,7 @@ import org.hibernate.Hibernate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.Role;
-import pl.coderslab.pokersessionmanager.entity.User;
+import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithPasswordDto;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;

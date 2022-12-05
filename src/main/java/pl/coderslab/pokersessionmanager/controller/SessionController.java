@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.Session;
-import pl.coderslab.pokersessionmanager.entity.User;
+import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.model.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.SessionService;
@@ -19,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/app")
+@RequestMapping("/app/session")
 public class SessionController {
 
     private final SessionService sessionService;
@@ -27,7 +27,7 @@ public class SessionController {
 
     private final TournamentService tournamentService;
 
-    @GetMapping("/user/session/all")
+    @GetMapping("/all")
     public String showAllSessions(@AuthenticationPrincipal CurrentUser loggedUser, Model model) {
         User user = loggedUser.getUser();
         List<Session> allUserSessions = sessionService.findAllUserSessions(user.getId());
@@ -36,50 +36,50 @@ public class SessionController {
         return "user/session/allSessionList";
     }
 
-    @GetMapping("/user/session/add")
+    @GetMapping("/add")
     public String addSessionGet(Model model) {
 
         model.addAttribute("session", new Session());
         return "user/session/sessionForm";
     }
 
-    @PostMapping("/user/session/add")
+    @PostMapping("/add")
     public String addSessionPost(@AuthenticationPrincipal CurrentUser loggedUser,
                                  @Valid Session session,
                                  BindingResult result) {
         if (result.hasErrors()) {
             return "user/session/sessionForm";
         }
-        User user = userService.findById(loggedUser.getUser().getId());
+        User user = loggedUser.getUser();
         session.setUser(user);
 
         sessionService.create(session);
-        return "redirect:/app/user/session/all";
+        return "redirect:/app/session/all";
 
     }
 
 
-    @GetMapping("/user/session/edit/{sessionId}")
+    @GetMapping("/edit/{sessionId}")
     public String editSessionGet(@PathVariable Long sessionId, Model model) {
         Session session = sessionService.findById(sessionId);
         model.addAttribute(session);
         return "user/session/sessionForm";
     }
 
-    @PostMapping("user/session/edit/{id}")
+    @PostMapping("/edit/{id}")
     public String editSessionPost(@Valid Session session, BindingResult result, @AuthenticationPrincipal CurrentUser loggedUser) {
         if (result.hasErrors()) {
             return "user/session/sessionForm";
         }
-        session.setUser(userService.findById(loggedUser.getUser().getId()));
+        session.setUser(loggedUser.getUser());
         sessionService.create(session);
-        return "redirect:/app/user/session/all";
+        return "redirect:/app/session/all";
     }
 
-    @GetMapping("/user/session/delete/{id}")
+    @GetMapping("/delete/{id}")
     public String deleteSession(@PathVariable Long id) {
         sessionService.delete(id);
-        return "redirect:/app/user/session/all";
+        return "redirect:/app/session/all";
 
     }
 

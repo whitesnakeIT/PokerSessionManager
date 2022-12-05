@@ -8,30 +8,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.coderslab.pokersessionmanager.entity.User;
+import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.model.CurrentUser;
+import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/app/tournaments/favourite")
+@RequestMapping("/app/tournaments/favourites")
 public class TournamentFavouriteController {
     private final TournamentService tournamentService;
-//    private final TournamentLocalService tournamentLocalService;
 
-//    @GetMapping("/local/add/{tournamentLocalId}")
-//    public String addTournamentLocalToFavouritesGet(@AuthenticationPrincipal CurrentUser loggedUser, @PathVariable Long tournamentLocalId) {
-//        TournamentLocal tournamentLocal = tournamentLocalService.findById(tournamentLocalId);
-//
-//        User user = loggedUser.getUser();
-////        tournamentService.addTournamentLocalToFavourites(user.getId(), tournamentLocal);
-//        return "redirect:/app/tournaments/favourite/all";
-//    }
+    private final PokerRoomService pokerRoomService;
 
-    @GetMapping("/add/{tournamentPossibleToFavourites}")
+    @GetMapping("/{tournamentPossibleToFavourites}")
     public String addTournamentToFavouritesGet(@AuthenticationPrincipal CurrentUser loggedUser,
                                                @PathVariable Long tournamentPossibleToFavourites) {
         User user = loggedUser.getUser();
@@ -69,5 +63,10 @@ public class TournamentFavouriteController {
     @ModelAttribute("availableTournamentSpeed")
     public List<String> getAvailableTournamentSpeed() {
         return tournamentService.getAvailableTournamentSpeed();
+    }
+
+    @ModelAttribute("availablePokerRooms")
+    public List<PokerRoom> getAvailablePokerRooms() {
+        return pokerRoomService.findAll();
     }
 }
