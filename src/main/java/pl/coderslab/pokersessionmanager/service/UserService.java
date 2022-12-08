@@ -5,7 +5,7 @@ import org.hibernate.Hibernate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.Role;
-import pl.coderslab.pokersessionmanager.entity.User;
+import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithPasswordDto;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;
@@ -97,10 +97,15 @@ public class UserService {
     public User findById(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
+
             User user = userOptional.get();
-            loadFavouriteTournamentsToUser(user);
-            loadSuggestedTournamentsToUser(user);
-            loadSessionsToUser(user);
+            loadRolesToUser(user);
+
+            if (user.hasRole("ROLE_USER")) {
+                loadFavouriteTournamentsToUser(user);
+                loadSuggestedTournamentsToUser(user);
+                loadSessionsToUser(user);
+            }
 
             return user;
         }
@@ -116,17 +121,27 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public Optional<User> findByUserName(String name) {
-        return userRepository.findByUsername(name);
+    public User findByUsername(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return user;
+
+        }
+
+        throw new RuntimeException("I can't find user by username.");
+
     }
 
     public Optional<User> findByEmail(String email) {
-
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        byEmail.ifPresent(user -> Hibernate.initialize(user.getRoles()));
 //        Optional<User> byEmail = userRepository.findByEmail(email);
 //        System.out.println(byEmail);
 //        return byEmail;
 // zmienic na zwyklego usera
-        return userRepository.findByEmail(email);
+        return byEmail;
     }
 
     public UserBasicInfoWithPasswordDto findUserBasicInfoWithPasswordDto(Long id) {
@@ -164,11 +179,17 @@ public class UserService {
     public void loadFavouriteTournamentsToUser(User user) {
         Hibernate.initialize(user.getFavouriteTournaments());
     }
- public void loadSuggestedTournamentsToUser(User user) {
+
+    public void loadSuggestedTournamentsToUser(User user) {
         Hibernate.initialize(user.getSuggestedTournaments());
     }
 
-    public void loadSessionsToUser(User user) { Hibernate.initialize(user.getSessions());
+    public void loadSessionsToUser(User user) {
+        Hibernate.initialize(user.getSessions());
+    }
+
+    public void loadRolesToUser(User user) {
+        Hibernate.initialize(user.getRoles());
     }
 
     //  moze lepiej w serwisie ?

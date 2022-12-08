@@ -9,8 +9,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-
-//@EnableGlobalMethodSecurity(securedEnabled = true) // możemy teraz dodawac adnotacje @Secured("ROlE_***") na cały kontroler
 public class SecurityConfig {
 
     @Bean
@@ -19,19 +17,26 @@ public class SecurityConfig {
     }
 
     @Bean
+    public LoginSuccessHandler getLoginSuccessHandler() {
+        return new LoginSuccessHandler();
+    }
+
+    @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
         http
                 .authorizeRequests()
-                .antMatchers("/logout").authenticated()
+                .antMatchers("/tournament/all", "/poker_room/all").permitAll()
+                .antMatchers("/logout", "/tournament/**", "/poker_room/**").authenticated()
                 .antMatchers("/app/**").hasRole("USER")
-                .antMatchers("/security/**").hasAnyRole("ADMIN")
                 .antMatchers("/admin/**").hasAnyRole("ADMIN")
-//                .antMatchers("/**").permitAll()
-                .and().formLogin()
+                .and()
+                .formLogin()
                 .loginPage("/login").usernameParameter("email")
-                .defaultSuccessUrl("/app/dashboard") // /app/dashboard
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/")
+                .successHandler(getLoginSuccessHandler())
+                .and()
+                .logout()
+                .logoutUrl("/logout").logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID");
 

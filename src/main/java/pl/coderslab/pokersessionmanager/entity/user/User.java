@@ -1,11 +1,12 @@
-package pl.coderslab.pokersessionmanager.entity;
+package pl.coderslab.pokersessionmanager.entity.user;
 
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
-import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
-import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
-import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
+import pl.coderslab.pokersessionmanager.entity.Role;
+import pl.coderslab.pokersessionmanager.entity.Session;
+import pl.coderslab.pokersessionmanager.entity.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.validator.Adult;
 
 import javax.persistence.*;
@@ -15,22 +16,19 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Table(name = User.TABLE_NAME)
 public class User {
 
     public static final String TABLE_NAME = "users";
 
     @Id
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -66,14 +64,11 @@ public class User {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdayDate;
 
-    private boolean superAdmin;
-
     //    @NotNull  admin nie moze miec balansu
-    private double balance;
 
     private int enabled;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
@@ -84,26 +79,26 @@ public class User {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id", referencedColumnName = "id")}
     )
-    @ToString.Exclude
-    private List<TournamentGlobal> favouriteTournaments = new ArrayList<>();
+    private List<AbstractTournament> favouriteTournaments = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    @ToString.Exclude
-    private List<TournamentSuggestion> suggestedTournaments = new ArrayList<>();
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private List<AbstractTournament> suggestedTournaments = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    @ToString.Exclude
-    private List<TournamentLocal> localTournaments = new ArrayList<>();
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private List<AbstractTournament> localTournaments = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "user")
-    @ToString.Exclude
     private List<Session> sessions;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private UserStats userStats;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    private List<PokerRoom> pokerRoomsLocal;
 
     @Transient
     public String getFullName() {
@@ -115,6 +110,15 @@ public class User {
         created = LocalDateTime.now();
     }
 
+
+    public boolean hasRole(String roleName){
+        for (Role role : this.roles) {
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

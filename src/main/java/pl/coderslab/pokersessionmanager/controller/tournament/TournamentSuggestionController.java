@@ -6,9 +6,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.pokersessionmanager.entity.User;
+import pl.coderslab.pokersessionmanager.entity.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
-import pl.coderslab.pokersessionmanager.model.CurrentUser;
+import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
+import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
+import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 
 import javax.validation.Valid;
@@ -16,14 +19,16 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/app/tournaments/suggest")
+@RequestMapping("/app/tournament/suggest")
 public class TournamentSuggestionController {
     private final TournamentService tournamentService;
+
+    private final PokerRoomService pokerRoomService;
 
     @GetMapping("/add")
     public String addTournamentsToSuggestions(Model model) {
         model.addAttribute("tournament", new TournamentSuggestion());
-        return "tournament/form";
+        return "tournament/tournamentForm";
     }
 
     @PostMapping("/add")
@@ -32,10 +37,11 @@ public class TournamentSuggestionController {
                                              BindingResult result) {
 
         if (result.hasErrors()) {
-            return "tournament/form";
+            return "tournament/tournamentForm";
         }
         User user = loggedUser.getUser();
-        tournamentService.addTournamentToSuggestions(tournamentSuggestion, user.getId());
+        tournamentSuggestion.setUser(user);
+        tournamentService.create(tournamentSuggestion);
 
 
         return "redirect:/app/tournaments/suggest/all";
@@ -44,17 +50,16 @@ public class TournamentSuggestionController {
     @GetMapping("/all")
     public String getSuggestTournaments(@AuthenticationPrincipal CurrentUser loggedUser, Model model) {
         User user = loggedUser.getUser();
-        List<TournamentSuggestion> suggestionTournamentList = tournamentService.findSuggestTournaments(user.getId());
-        model.addAttribute("suggestionTournamentList", suggestionTournamentList);
-        return "user/tournament/suggestionTournamentList";
+        List<TournamentSuggestion> suggestionTournamentList = tournamentService.findSuggestedTournamentsById(user.getId());
+        model.addAttribute("tournamentList", suggestionTournamentList);
+        model.addAttribute("tournamentGenus", TournamentGenus.SUGGESTION);
+        return "user/tournament/userTournamentList";
 
     }
 
     @GetMapping("/delete/{tournamentId}")
-    public String deleteTournamentFromSuggestions(@AuthenticationPrincipal CurrentUser loggedUser, @PathVariable Long tournamentId) {
-        User user = loggedUser.getUser();
-
-        tournamentService.deleteTournamentFromSuggestion(user.getId(), tournamentId);
+    public String deleteTournamentFromSuggestions(@PathVariable Long tournamentId) {
+        tournamentService.delete(tournamentId);
         return "redirect:/app/tournaments/suggest/all";
     }
 
@@ -68,4 +73,8 @@ public class TournamentSuggestionController {
         return tournamentService.getAvailableTournamentSpeed();
     }
 
+    @ModelAttribute("availablePokerRooms")
+    public List<PokerRoom> getAvailablePokerRooms() {
+        return pokerRoomService.findAll();
+    }
 }

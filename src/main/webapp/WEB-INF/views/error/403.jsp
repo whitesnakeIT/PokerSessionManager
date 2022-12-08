@@ -5,7 +5,6 @@
   <title>Security with Spring Boot</title>
 </head>
 <body>
-<h1>Dostęp zabroniony</h1>
-WHY
+<h1>Access Denied</h1>
 </body>
 </html>

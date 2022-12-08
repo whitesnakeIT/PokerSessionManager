@@ -4,7 +4,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>List of favourite tournaments</title>
+    <title>Favourite tournaments</title>
 </head>
 <body>
 <h1>Favourite tournaments</h1>
@@ -20,16 +20,16 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${favouriteTournaments}" var="suggestionTournament" varStatus="loop">
+        <c:forEach items="${favouriteTournaments}" var="favouriteTournament" varStatus="loop">
             <tr>
 
-                <td>${suggestionTournament.name}</td>
-                <td>${suggestionTournament.type}</td>
-                <td>${suggestionTournament.speed}</td>
-                <td>${suggestionTournament.buyIn}</td>
+                <td>${favouriteTournament.name}</td>
+                <td>${favouriteTournament.type}</td>
+                <td>${favouriteTournament.speed}</td>
+                <td>${favouriteTournament.buyIn}</td>
                 <td>
                     <label onclick="return confirm('Are You sure to delete from favourites?')">
-                        <a href="<c:url value='/app/tournaments/favourite/delete/${suggestionTournament.id}'/>">Delete</a></label>
+                        <a href="<c:url value='/app/tournament/favourites/delete/${favouriteTournament.id}'/>">Delete</a></label>
                 </td>
             </tr>
         </c:forEach>
@@ -40,35 +40,7 @@
 <c:if test="${empty favouriteTournaments}">
     <p>You don't have favourite tournament</p>
 </c:if>
-<h1>Local tournaments</h1>
-
-<table border="1">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Speed</th>
-        <th>Buy In</th>
-        <th>Add to favourite</th>
-
-    </tr>
-    </thead>
-    <tbody>
-    <c:forEach items="${localTournaments}" var="localTournament" varStatus="loop">
-        <tr>
-            <td>${localTournament.name}</td>
-            <td>${localTournament.type}</td>
-            <td>${localTournament.speed}</td>
-            <td>${localTournament.buyIn}</td>
-            <td><a href="<c:url value='/app/tournaments/favourite/add/${localTournament.id}'/>">Add</a>
-            </td>
-
-        </tr>
-    </c:forEach>
-    </tbody>
-</table>
-
-<h1>Global tournaments</h1>
+<h1>Available tournaments</h1>
 
 <table border="1">
     <thead>
@@ -88,7 +60,7 @@
             <td>${tournamentPossibleToFavourites.type}</td>
             <td>${tournamentPossibleToFavourites.speed}</td>
             <td>${tournamentPossibleToFavourites.buyIn}</td>
-            <td><a href="<c:url value='/app/tournaments/favourite/add/${tournamentPossibleToFavourites.id}'/>">Add</a>
+            <td><a href="<c:url value='/app/tournament/favourites/add/${tournamentPossibleToFavourites.id}'/>">Add</a>
             </td>
 
         </tr>

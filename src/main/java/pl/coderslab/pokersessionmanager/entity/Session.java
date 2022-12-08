@@ -1,15 +1,19 @@
 package pl.coderslab.pokersessionmanager.entity;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
+import pl.coderslab.pokersessionmanager.entity.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
 @Table(name = Session.TABLE_NAME)
 public class Session {
 
@@ -32,18 +36,10 @@ public class Session {
             joinColumns = {@JoinColumn(name = "session_id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
     )
-    private List<TournamentGlobal> sessionTournaments;
+    private List<AbstractTournament> sessionTournaments;
     @ManyToOne
     private User user;
 
-    @Override
-    public String toString() {
-        return "Session{" +
-                "Id=" + Id +
-                ", name='" + name + '\'' +
-                ", sessionTournaments=" + sessionTournaments +
-                '}';
-    }
 
     public double getTotalCost() {
 
@@ -56,5 +52,16 @@ public class Session {
         return sessionTournaments.size();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Session session = (Session) o;
+        return Id != null && Objects.equals(Id, session.Id);
+    }
 
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

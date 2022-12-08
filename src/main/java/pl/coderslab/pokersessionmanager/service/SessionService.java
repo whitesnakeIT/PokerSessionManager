@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.Session;
+import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.repository.SessionRepository;
 
 import javax.transaction.Transactional;
@@ -17,6 +18,8 @@ public class SessionService {
     private final SessionRepository sessionRepository;
 
     public void create(Session session) {
+        session.setTournamentCount(session.getSessionTournaments().size());
+        session.setTotalCost(session.getSessionTournaments().stream().mapToDouble(AbstractTournament::getBuyIn).sum());
         sessionRepository.save(session);
     }
 
