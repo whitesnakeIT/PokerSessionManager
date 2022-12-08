@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;

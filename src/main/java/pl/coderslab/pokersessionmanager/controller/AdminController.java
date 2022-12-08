@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.pokersessionmanager.entity.user.User;
-import pl.coderslab.pokersessionmanager.service.TournamentService;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
-    private final TournamentService tournamentService;
 
     @GetMapping("/users/all")
     public String showAllUsers(Model model) {
@@ -31,6 +29,6 @@ public class AdminController {
     public String deleteUser(@PathVariable Long userId) {
         User user = userService.findById(userId);
         userService.delete(user);
-        return "redirect:/admin/all";
+        return "redirect:/admin/users/all";
     }
 }

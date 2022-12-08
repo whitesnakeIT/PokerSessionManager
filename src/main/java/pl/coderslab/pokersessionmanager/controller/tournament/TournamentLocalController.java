@@ -6,10 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
-import pl.coderslab.pokersessionmanager.model.CurrentUser;
+import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
+import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/app/tournaments/local")
+@RequestMapping("/app/tournament/local")
 public class TournamentLocalController {
 
     private final TournamentService tournamentService;
@@ -51,8 +52,9 @@ public class TournamentLocalController {
     public String getLocalTournaments(@AuthenticationPrincipal CurrentUser loggedUser, Model model) {
         User user = loggedUser.getUser();
         List<TournamentLocal> localTournamentList = tournamentService.findLocalTournamentsById(user.getId());
-        model.addAttribute("localTournamentList", localTournamentList);
-        return "user/tournament/localTournamentList";
+        model.addAttribute("tournamentList", localTournamentList);
+        model.addAttribute("tournamentGenus", TournamentGenus.LOCAL);
+        return "user/tournament/userTournamentList";
 
     }
 

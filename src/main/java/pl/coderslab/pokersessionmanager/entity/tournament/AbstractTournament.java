@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;

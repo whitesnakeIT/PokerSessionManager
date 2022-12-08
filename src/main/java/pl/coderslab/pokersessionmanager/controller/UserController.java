@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
-import pl.coderslab.pokersessionmanager.model.CurrentUser;
+import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
 import javax.validation.Valid;

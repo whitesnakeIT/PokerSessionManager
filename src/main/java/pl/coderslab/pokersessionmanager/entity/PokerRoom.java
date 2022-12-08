@@ -1,4 +1,4 @@
-package pl.coderslab.pokersessionmanager.entity.poker_room;
+package pl.coderslab.pokersessionmanager.entity;
 
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -15,14 +15,11 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = PokerRoom.POKER_ROOM_SCOPE, discriminatorType = DiscriminatorType.STRING)
 @Table(name = PokerRoom.TABLE_NAME)
 public class PokerRoom {
     public static final String TABLE_NAME = "poker_rooms";
-    public static final String POKER_ROOM_SCOPE = "scope";
 
+    private String scope;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

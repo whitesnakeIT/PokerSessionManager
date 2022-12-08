@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.model.CurrentUser;
+import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.SessionService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 import pl.coderslab.pokersessionmanager.service.UserService;
@@ -23,8 +23,6 @@ import java.util.List;
 public class SessionController {
 
     private final SessionService sessionService;
-    private final UserService userService;
-
     private final TournamentService tournamentService;
 
     @GetMapping("/all")

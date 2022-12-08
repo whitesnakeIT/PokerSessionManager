@@ -1,4 +1,4 @@
-package pl.coderslab.pokersessionmanager.model;
+package pl.coderslab.pokersessionmanager.security.principal;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,5 +15,9 @@ public class CurrentUser extends User {
                        pl.coderslab.pokersessionmanager.entity.user.User user) {
         super(username, password, authorities);
         this.user = user;
+    }
+
+    public boolean hasRole(String roleName){
+        return this.user.hasRole(roleName);
     }
 }

@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
-import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.model.CurrentUser;
+import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 
@@ -19,18 +19,18 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/app/tournaments/favourites")
+@RequestMapping("/app/tournament/favourites")
 public class TournamentFavouriteController {
     private final TournamentService tournamentService;
 
     private final PokerRoomService pokerRoomService;
 
-    @GetMapping("/{tournamentPossibleToFavourites}")
+    @GetMapping("/add/{tournamentPossibleToFavourites}")
     public String addTournamentToFavouritesGet(@AuthenticationPrincipal CurrentUser loggedUser,
                                                @PathVariable Long tournamentPossibleToFavourites) {
         User user = loggedUser.getUser();
         tournamentService.addTournamentToFavourites(user.getId(), tournamentPossibleToFavourites);
-        return "redirect:/app/tournaments/favourite/all";
+        return "redirect:/app/tournament/favourites";
     }
 
 
@@ -40,11 +40,11 @@ public class TournamentFavouriteController {
         User user = loggedUser.getUser();
         tournamentService.deleteTournamentFromFavourites(user.getId(), tournamentId);
 
-        return "redirect:/app/tournaments/favourite/all";
+        return "redirect:/app/tournament/favourites";
     }
 
 
-    @GetMapping("/all")
+    @GetMapping("")
     public String getFavouriteTournaments(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
         User user = loggedUser.getUser();
 

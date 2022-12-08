@@ -22,20 +22,20 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${tournamentGlobalList}" var="suggestionTournament" varStatus="loop">
+    <c:forEach items="${tournamentGlobalList}" var="favouriteTournament" varStatus="loop">
         <tr>
-            <td>${suggestionTournament.name}</td>
-            <td>${suggestionTournament.type}</td>
-            <td>${suggestionTournament.speed}</td>
-            <td>${suggestionTournament.buyIn}</td>
-            <td>${suggestionTournament.reBuy}</td>
-            <td>${suggestionTournament.handed}</td>
+            <td>${favouriteTournament.name}</td>
+            <td>${favouriteTournament.type}</td>
+            <td>${favouriteTournament.speed}</td>
+            <td>${favouriteTournament.buyIn}</td>
+            <td>${favouriteTournament.reBuy}</td>
+            <td>${favouriteTournament.handed}</td>
             <sec:authorize access="hasRole('ADMIN')">
 
-                <td><a href="<c:url value='/tournament/edit/${suggestionTournament.id}'/>">Edit</a></td>
+                <td><a href="<c:url value='/tournament/edit/${favouriteTournament.id}'/>">Edit</a></td>
                 <td>
                     <label onclick="return confirm('Are You sure to delete?')">
-                        <a href="<c:url value='/tournament/del/${suggestionTournament.id}'/>">Delete</a></label>
+                        <a href="<c:url value='/tournament/del/${favouriteTournament.id}'/>">Delete</a></label>
                 </td>
             </sec:authorize>
         </tr>
@@ -44,7 +44,7 @@
 </table>
 
 <sec:authorize access="hasRole('USER')">
-    <h4><a href="<c:url value="/app/tournaments/suggest/add"/>">Add Tournament for Suggestions</a></h4>
+    <h4><a href="<c:url value="/app/tournament/suggest/add"/>">Add Tournament for Suggestions</a></h4>
 </sec:authorize>
 <sec:authorize access="hasRole('ADMIN')">
     <h4><a href="<c:url value="/tournament/add"/>">Add new Global Tournament</a></h4>

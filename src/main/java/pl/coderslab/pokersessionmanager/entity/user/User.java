@@ -5,7 +5,7 @@ import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.coderslab.pokersessionmanager.entity.Role;
 import pl.coderslab.pokersessionmanager.entity.Session;
-import pl.coderslab.pokersessionmanager.entity.poker_room.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.validator.Adult;
 
@@ -16,10 +16,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -31,6 +28,7 @@ public class User {
     public static final String TABLE_NAME = "users";
 
     @Id
+    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -67,11 +65,10 @@ public class User {
     private LocalDate birthdayDate;
 
     //    @NotNull  admin nie moze miec balansu
-    private double balance;
 
     private int enabled;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
@@ -96,7 +93,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Session> sessions;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private UserStats userStats;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -113,6 +110,15 @@ public class User {
         created = LocalDateTime.now();
     }
 
+
+    public boolean hasRole(String roleName){
+        for (Role role : this.roles) {
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
