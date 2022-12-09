@@ -2,200 +2,59 @@ package pl.coderslab.pokersessionmanager.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.coderslab.pokersessionmanager.entity.Role;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithPasswordDto;
-import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;
-import pl.coderslab.pokersessionmanager.repository.RoleRepository;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+
 public class UserService {
 
     private final UserRepository userRepository;
 
-    private final RoleRepository roleRepository;
+    private final PlayerService playerService;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    private final UserMapper userMapper;
-
-    public String encodePassword(String password) {
-        return bCryptPasswordEncoder.encode(password);
-    }
-
-    public boolean isPasswordCorrect(String passwordToCheck, String userPassword) {
-
-        return bCryptPasswordEncoder.matches(passwordToCheck, userPassword);
-    }
-
-    public void create(User user) {
-// if user exist then don't need to encode his password again -> details editing
-        if (findByEmail(user.getEmail()).isEmpty()) {
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setEnabled(1); // maybe default ??
-            Role userRole = roleRepository.findByName("ROLE_USER");
-            user.setRoles(new HashSet<>(List.of(userRole)));
-//            if password is not updated, it is not encoding second time
-        } else if (user.getPassword()
-                .equals(findByEmail(user.getEmail()).get().getPassword())) {
-            userRepository.save(user);
-            // if password is updated it have to be encoded
-
-        }
-
-        userRepository.save(user);
-    }
-
-    // update ??
-    public boolean updatePassword(User user, String oldPassword, String newPassword, String confirmNewPassword) {
-
-        boolean compareActualAndOldPassword = bCryptPasswordEncoder.matches(oldPassword, user.getPassword());
-
-
-        boolean compareActualAndNewPassword = bCryptPasswordEncoder.matches(newPassword, user.getPassword());
-        boolean compareActualAndConfirmNewPassword = bCryptPasswordEncoder.matches(confirmNewPassword, user.getPassword());
-
-
-        boolean compareNewPasswordAndConfirmNewPassword = newPassword.equals(confirmNewPassword);
-
-        if ((oldPassword.equals("")) || (newPassword.equals("")) || (confirmNewPassword.equals(""))) {
-            System.out.println("jakies polle puste");
-            return false;
-        }
-
-        if (!compareActualAndOldPassword) {
-            System.out.println("stare haslo bledne");
-            return false;
-        } else if (compareActualAndNewPassword || compareActualAndConfirmNewPassword) {
-            System.out.println("Stare ok ale nowe lub confirm jak stare");
-            return false;
-        }
-
-        if (!compareNewPasswordAndConfirmNewPassword) {
-            System.out.println("Stare ok ale 2 rozne");
-            return false;
-        }
-
-        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
-        userRepository.save(user);
-        return true;
-
-    }
-
-
-    public User findById(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
+    public User findByEmail(String email) {
+        Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isPresent()) {
-
             User user = userOptional.get();
             loadRolesToUser(user);
-
-            if (user.hasRole("ROLE_USER")) {
-                loadFavouriteTournamentsToUser(user);
-                loadSuggestedTournamentsToUser(user);
-                loadSessionsToUser(user);
+            if (user.hasRole(RoleName.ROLE_USER.name())) {
+                playerService.loadLazyDataToPlayer((Player) user);
             }
-
-            return user;
-        }
-        throw new RuntimeException("I can't find/convert user by user Id.");
-
-    }
-
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    public void delete(User user) {
-        userRepository.delete(user);
-    }
-
-    public User findByUsername(String username) {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
             return user;
 
         }
-
-        throw new RuntimeException("I can't find user by username.");
-
-    }
-
-    public Optional<User> findByEmail(String email) {
-        Optional<User> byEmail = userRepository.findByEmail(email);
-        byEmail.ifPresent(user -> Hibernate.initialize(user.getRoles()));
-//        Optional<User> byEmail = userRepository.findByEmail(email);
-//        System.out.println(byEmail);
-//        return byEmail;
-// zmienic na zwyklego usera
-        return byEmail;
-    }
-
-    public UserBasicInfoWithPasswordDto findUserBasicInfoWithPasswordDto(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-
-        if (userOptional.isPresent()) {
-
-            return userMapper.userToUserBasicInfoWithPasswordDto(userOptional.get());
-
-        }
-
-        throw new RuntimeException("I can't find/convert user by user Id.");
-    }
-
-    public UserBasicInfoWithOutPasswordDto findUserBasicInfoWithOutPasswordDtoById(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-
-        if (userOptional.isPresent()) {
-
-            return userMapper.userToUserBasicInfoWithOutPasswordDto(userOptional.get());
-
-        }
-
-        throw new RuntimeException("I can't find/convert user by user Id.");
-    }
-
-    public UserBasicInfoWithPasswordDto convertUserToUserBasicInfoWithPasswordDto(User user) {
-        return userMapper.userToUserBasicInfoWithPasswordDto(user);
-    }
-
-    public UserBasicInfoWithOutPasswordDto convertUserToUserBasicInfoWithOutPasswordDto(User user) {
-        return userMapper.userToUserBasicInfoWithOutPasswordDto(user);
-    }
-
-    public void loadFavouriteTournamentsToUser(User user) {
-        Hibernate.initialize(user.getFavouriteTournaments());
-    }
-
-    public void loadSuggestedTournamentsToUser(User user) {
-        Hibernate.initialize(user.getSuggestedTournaments());
-    }
-
-    public void loadSessionsToUser(User user) {
-        Hibernate.initialize(user.getSessions());
+        throw new RuntimeException("I can't find player by email.");
     }
 
     public void loadRolesToUser(User user) {
         Hibernate.initialize(user.getRoles());
     }
 
-    //  moze lepiej w serwisie ?
-//    public User loadLoggedUser(@AuthenticationPrincipal CurrentUser loggedUser)
-//    {
-//        return loggedUser.getUser();
-//
-//    }
+// jedna klasa
+    public <T extends User> void create(T user){
+        userRepository.save(user);
+
+    }
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("I can't find User by User id."));
+    }
+
+    public void delete(Long userId) {
+        User user = findById(userId);
+        userRepository.delete(user);
+    }
 }

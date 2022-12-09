@@ -61,7 +61,8 @@
 
     <input type="submit" value="Save"><br>
 </form:form>
-<h4><a href="<c:url value="/tournament/all"/>">List of Tournaments</a></h4>
-<h4><a href="<c:url value="/app/poker_room/add"/>">Add poker room</a></h4>
+<h4><a href="<c:url value="/app/tournament/suggest/all"/>">List of suggested Tournaments</a></h4>
+<h4><a href="<c:url value="/app/tournament/local/all"/>">List of local Tournaments</a></h4>
+<h4><a href="<c:url value="/poker_room/add"/>">Add poker room</a></h4>
 </body>
 </html>

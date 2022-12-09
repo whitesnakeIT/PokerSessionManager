@@ -5,8 +5,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.enums.PokerRoomScope;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.PokerRoomRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
@@ -32,11 +34,11 @@ public class PokerRoomService {
                 .getUser();
 
         // admin edytuje turniej usera, turniej userowi sie usuwa
-        if (user.hasRole("ROLE_ADMIN")) {
-            pokerRoom.setScope(PokerRoomScope.GLOBAL.toString().toLowerCase());
-        } else if (user.hasRole("ROLE_USER")) {
-            pokerRoom.setScope(PokerRoomScope.LOCAL.toString().toLowerCase());
-            pokerRoom.setUser(user);
+        if (user.hasRole(RoleName.ROLE_ADMIN.name())) {
+            pokerRoom.setScope(PokerRoomScope.GLOBAL.name().toLowerCase());
+        } else if (user.hasRole(RoleName.ROLE_USER.name())) {
+            pokerRoom.setScope(PokerRoomScope.LOCAL.name().toLowerCase());
+            pokerRoom.setPlayer((Player) user);
         }
         pokerRoomRepository.save(pokerRoom);
     }
@@ -94,10 +96,10 @@ public class PokerRoomService {
         if (user.hasRole("ROLE_ADMIN")) {
             return true;  // admin może usuwać edytować wszystko
         }
-        Optional<User> owner = Optional.ofNullable(pokerRoom.getUser());
+        Optional<User> owner = Optional.ofNullable(pokerRoom.getPlayer());
         if (owner.isEmpty()) {
             return false;
         }
-        return pokerRoom.getUser().equals(user);
+        return pokerRoom.getPlayer().equals(user);
     }
 }

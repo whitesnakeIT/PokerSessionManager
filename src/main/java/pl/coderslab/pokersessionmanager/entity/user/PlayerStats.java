@@ -10,13 +10,13 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString
-@Table(name = UserStats.TABLE_NAME)
-public class UserStats {
+@Table(name = PlayerStats.TABLE_NAME)
+public class PlayerStats {
 
-    public static final String TABLE_NAME = "user_stats";
+    public static final String TABLE_NAME = "player_stats";
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "player_id")
     private Long id;
 
     private double balance;
@@ -36,6 +36,6 @@ public class UserStats {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "player_id")
+    private Player player;
 }

@@ -17,33 +17,33 @@ import java.util.List;
 @Transactional
 public interface TournamentRepository extends JpaRepository<AbstractTournament, Long> {
 
-    @Query(value = "select t.* from user_favourite_tournaments uft " +
-            "join tournaments t on t.id = uft.tournament_id " +
-            "where uft.user_id = (:userId) " +
+    @Query(value = "select t.* from player_favourite_tournaments pft " +
+            "join tournaments t on t.id = pft.tournament_id " +
+            "where pft.player_id = (:playerId) " +
             "order by field (t.tournament_genus, 'local','global'),t.id",
             nativeQuery = true)
-    List<AbstractTournament> findFavouriteTournaments(@Param("userId") Long userId);
+    List<AbstractTournament> findFavouriteTournaments(@Param("playerId") Long playerId);
 
     @Modifying
-    @Query(value = "delete from user_favourite_tournaments " +
-            "where user_id=(:userId) and tournament_id=(:tournamentId)",
+    @Query(value = "delete from player_favourite_tournaments " +
+            "where player_id=(:playerId) and tournament_id=(:tournamentId)",
             nativeQuery = true)
-    void deleteTournamentFromFavourites(@Param("userId") Long userId, @Param("tournamentId") Long tournamentId);
+    void deleteTournamentFromFavourites(@Param("playerId") Long playerId, @Param("tournamentId") Long tournamentId);
 
     @Modifying
-    @Query(value = "insert  into  user_favourite_tournaments " +
-            "(user_id,tournament_id) values " +
-            "((:userId),(:tournamentId))",
+    @Query(value = "insert  into  player_favourite_tournaments " +
+            "(player_id,tournament_id) values " +
+            "((:playerId),(:tournamentId))",
             nativeQuery = true)
-    void addTournamentToFavourites(@Param("userId") Long userId, @Param("tournamentId") Long tournamentId);
+    void addTournamentToFavourites(@Param("playerId") Long playerId, @Param("tournamentId") Long tournamentId);
 
-    @Query(value = "select * from tournaments where tournament_genus = 'local' and user_id = (:userId)",
+    @Query(value = "select * from tournaments where tournament_genus = 'local' and player_id = (:playerId)",
             nativeQuery = true)
-    List<TournamentLocal> findLocalTournamentsById(@Param("userId") Long userId);
+    List<TournamentLocal> findLocalTournamentsById(@Param("playerId") Long playerId);
 
-    @Query(value = "select * from tournaments where tournament_genus = 'suggestion' and user_id = (:userId)",
+    @Query(value = "select * from tournaments where tournament_genus = 'suggestion' and player_id = (:playerId)",
             nativeQuery = true)
-    List<TournamentSuggestion> findSuggestedTournamentsById(@Param("userId") Long userId);
+    List<TournamentSuggestion> findSuggestedTournamentsById(@Param("playerId") Long playerId);
 
 
     @Query(value = "select * from tournaments where tournament_genus = 'global'",

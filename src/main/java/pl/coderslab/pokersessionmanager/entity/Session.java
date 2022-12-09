@@ -1,9 +1,11 @@
 package pl.coderslab.pokersessionmanager.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -36,9 +38,10 @@ public class Session {
             joinColumns = {@JoinColumn(name = "session_id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
     )
+    @ToString.Exclude
     private List<AbstractTournament> sessionTournaments;
     @ManyToOne
-    private User user;
+    private Player player;
 
 
     public double getTotalCost() {

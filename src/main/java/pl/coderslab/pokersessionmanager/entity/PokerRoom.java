@@ -1,10 +1,12 @@
 package pl.coderslab.pokersessionmanager.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.URL;
-import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -33,11 +35,11 @@ public class PokerRoom {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pokerRoom")
     @ToString.Exclude
-    private List<AbstractTournament> tournamentList = new java.util.ArrayList<>();
+    private List<AbstractTournament> tournamentList;
 
     @ManyToOne
     @ToString.Exclude
-    private User user;
+    private Player player;
 
     @Override
     public boolean equals(Object o) {

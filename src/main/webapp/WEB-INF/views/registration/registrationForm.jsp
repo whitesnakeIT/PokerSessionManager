@@ -6,7 +6,7 @@
     <title>Registration for new users</title>
 </head>
 <body>
-<form:form modelAttribute="newUser" method="post">
+<form:form modelAttribute="newPlayer" method="post">
     <label>
         First name <br>
         <form:input path="firstName"/><br>

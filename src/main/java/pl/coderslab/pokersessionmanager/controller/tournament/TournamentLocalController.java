@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
@@ -40,8 +41,8 @@ public class TournamentLocalController {
         if (result.hasErrors()) {
             return "tournament/tournamentForm";
         }
-        User user = loggedUser.getUser();
-        tournamentLocal.setUser(user);
+        Player player = (Player) loggedUser.getUser();
+        tournamentLocal.setPlayer(player);
         tournamentService.create(tournamentLocal);
 
 

@@ -1,4 +1,4 @@
-package pl.coderslab.pokersessionmanager.controller;
+package pl.coderslab.pokersessionmanager.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -6,21 +6,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
-import pl.coderslab.pokersessionmanager.service.UserService;
+import pl.coderslab.pokersessionmanager.service.PlayerService;
 
 import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/app")
-public class UserController {
+public class PlayerController {
 
 //    private final TournamentService tournamentService;
 
-    private final UserService userService;
+    private final PlayerService playerService;
 
 //    @GetMapping("/dashboard")
 //    public String showDashboard() {
@@ -30,10 +30,10 @@ public class UserController {
 
     @GetMapping("/user/show-details")
     public String showUserDetails(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
-        User user = loggedUser.getUser();
-        UserBasicInfoWithOutPasswordDto userBasicInfo = userService.convertUserToUserBasicInfoWithOutPasswordDto(user);
+        Player player = (Player) loggedUser.getUser();
+//        UserBasicInfoWithOutPasswordDto userBasicInfo = playerService.convertUserToUserBasicInfoWithOutPasswordDto(user);
 //        UserBasicInfoWithOutPasswordDto userBasicInfo = userService.findUserBasicInfoWithOutPasswordDtoById(userId);
-        model.addAttribute("userBasicInfo", userBasicInfo);
+        model.addAttribute("userBasicInfo", player);
 
         return "user/data/showUserDetails";
 
@@ -41,10 +41,10 @@ public class UserController {
 
     @GetMapping("/user/edit-details")
     public String editUserDetailsGet(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
-        User user = loggedUser.getUser();
-        UserBasicInfoWithOutPasswordDto userBasicInfoWithOutPassword = userService.convertUserToUserBasicInfoWithOutPasswordDto(user);
+        Player player = (Player) loggedUser.getUser();
+//        UserBasicInfoWithOutPasswordDto userBasicInfoWithOutPassword = playerService.convertUserToUserBasicInfoWithOutPasswordDto(user);
 //        UserBasicInfoWithPasswordDto userBasicInfoEdit = userService.findUserBasicInfoWithPasswordDto(userId);
-        model.addAttribute("userBasicInfoEdit", userBasicInfoWithOutPassword);
+        model.addAttribute("userBasicInfoEdit", player);
         return "user/data/editUserDetails";
     }
 
@@ -54,9 +54,9 @@ public class UserController {
                                       @AuthenticationPrincipal CurrentUser loggedUser,
                                       @RequestParam String passwordToCheck) {
 
-        User user = loggedUser.getUser();
+        Player player = (Player) loggedUser.getUser();
 
-        if (userService.isPasswordCorrect(passwordToCheck, user.getPassword())) {
+        if (playerService.isPasswordCorrect(passwordToCheck, player.getPassword())) {
 
             if (result.hasErrors()) {
                 System.out.println("bledy z inputow");
@@ -66,10 +66,10 @@ public class UserController {
             System.out.println("wrong password");
             return "user/data/editUserDetails";
         }
-        user.setFirstName(userBasicInfoEdit.getFirstName());
-        user.setLastName(userBasicInfoEdit.getLastName());
+        player.setFirstName(userBasicInfoEdit.getFirstName());
+        player.setLastName(userBasicInfoEdit.getLastName());
 //        user.setEmail(userBasicInfoEdit.getEmail()); disabled giving null need to be readonly
-        userService.create(user);
+        playerService.create(player);
 
         return "redirect:/app/user/show-details?msg=data-changed";
     }
@@ -86,8 +86,8 @@ public class UserController {
                                        @RequestParam String oldPassword,
                                        @RequestParam String newPassword,
                                        @RequestParam String confirmNewPassword) {
-        User user = loggedUser.getUser();
-        if (!userService.updatePassword(user, oldPassword, newPassword, confirmNewPassword)) {
+        Player player = (Player) loggedUser.getUser();
+        if (!playerService.updatePassword(player, oldPassword, newPassword, confirmNewPassword)) {
             return "user/data/editPassword";
         }
         return "redirect:/app/user/show-details?msg=password-changed";

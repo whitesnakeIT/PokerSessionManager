@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
-    @Query(value = "select * from poker_session_manager.sessions where user_id = :userId", nativeQuery = true)
-    List<Session> findAllUserSessions(@Param(value = "userId") Long userId);
+    @Query(value = "select * from poker_session_manager.sessions where player_id = :playerId", nativeQuery = true)
+    List<Session> findAllUserSessions(@Param(value = "playerId") Long playerId);
 
 }

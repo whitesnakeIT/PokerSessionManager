@@ -21,8 +21,8 @@
 <h4><a href="<c:url value="/app/tournament/suggest/add"/>">Suggest a tournament for moderators</a></h4>
 <h4><a href="<c:url value="/app/tournament/suggest/all"/>">My suggested tournaments list</a></h4>
 <h4><a href="<c:url value="/app/tournament/favourites"/>"> My favourite tournament</a></h4>
-<h4><a href="<c:url value="/app/poker_room/add"/>">Add Poker Room Local</a></h4>
-<h4><a href="<c:url value="/app/poker_room/all"/>">All Poker Rooms Local </a></h4>
+<%--<h4><a href="<c:url value="/app/poker_room/add"/>">Add Poker Room Local</a></h4>--%>
+<%--<h4><a href="<c:url value="/app/poker_room/all"/>">All Poker Rooms Local </a></h4>--%>
 <h4><a href="<c:url value="/app/session/add"/>">Add a session</a></h4>
 <h4><a href="<c:url value="/app/session/all"/>">My all sessions</a></h4>
 <h4><a href="<c:url value="/app/user/show-details"/>">My info</a></h4>

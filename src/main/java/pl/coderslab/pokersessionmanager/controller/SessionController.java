@@ -7,12 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.Session;
-import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.SessionService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
-import pl.coderslab.pokersessionmanager.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,8 +26,8 @@ public class SessionController {
 
     @GetMapping("/all")
     public String showAllSessions(@AuthenticationPrincipal CurrentUser loggedUser, Model model) {
-        User user = loggedUser.getUser();
-        List<Session> allUserSessions = sessionService.findAllUserSessions(user.getId());
+        Player player = (Player) loggedUser.getUser();
+        List<Session> allUserSessions = sessionService.findAllUserSessions(player.getId());
 
         model.addAttribute("allUserSessions", allUserSessions);
         return "user/session/allSessionList";
@@ -48,8 +47,8 @@ public class SessionController {
         if (result.hasErrors()) {
             return "user/session/sessionForm";
         }
-        User user = loggedUser.getUser();
-        session.setUser(user);
+        Player player = (Player) loggedUser.getUser();
+        session.setPlayer(player);
 
         sessionService.create(session);
         return "redirect:/app/session/all";
@@ -69,7 +68,7 @@ public class SessionController {
         if (result.hasErrors()) {
             return "user/session/sessionForm";
         }
-        session.setUser(loggedUser.getUser());
+        session.setPlayer((Player) loggedUser.getUser());
         sessionService.create(session);
         return "redirect:/app/session/all";
     }

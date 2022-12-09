@@ -12,9 +12,9 @@ import java.util.List;
 @Repository
 @Transactional
 public interface PokerRoomRepository extends JpaRepository<PokerRoom, Long> {
-    @Query(value = "select * from poker_rooms where user_id = (:userId)"
+    @Query(value = "select * from poker_rooms where player_id = (:playerId)"
             , nativeQuery = true)
-    List<PokerRoom> findPokerRoomsByUserId(@Param("userId") Long userId);
+    List<PokerRoom> findPokerRoomsByUserId(@Param("playerId") Long playerId);
 
     @Query(value = "select * from poker_rooms where scope = 'global'",
             nativeQuery = true)
