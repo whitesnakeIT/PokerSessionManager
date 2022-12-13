@@ -1,7 +1,6 @@
 package pl.coderslab.pokersessionmanager.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
@@ -25,9 +24,10 @@ public class PokerRoomService {
 
     private final PokerRoomRepository pokerRoomRepository;
 
+    private final UtilityService utilityService;
+
     public void create(PokerRoom pokerRoom) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().contains("ROLE_ANONYMOUS"))) {
+        if (utilityService.checkIfAnonymous()) {
             throw new RuntimeException("Anonymous User can't create Poker Rooms");
         }
         User user = ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
@@ -75,9 +75,8 @@ public class PokerRoomService {
     }
 
     public List<PokerRoom> findAllByRole() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<PokerRoom> allPokerRooms = new ArrayList<>();
-        if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().contains("ROLE_ANONYMOUS"))) {
+        if (utilityService.checkIfAnonymous()) {
             allPokerRooms.addAll(findAllGlobal());
         } else {
             User user = ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();

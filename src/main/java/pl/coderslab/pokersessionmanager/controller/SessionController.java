@@ -41,15 +41,11 @@ public class SessionController {
     }
 
     @PostMapping("/add")
-    public String addSessionPost(@AuthenticationPrincipal CurrentUser loggedUser,
-                                 @Valid Session session,
+    public String addSessionPost(@Valid Session session,
                                  BindingResult result) {
         if (result.hasErrors()) {
             return "user/session/sessionForm";
         }
-        Player player = (Player) loggedUser.getUser();
-        session.setPlayer(player);
-
         sessionService.create(session);
         return "redirect:/app/session/all";
 
@@ -64,11 +60,10 @@ public class SessionController {
     }
 
     @PostMapping("/edit/{id}")
-    public String editSessionPost(@Valid Session session, BindingResult result, @AuthenticationPrincipal CurrentUser loggedUser) {
+    public String editSessionPost(@Valid Session session, BindingResult result) {
         if (result.hasErrors()) {
             return "user/session/sessionForm";
         }
-        session.setPlayer((Player) loggedUser.getUser());
         sessionService.create(session);
         return "redirect:/app/session/all";
     }

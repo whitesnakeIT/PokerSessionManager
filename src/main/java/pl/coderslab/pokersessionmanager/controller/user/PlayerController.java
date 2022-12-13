@@ -69,7 +69,9 @@ public class PlayerController {
         player.setFirstName(userBasicInfoEdit.getFirstName());
         player.setLastName(userBasicInfoEdit.getLastName());
 //        user.setEmail(userBasicInfoEdit.getEmail()); disabled giving null need to be readonly
-        playerService.create(player);
+
+        // do poprawy !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        playerService.create(player);
 
         return "redirect:/app/user/show-details?msg=data-changed";
     }

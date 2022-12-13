@@ -37,5 +37,6 @@ public class PlayerStats {
     @OneToOne
     @MapsId
     @JoinColumn(name = "player_id")
+    @ToString.Exclude
     private Player player;
 }

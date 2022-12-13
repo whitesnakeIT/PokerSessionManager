@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.coderslab.pokersessionmanager.entity.Role;
 import pl.coderslab.pokersessionmanager.validator.Adult;
@@ -71,6 +73,7 @@ public class User {
     private int enabled;
 
     @ManyToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @ToString.Exclude

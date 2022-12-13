@@ -10,23 +10,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
-import pl.coderslab.pokersessionmanager.service.PlayerService;
+import pl.coderslab.pokersessionmanager.service.UserService;
 
 import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
 public class RegistrationController {
-    private final PlayerService playerService;
+    private final UserService userService;
 
     @GetMapping("/registration")
-    public String registerNewUserGet(@ModelAttribute(name = "newUser") User newUser) {
+    public String registerNewPlayerGet(@ModelAttribute(name = "newPlayer") User newUser) {
         return "registration/registrationForm";
     }
 
     @PostMapping("/registration")
-    public String registrationNewUserPost(@Valid @ModelAttribute(name = "newPlayer") Player newPlayer, BindingResult result,
-                                          @RequestParam(name = "passwordCheck") String passwordCheck, Model model) {
+    public String registrationNewPlayerPost(@Valid @ModelAttribute(name = "newPlayer") Player newPlayer, BindingResult result,
+                                            @RequestParam(name = "passwordCheck") String passwordCheck, Model model) {
         if (result.hasErrors()) {
             return "registration/registrationForm";
         }
@@ -35,7 +35,7 @@ public class RegistrationController {
             return "registration/registrationForm";
         }
         model.addAttribute("isCorrectPass", true);
-        playerService.create(newPlayer);
+        userService.create(newPlayer);
 
         return "redirect:/";
     }

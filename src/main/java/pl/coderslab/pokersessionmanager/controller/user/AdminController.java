@@ -23,8 +23,8 @@ public class AdminController {
     @GetMapping("/users/all")
     public String showAllUsers(Model model) {
         List<User> userList = userService.findAll();
-        model.addAttribute(userList);
-        return "/admin/allUsersList";
+        model.addAttribute("userList", userList);
+        return "/admin/usersList";
     }
 
     @GetMapping("/users/delete/{userId}")
