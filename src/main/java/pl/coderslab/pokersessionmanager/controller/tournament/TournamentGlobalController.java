@@ -90,7 +90,7 @@ public class TournamentGlobalController {
     }
     @ModelAttribute("availablePokerRooms")
     public List<PokerRoom> getAvailablePokerRooms() {
-        return pokerRoomService.findAll();
+        return pokerRoomService.findAllByRole();
     }
 
 

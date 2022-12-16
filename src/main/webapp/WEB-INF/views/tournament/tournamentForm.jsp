@@ -1,12 +1,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<html>
-<head>
-    <title>Tournament form</title>
-</head>
-<body>
 
+<jsp:include page="../fragments/header.jsp"/>
+<title>Tournament form</title>
+<jsp:include page="../fragments/navbar.jsp"/>
+
+<div class="d-flex justify-content-center bg-danger">
 <form:form method="post" modelAttribute="tournament">
 
     <label>
@@ -53,15 +53,9 @@
         </form:select><br>
         <form:errors path="pokerRoom"/>
     </label><br>
-<%--    <label>--%>
-<%--        Starting Time--%>
-<%--        <form:input path="tournamentStartDateTime" type="time"/><br>--%>
-<%--        <form:errors path="tournamentStartDateTime"/>--%>
-<%--    </label><br>--%>
 
-    <input type="submit" value="Save"><br>
+    <input class="bg-black btn btn-outline-danger" type="submit" value="Save"><br>
 </form:form>
-<h4><a href="<c:url value="/tournament/all"/>">List of Tournaments</a></h4>
-<h4><a href="<c:url value="/app/poker_room/add"/>">Add poker room</a></h4>
-</body>
-</html>
+</div>
+
+<jsp:include page="../fragments/footer.jsp"/>

@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
@@ -39,12 +40,12 @@ public class TournamentSuggestionController {
         if (result.hasErrors()) {
             return "tournament/tournamentForm";
         }
-        User user = loggedUser.getUser();
-        tournamentSuggestion.setUser(user);
+        Player player = (Player) loggedUser.getUser();
+        tournamentSuggestion.setPlayer(player);
         tournamentService.create(tournamentSuggestion);
 
 
-        return "redirect:/app/tournaments/suggest/all";
+        return "redirect:/app/tournament/suggest/all";
     }
 
     @GetMapping("/all")
@@ -53,14 +54,14 @@ public class TournamentSuggestionController {
         List<TournamentSuggestion> suggestionTournamentList = tournamentService.findSuggestedTournamentsById(user.getId());
         model.addAttribute("tournamentList", suggestionTournamentList);
         model.addAttribute("tournamentGenus", TournamentGenus.SUGGESTION);
-        return "user/tournament/userTournamentList";
+        return "player/tournament/userTournamentList";
 
     }
 
     @GetMapping("/delete/{tournamentId}")
     public String deleteTournamentFromSuggestions(@PathVariable Long tournamentId) {
         tournamentService.delete(tournamentId);
-        return "redirect:/app/tournaments/suggest/all";
+        return "redirect:/app/tournament/suggest/all";
     }
 
     @ModelAttribute("availableTournamentTypes")
@@ -75,6 +76,6 @@ public class TournamentSuggestionController {
 
     @ModelAttribute("availablePokerRooms")
     public List<PokerRoom> getAvailablePokerRooms() {
-        return pokerRoomService.findAll();
+        return pokerRoomService.findAllByRole();
     }
 }

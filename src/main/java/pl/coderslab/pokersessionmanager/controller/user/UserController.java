@@ -1,4 +1,4 @@
-package pl.coderslab.pokersessionmanager.controller;
+package pl.coderslab.pokersessionmanager.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -6,55 +6,52 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
+import pl.coderslab.pokersessionmanager.service.PlayerService;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
 import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/app")
+@RequestMapping("/app/user")
 public class UserController {
-
-//    private final TournamentService tournamentService;
-
     private final UserService userService;
 
-//    @GetMapping("/dashboard")
-//    public String showDashboard() {
-//        return "user/dashboard";
-//    }
+    private final PlayerService playerService;
 
-
-    @GetMapping("/user/show-details")
+    @GetMapping("/show-details")
     public String showUserDetails(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
-        User user = loggedUser.getUser();
-        UserBasicInfoWithOutPasswordDto userBasicInfo = userService.convertUserToUserBasicInfoWithOutPasswordDto(user);
+        User user =  loggedUser.getUser();
+
+//        UserBasicInfoWithOutPasswordDto userBasicInfo = playerService.convertUserToUserBasicInfoWithOutPasswordDto(user);
 //        UserBasicInfoWithOutPasswordDto userBasicInfo = userService.findUserBasicInfoWithOutPasswordDtoById(userId);
-        model.addAttribute("userBasicInfo", userBasicInfo);
+        model.addAttribute("userBasicInfo", user);
 
         return "user/data/showUserDetails";
 
     }
 
-    @GetMapping("/user/edit-details")
+    @GetMapping("/edit-details")
     public String editUserDetailsGet(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
         User user = loggedUser.getUser();
-        UserBasicInfoWithOutPasswordDto userBasicInfoWithOutPassword = userService.convertUserToUserBasicInfoWithOutPasswordDto(user);
+//        UserBasicInfoWithOutPasswordDto userBasicInfoWithOutPassword = playerService.convertUserToUserBasicInfoWithOutPasswordDto(user);
 //        UserBasicInfoWithPasswordDto userBasicInfoEdit = userService.findUserBasicInfoWithPasswordDto(userId);
-        model.addAttribute("userBasicInfoEdit", userBasicInfoWithOutPassword);
+        model.addAttribute("userBasicInfoEdit", user);
         return "user/data/editUserDetails";
     }
 
-    @PostMapping("/user/edit-details")
+    @PostMapping("/edit-details")
     public String editUserDetailsPost(@Valid @ModelAttribute(name = "userBasicInfoEdit") UserBasicInfoWithOutPasswordDto userBasicInfoEdit,
                                       BindingResult result,
                                       @AuthenticationPrincipal CurrentUser loggedUser,
                                       @RequestParam String passwordToCheck) {
 
-        User user = loggedUser.getUser();
+        User user =  loggedUser.getUser();
 
         if (userService.isPasswordCorrect(passwordToCheck, user.getPassword())) {
 
@@ -66,22 +63,24 @@ public class UserController {
             System.out.println("wrong password");
             return "user/data/editUserDetails";
         }
-        user.setFirstName(userBasicInfoEdit.getFirstName());
-        user.setLastName(userBasicInfoEdit.getLastName());
+       user.setFirstName(userBasicInfoEdit.getFirstName());
+       user.setLastName(userBasicInfoEdit.getLastName());
 //        user.setEmail(userBasicInfoEdit.getEmail()); disabled giving null need to be readonly
+
+        // do poprawy !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         userService.create(user);
 
         return "redirect:/app/user/show-details?msg=data-changed";
     }
 
     //    ViewController daje 405
-    @GetMapping("/user/edit-password")
+    @GetMapping("/edit-password")
     public String editUserPasswordGet() {
 
         return "user/data/editPassword";
     }
 
-    @PostMapping("/user/edit-password")
+    @PostMapping("/edit-password")
     public String editUserPasswordPost(@AuthenticationPrincipal CurrentUser loggedUser,
                                        @RequestParam String oldPassword,
                                        @RequestParam String newPassword,
@@ -93,17 +92,4 @@ public class UserController {
         return "redirect:/app/user/show-details?msg=password-changed";
 
     }
-
-//    @ModelAttribute("availableTournamentTypes")
-//    public List<String> getAvailableTournamentTypes() {
-//        return tournamentService.getAvailableTournamentTypes();
-//    }
-//
-//    @ModelAttribute("availableTournamentSpeed")
-//    public List<String> getAvailableTournamentSpeed() {
-//        return tournamentService.getAvailableTournamentSpeed();
-//    }
 }
-
-
-

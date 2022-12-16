@@ -5,13 +5,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.service.PlayerService;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -20,17 +19,15 @@ public class SpringDataUserService implements UserDetailsService {
 
     private final UserService userService;
 
+    private final PlayerService playerService;
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userOptional = userService.findByEmail(username);
-//        Optional<User> userOptional = userService.findByUserName(username);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-            user.getRoles()
-                    .forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role.getName())));
-            return new CurrentUser(user.getUsername(), user.getPassword(), grantedAuthorities, user);
-        }
-        throw new UsernameNotFoundException(username);
+    public UserDetails loadUserByUsername(String email) {
+        User user = userService.findByEmail(email);
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        user.getRoles()
+                .forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role.getName())));
+        return new CurrentUser(user.getUsername(), user.getPassword(), grantedAuthorities, user);
     }
+
 }

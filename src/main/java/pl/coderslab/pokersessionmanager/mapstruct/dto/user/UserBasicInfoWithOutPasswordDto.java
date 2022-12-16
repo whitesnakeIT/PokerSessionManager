@@ -1,7 +1,7 @@
 package pl.coderslab.pokersessionmanager.mapstruct.dto.user;
 
 import lombok.Data;
-import pl.coderslab.pokersessionmanager.entity.user.UserStats;
+import pl.coderslab.pokersessionmanager.entity.user.PlayerStats;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -23,6 +23,6 @@ public class UserBasicInfoWithOutPasswordDto {
     @NotNull
     private String email;
 
-    private UserStats userStats;
+    private PlayerStats playerStats;
 
 }

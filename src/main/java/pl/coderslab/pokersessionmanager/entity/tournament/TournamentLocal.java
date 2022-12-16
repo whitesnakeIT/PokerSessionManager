@@ -1,9 +1,13 @@
 package pl.coderslab.pokersessionmanager.entity.tournament;
 
-import lombok.*;
-import pl.coderslab.pokersessionmanager.entity.user.User;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -19,7 +23,7 @@ public class TournamentLocal extends AbstractTournament {
 
     @ManyToOne
     @ToString.Exclude
-    private User user;
+    private Player player;
 
 
 }

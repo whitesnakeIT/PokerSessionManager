@@ -5,9 +5,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+
 @Getter
 public class CurrentUser extends User {
     private final pl.coderslab.pokersessionmanager.entity.user.User user;
+
 
     public CurrentUser(String username,
                        String password,
@@ -17,7 +19,7 @@ public class CurrentUser extends User {
         this.user = user;
     }
 
-    public boolean hasRole(String roleName){
+    public boolean hasRole(String roleName) {
         return this.user.hasRole(roleName);
     }
 }

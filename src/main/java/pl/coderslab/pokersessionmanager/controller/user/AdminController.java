@@ -1,4 +1,4 @@
-package pl.coderslab.pokersessionmanager.controller;
+package pl.coderslab.pokersessionmanager.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,17 +18,18 @@ public class AdminController {
 
     private final UserService userService;
 
+    //do usuniecia zwyklych czy adminow tez
+
     @GetMapping("/users/all")
     public String showAllUsers(Model model) {
         List<User> userList = userService.findAll();
-        model.addAttribute(userList);
-        return "/admin/allUsersList";
+        model.addAttribute("userList", userList);
+        return "/admin/usersList";
     }
 
     @GetMapping("/users/delete/{userId}")
     public String deleteUser(@PathVariable Long userId) {
-        User user = userService.findById(userId);
-        userService.delete(user);
+        userService.delete(userId);
         return "redirect:/admin/users/all";
     }
 }

@@ -16,10 +16,5 @@ public class LoginController {
         }
         return "redirect:/";
     }
-//
-//    @GetMapping("/logout")
-//    public String logoutGet() {
-//        return "login/logout";
-//    }
-
+    
 }
