@@ -30,21 +30,21 @@ public class SessionController {
         List<Session> allUserSessions = sessionService.findAllUserSessions(player.getId());
 
         model.addAttribute("allUserSessions", allUserSessions);
-        return "user/session/allSessionList";
+        return "player/session/allSessionList";
     }
 
     @GetMapping("/add")
     public String addSessionGet(Model model) {
 
         model.addAttribute("session", new Session());
-        return "user/session/sessionForm";
+        return "player/session/sessionForm";
     }
 
     @PostMapping("/add")
     public String addSessionPost(@Valid Session session,
                                  BindingResult result) {
         if (result.hasErrors()) {
-            return "user/session/sessionForm";
+            return "player/session/sessionForm";
         }
         sessionService.create(session);
         return "redirect:/app/session/all";
@@ -56,13 +56,13 @@ public class SessionController {
     public String editSessionGet(@PathVariable Long sessionId, Model model) {
         Session session = sessionService.findById(sessionId);
         model.addAttribute(session);
-        return "user/session/sessionForm";
+        return "player/session/sessionForm";
     }
 
     @PostMapping("/edit/{id}")
     public String editSessionPost(@Valid Session session, BindingResult result) {
         if (result.hasErrors()) {
-            return "user/session/sessionForm";
+            return "player/session/sessionForm";
         }
         sessionService.create(session);
         return "redirect:/app/session/all";

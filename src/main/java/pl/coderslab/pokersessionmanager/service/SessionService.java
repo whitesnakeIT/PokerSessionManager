@@ -57,14 +57,8 @@ public class SessionService {
 //        return sessionRepository.findFirstByUserIdAndName(user.getId(), sessionName);
 //    }
 
-//    public List<Session> findAllUserSessions(Long userId) {
-//        return sessionRepository.findAllByUserId(userId);
-//    }
-
     public void delete(Long sessionId) {
-        Session session = sessionRepository
-                .findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("I can't find/convert session by session Id."));
+        Session session = findById(sessionId);
         sessionRepository.delete(session);
     }
 

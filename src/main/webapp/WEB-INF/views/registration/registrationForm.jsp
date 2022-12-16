@@ -1,11 +1,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<html>
-<head>
-    <title>Registration for new users</title>
-</head>
-<body>
+
+<jsp:include page="../fragments/header.jsp"/>
+<title>Registration page</title>
+<jsp:include page="../fragments/navbar.jsp"/>
+
+<div class="d-flex justify-content-center bg-danger">
 <form:form modelAttribute="newPlayer" method="post">
     <label>
         First name <br>
@@ -31,21 +32,21 @@
         Username <br>
         <form:input path="username"/><br>
         <form:errors path="username"/><br>
-    </label>•
+    </label><br>
     <label>
         Password <br>
         <form:password path="password"/><br>
         <form:errors path="password"/><br>
-    </label>
+    </label><br>
     <label>
         Repeat Password <br>
         <input type="password" name="passwordCheck"><br>
-    </label>
+    </label><br>
 <c:if test="${isCorrectPass==false}">
     <h4>Second password wrong</h4>
 </c:if>
     <input type="submit" value="Register">
-
 </form:form>
-</body>
-</html>
+</div>
+
+<jsp:include page="../fragments/footer.jsp"/>

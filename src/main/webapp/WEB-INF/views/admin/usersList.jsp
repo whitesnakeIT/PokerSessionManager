@@ -1,9 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<jsp:include page="../fragmentss/header.jsp"/>
+
+<jsp:include page="../fragments/header.jsp"/>
 <title>Users list</title>
-<jsp:include page="../fragmentss/navbar.jsp"/>
-<div class="table-responsive">
+<jsp:include page="../fragments/navbar.jsp"/>
+
+<div class="table-responsive bg-danger">
     <table class="table table-hover table-bordered table-striped">
         <thead>
         <tr>
@@ -36,4 +38,4 @@
     </table>
 </div>
 
-<jsp:include page="../fragmentss/footer.jsp"/>
+<jsp:include page="../fragments/footer.jsp"/>

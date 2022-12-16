@@ -48,7 +48,7 @@ public class TournamentFavouriteController {
         List<AbstractTournament> favouriteTournaments = tournamentService.findFavouriteTournaments(user.getId());
         model.addAttribute("favouriteTournaments", favouriteTournaments);
         model.addAttribute("tournamentsPossibleToFavourites", tournamentsPossibleToFavourites);
-        return "user/tournament/favouriteTournamentList";
+        return "player/tournament/favouriteTournamentList";
     }
 
     @ModelAttribute("availableTournamentTypes")

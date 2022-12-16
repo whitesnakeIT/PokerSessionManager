@@ -46,7 +46,7 @@ public class TournamentLocalController {
         tournamentService.create(tournamentLocal);
 
 
-        return "redirect:/app/tournaments/local/all";
+        return "redirect:/app/tournament/local/all";
     }
 
     @GetMapping("/all")
@@ -55,7 +55,7 @@ public class TournamentLocalController {
         List<TournamentLocal> localTournamentList = tournamentService.findLocalTournamentsById(user.getId());
         model.addAttribute("tournamentList", localTournamentList);
         model.addAttribute("tournamentGenus", TournamentGenus.LOCAL);
-        return "user/tournament/userTournamentList";
+        return "player/tournament/userTournamentList";
 
     }
 
@@ -77,6 +77,6 @@ public class TournamentLocalController {
 
     @ModelAttribute("availablePokerRooms")
     public List<PokerRoom> getAvailablePokerRooms() {
-        return pokerRoomService.findAll();
+        return pokerRoomService.findAllByRole();
     }
 }

@@ -94,4 +94,44 @@ public class UserService {
         }
         throw new RuntimeException("User not exist");
     }
+    public boolean isPasswordCorrect(String passwordToCheck, String userPassword) {
+
+        return bCryptPasswordEncoder.matches(passwordToCheck, userPassword);
+    }
+
+    public boolean updatePassword(User user, String oldPassword, String newPassword, String confirmNewPassword) {
+
+        boolean compareActualAndOldPassword = bCryptPasswordEncoder.matches(oldPassword, user.getPassword());
+
+
+        boolean compareActualAndNewPassword = bCryptPasswordEncoder.matches(newPassword, user.getPassword());
+        boolean compareActualAndConfirmNewPassword = bCryptPasswordEncoder.matches(confirmNewPassword, user.getPassword());
+
+
+        boolean compareNewPasswordAndConfirmNewPassword = newPassword.equals(confirmNewPassword);
+
+        if ((oldPassword.equals("")) || (newPassword.equals("")) || (confirmNewPassword.equals(""))) {
+            System.out.println("jakies polle puste");
+            return false;
+        }
+
+        if (!compareActualAndOldPassword) {
+            System.out.println("stare haslo bledne");
+            return false;
+        } else if (compareActualAndNewPassword || compareActualAndConfirmNewPassword) {
+            System.out.println("Stare ok ale nowe lub confirm jak stare");
+            return false;
+        }
+
+        if (!compareNewPasswordAndConfirmNewPassword) {
+            System.out.println("Stare ok ale 2 rozne");
+            return false;
+        }
+
+        user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
+
+    }
+
 }

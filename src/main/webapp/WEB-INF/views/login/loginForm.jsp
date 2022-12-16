@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 
-<html>
-<head>
-    <title>Login page</title>
-</head>
-<body>
+<jsp:include page="../fragments/header.jsp"/>
+<title>Login page</title>
+<jsp:include page="../fragments/navbar.jsp"/>
+
+<div class="bg-danger d-flex justify-content-center ">
 <form method="post">
     <div>
         <label>
@@ -19,9 +19,9 @@
         </label>
     </div>
     <div>
-        <input type="submit" value="Sign in">
+        <input class="bg-black btn btn-outline-danger" type="submit" value="Sign in">
     </div>
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
-</body>
-</html>
+</div>
+<jsp:include page="../fragments/footer.jsp"/>

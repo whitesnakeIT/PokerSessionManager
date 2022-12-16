@@ -54,7 +54,7 @@ public class TournamentSuggestionController {
         List<TournamentSuggestion> suggestionTournamentList = tournamentService.findSuggestedTournamentsById(user.getId());
         model.addAttribute("tournamentList", suggestionTournamentList);
         model.addAttribute("tournamentGenus", TournamentGenus.SUGGESTION);
-        return "user/tournament/userTournamentList";
+        return "player/tournament/userTournamentList";
 
     }
 
@@ -76,6 +76,6 @@ public class TournamentSuggestionController {
 
     @ModelAttribute("availablePokerRooms")
     public List<PokerRoom> getAvailablePokerRooms() {
-        return pokerRoomService.findAll();
+        return pokerRoomService.findAllByRole();
     }
 }
