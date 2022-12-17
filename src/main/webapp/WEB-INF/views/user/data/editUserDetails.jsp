@@ -7,7 +7,7 @@
 <jsp:include page="../../fragments/navbar.jsp"/>
 
 <div class="d-flex justify-content-center bg-danger">
-    <form:form method="post" modelAttribute="userBasicInfoEdit">
+    <form:form method="post" modelAttribute="userSlim">
         First name<br>
         <label>
             <form:input path="firstName"/><br>
@@ -23,17 +23,20 @@
         <%--        <form:input path="username"/><br>--%>
         <%--        <form:errors path="username"/><br>--%>
         <%--    </label>--%>
-        Email<br>
+        Username<br>
         <label>
-            <form:input path="email" readonly="true"/><br>
-            <form:errors path="email"/><br>
+            <form:input path="username"/><br>
+            <form:errors path="username"/><br>
         </label>
         <br>
         Enter the password to confirm<br>
         <label>
-                <%--        <form:input path="password" /><br>--%>
-                <%--        <form:errors path="password"/><br>--%>
             <input type="password" name="passwordToCheck"><br>
+            <c:choose>
+                <c:when test="${wrongPassword}">
+                    <p class="text-white">Password is wrong!</p>
+                </c:when>
+            </c:choose>
         </label><br>
 
         <input class="bg-black btn btn-outline-danger" type="submit" value="Edit details">

@@ -7,13 +7,13 @@
 <div class="bg-danger">
     <h1 class="text-white d-flex justify-content-center">User info</h1>
 
-    <ul class="list-group justify-content-center d-flex">
+    <ul class="list-group justify-content-center d-flex mt-3">
         <li class="list-group-item bg-danger justify-content-center d-flex">First Name: <c:out
-                value="${userBasicInfo.firstName}"/></li>
+                value="${userSlim.firstName}"/></li>
         <li class="list-group-item bg-danger justify-content-center d-flex">Last Name: <c:out
-                value="${userBasicInfo.lastName}"/></li>
-        <li class="list-group-item bg-danger justify-content-center d-flex">Email: <c:out
-                value="${userBasicInfo.email}"/></li>
+                value="${userSlim.lastName}"/></li>
+        <li class="list-group-item bg-danger justify-content-center d-flex">Username: <c:out
+                value="${userSlim.username}"/></li>
     </ul>
 
 </div>

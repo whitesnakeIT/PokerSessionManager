@@ -16,43 +16,10 @@ public class PlayerService {
 
     private final PlayerRepository playerRepository;
 
-    public List<Player> findAll() {
+    public List<Player> findAllPlayers() {
         List<Player> allPlayers = playerRepository.findAll().stream().peek(this::loadLazyDataToPlayer).toList();
         return allPlayers;
     }
-
-
-//    public UserBasicInfoWithPasswordDto findUserBasicInfoWithPasswordDto(Long id) {
-//        Optional<User> playerOptional = playerRepository.findById(id);
-//
-//        if (playerOptional.isPresent()) {
-//
-//            return playerMapper.playerToUserBasicInfoWithPasswordDto(playerOptional.get());
-//
-//        }
-//
-//        throw new RuntimeException("I can't find/convert player by player Id.");
-//    }
-//
-//    public UserBasicInfoWithOutPasswordDto findUserBasicInfoWithOutPasswordDtoById(Long id) {
-//        Optional<User> playerOptional = playerRepository.findById(id);
-//
-//        if (playerOptional.isPresent()) {
-//
-//            return playerMapper.playerToUserBasicInfoWithOutPasswordDto(playerOptional.get());
-//
-//        }
-//
-//        throw new RuntimeException("I can't find/convert player by player Id.");
-//    }
-//
-//    public UserBasicInfoWithPasswordDto convertUserToUserBasicInfoWithPasswordDto(Player player) {
-//        return playerMapper.playerToUserBasicInfoWithPasswordDto(player);
-//    }
-//
-//    public UserBasicInfoWithOutPasswordDto convertUserToUserBasicInfoWithOutPasswordDto(Player player) {
-//        return playerMapper.playerToUserBasicInfoWithOutPasswordDto(player);
-//    }
 
     public void loadFavouriteTournamentsToPlayer(Player player) {
         Hibernate.initialize(player.getFavouriteTournaments());

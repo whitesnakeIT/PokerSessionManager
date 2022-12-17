@@ -8,6 +8,9 @@ import pl.coderslab.pokersessionmanager.entity.Role;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
+import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithOutPassword;
+import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithPassword;
+import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;
 import pl.coderslab.pokersessionmanager.repository.UserRepository;
 
 import javax.transaction.Transactional;
@@ -30,18 +33,11 @@ public class UserService {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    private final UserMapper userMapper;
+
     public User findByEmail(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
-//        if (userOptional.isPresent()) {
-//            User user = userOptional.get();
-//            loadRolesToUser(user);
-//            if (user.hasRole(RoleName.ROLE_USER.name())) {
-//                playerService.loadLazyDataToPlayer((Player) user);
-//            }
-//            return user;
         return ifUserExist(userOptional);
-//        }
-//        throw new RuntimeException("I can't find player by email.");
     }
 
     public void loadRolesToUser(User user) {
@@ -64,17 +60,7 @@ public class UserService {
 
     public User findById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
-//        if (userOptional.isPresent()) {
-//            User user = userOptional.get();
-//            loadRolesToUser(user);
-//            if (user.hasRole(RoleName.ROLE_USER.name())) {
-//                playerService.loadLazyDataToPlayer((Player) user);
-//            }
-//            return user;
-//
-//        }
         return ifUserExist(userOptional);
-//        throw new RuntimeException("I can't find player by id.");
     }
 
     public void delete(Long userId) {
@@ -94,6 +80,7 @@ public class UserService {
         }
         throw new RuntimeException("User not exist");
     }
+
     public boolean isPasswordCorrect(String passwordToCheck, String userPassword) {
 
         return bCryptPasswordEncoder.matches(passwordToCheck, userPassword);
@@ -134,4 +121,15 @@ public class UserService {
 
     }
 
+    public UserSlimWithPassword convertUserToUserSlimWithPassword(User user) {
+        return userMapper.userToUserToUserSlimWithPassword(user);
+    }
+
+    public UserSlimWithOutPassword convertUserToUserSlimWithOutPassword(User user) {
+        return userMapper.userToUserToUserSlimWithOutPassword(user);
+    }
+
+    public void update(User user, String firstName, String lastName, String username) {
+        userRepository.update(user, firstName, lastName, username);
+    }
 }
