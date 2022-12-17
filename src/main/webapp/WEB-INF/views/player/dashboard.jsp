@@ -8,5 +8,9 @@
 <div class="bg-danger">
     <h1 class="text-white d-flex justify-content-center">Permission: <sec:authentication
             property="principal.authorities"/></h1>
+
+</div>
+<div class="d-flex align-items-center justify-content-center py-3 ">
+<a class="btn btn-outline-danger" href='player/show-stats'>Show stats</a>
 </div>
     <jsp:include page="../fragments/footer.jsp"/>

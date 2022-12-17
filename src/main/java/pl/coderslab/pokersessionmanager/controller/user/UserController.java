@@ -6,10 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
-import pl.coderslab.pokersessionmanager.enums.RoleName;
-import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserBasicInfoWithOutPasswordDto;
+import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithOutPassword;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.PlayerService;
 import pl.coderslab.pokersessionmanager.service.UserService;
@@ -26,11 +24,9 @@ public class UserController {
 
     @GetMapping("/show-details")
     public String showUserDetails(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
-        User user =  loggedUser.getUser();
-
-//        UserBasicInfoWithOutPasswordDto userBasicInfo = playerService.convertUserToUserBasicInfoWithOutPasswordDto(user);
-//        UserBasicInfoWithOutPasswordDto userBasicInfo = userService.findUserBasicInfoWithOutPasswordDtoById(userId);
-        model.addAttribute("userBasicInfo", user);
+        User user = loggedUser.getUser();
+        UserSlimWithOutPassword userSlim = userService.convertUserToUserSlimWithOutPassword(user);
+        model.addAttribute("userSlim", userSlim);
 
         return "user/data/showUserDetails";
 
@@ -39,41 +35,40 @@ public class UserController {
     @GetMapping("/edit-details")
     public String editUserDetailsGet(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
         User user = loggedUser.getUser();
-//        UserBasicInfoWithOutPasswordDto userBasicInfoWithOutPassword = playerService.convertUserToUserBasicInfoWithOutPasswordDto(user);
-//        UserBasicInfoWithPasswordDto userBasicInfoEdit = userService.findUserBasicInfoWithPasswordDto(userId);
-        model.addAttribute("userBasicInfoEdit", user);
+        UserSlimWithOutPassword userSlim = userService.convertUserToUserSlimWithOutPassword(user);
+        model.addAttribute("userSlim", userSlim);
+
         return "user/data/editUserDetails";
     }
 
     @PostMapping("/edit-details")
-    public String editUserDetailsPost(@Valid @ModelAttribute(name = "userBasicInfoEdit") UserBasicInfoWithOutPasswordDto userBasicInfoEdit,
+    public String editUserDetailsPost(@Valid @ModelAttribute(name = "userSlim") UserSlimWithOutPassword userSlimWithOutPassword,
                                       BindingResult result,
                                       @AuthenticationPrincipal CurrentUser loggedUser,
-                                      @RequestParam String passwordToCheck) {
+                                      @RequestParam String passwordToCheck,
+                                      Model model) {
 
-        User user =  loggedUser.getUser();
-
+        User user = loggedUser.getUser();
+        boolean wrongPassword = false;
         if (userService.isPasswordCorrect(passwordToCheck, user.getPassword())) {
 
             if (result.hasErrors()) {
-                System.out.println("bledy z inputow");
                 return "user/data/editUserDetails";
             }
         } else {
-            System.out.println("wrong password");
+            wrongPassword = true;
+            model.addAttribute("wrongPassword", wrongPassword);
             return "user/data/editUserDetails";
         }
-       user.setFirstName(userBasicInfoEdit.getFirstName());
-       user.setLastName(userBasicInfoEdit.getLastName());
-//        user.setEmail(userBasicInfoEdit.getEmail()); disabled giving null need to be readonly
-
-        // do poprawy !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        userService.create(user);
+        user.setFirstName(userSlimWithOutPassword.getFirstName());
+        user.setLastName(userSlimWithOutPassword.getLastName());
+        user.setUsername(userSlimWithOutPassword.getUsername());
+        userService.update(user, userSlimWithOutPassword.getFirstName(), userSlimWithOutPassword.getLastName(), userSlimWithOutPassword.getUsername());
+//        userService.create(user);
 
         return "redirect:/app/user/show-details?msg=data-changed";
     }
 
-    //    ViewController daje 405
     @GetMapping("/edit-password")
     public String editUserPasswordGet() {
 
@@ -82,13 +77,18 @@ public class UserController {
 
     @PostMapping("/edit-password")
     public String editUserPasswordPost(@AuthenticationPrincipal CurrentUser loggedUser,
+                                       Model model,
                                        @RequestParam String oldPassword,
                                        @RequestParam String newPassword,
                                        @RequestParam String confirmNewPassword) {
         User user = loggedUser.getUser();
+        String message;
         if (!userService.updatePassword(user, oldPassword, newPassword, confirmNewPassword)) {
+            message = "error";
+            model.addAttribute("message", message);
             return "user/data/editPassword";
         }
+        message = "password-changed";
         return "redirect:/app/user/show-details?msg=password-changed";
 
     }
