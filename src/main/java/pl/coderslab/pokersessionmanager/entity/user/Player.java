@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.entity.user;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +8,7 @@ import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

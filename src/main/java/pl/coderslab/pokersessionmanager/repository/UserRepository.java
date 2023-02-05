@@ -1,5 +1,9 @@
 package pl.coderslab.pokersessionmanager.repository;
 
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -7,10 +11,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 
-import javax.transaction.Transactional;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+//import javax.transaction.Transactional;
+//import javax.validation.constraints.Email;
+//import javax.validation.constraints.NotEmpty;
+//import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Repository

@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +12,7 @@ import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.repository.SessionRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +64,7 @@ public class SessionService {
     }
 
     public void loadTournamentsToSession(Session session) {
-        Hibernate.initialize(session.getSessionTournaments());
+//        Hibernate.initialize(session.getSessionTournaments());
     }
 
     public boolean checkIfPokerSessionBelongsToUser(Session session, User user) {

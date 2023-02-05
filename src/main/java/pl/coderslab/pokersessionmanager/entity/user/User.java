@@ -1,5 +1,13 @@
 package pl.coderslab.pokersessionmanager.entity.user;
 
+
+//import jakarta.persistence.*;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,11 +18,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import pl.coderslab.pokersessionmanager.entity.Role;
 import pl.coderslab.pokersessionmanager.validator.Adult;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+//import javax.persistence.*;
+//import javax.validation.constraints.Email;
+//import javax.validation.constraints.NotEmpty;
+//import javax.validation.constraints.NotNull;
+//import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;

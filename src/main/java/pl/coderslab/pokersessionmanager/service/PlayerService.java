@@ -1,12 +1,12 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.repository.PlayerRepository;
-
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -22,27 +22,27 @@ public class PlayerService {
     }
 
     public void loadFavouriteTournamentsToPlayer(Player player) {
-        Hibernate.initialize(player.getFavouriteTournaments());
+//        Hibernate.initialize(player.getFavouriteTournaments());
     }
 
     public void loadSuggestedTournamentsToPlayer(Player player) {
-        Hibernate.initialize(player.getSuggestedTournaments());
+//        Hibernate.initialize(player.getSuggestedTournaments());
     }
 
     public void loadLocalTournamentsToPlayer(Player player) {
-        Hibernate.initialize(player.getLocalTournaments());
+//        Hibernate.initialize(player.getLocalTournaments());
     }
 
     public void loadPokerRoomLocalToPlayer(Player player) {
-        Hibernate.initialize(player.getPokerRoomsLocal());
+//        Hibernate.initialize(player.getPokerRoomsLocal());
     }
 
     public void loadPlayerStatsToPlayer(Player player) {
-        Hibernate.initialize(player.getPlayerStats());
+//        Hibernate.initialize(player.getPlayerStats());
     }
 
     public void loadSessionsToPlayer(Player player) {
-        Hibernate.initialize(player.getSessions());
+//        Hibernate.initialize(player.getSessions());
     }
 
     public void loadLazyDataToPlayer(Player player) {

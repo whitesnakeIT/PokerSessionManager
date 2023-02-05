@@ -1,13 +1,15 @@
 package pl.coderslab.pokersessionmanager.entity.tournament;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+//import javax.persistence.*;
+//import javax.validation.constraints.*;
 import java.util.Objects;
 
 @Entity

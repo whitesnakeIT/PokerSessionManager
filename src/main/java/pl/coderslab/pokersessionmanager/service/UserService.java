@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,14 +14,14 @@ import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithPassword;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;
 import pl.coderslab.pokersessionmanager.repository.UserRepository;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
-@Transactional
+@Transactional()
 @RequiredArgsConstructor
 
 public class UserService {
@@ -41,7 +42,7 @@ public class UserService {
     }
 
     public void loadRolesToUser(User user) {
-        Hibernate.initialize(user.getRoles());
+//        Hibernate.initialize(user.getRoles());
     }
 
     // jedna klasa

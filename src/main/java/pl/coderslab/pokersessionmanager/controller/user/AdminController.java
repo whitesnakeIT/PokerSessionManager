@@ -24,7 +24,7 @@ public class AdminController {
     public String showAllUsers(Model model) {
         List<User> userList = userService.findAll();
         model.addAttribute("userList", userList);
-        return "/admin/usersList";
+        return "admin/usersList";
     }
 
     @GetMapping("/users/delete/{userId}")

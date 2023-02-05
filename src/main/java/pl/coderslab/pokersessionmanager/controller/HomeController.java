@@ -26,7 +26,6 @@ public class HomeController {
             return "player/dashboard";
         }
 
-
         return "redirect:/login";
     }
 }

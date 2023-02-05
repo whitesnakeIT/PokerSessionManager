@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 
-import javax.validation.Valid;
+//import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor

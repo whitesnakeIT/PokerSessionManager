@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +13,7 @@ import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
-import javax.validation.Valid;
+//import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor

@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.PokerRoomRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

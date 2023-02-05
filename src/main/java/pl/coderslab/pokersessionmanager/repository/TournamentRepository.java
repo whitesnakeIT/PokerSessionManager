@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.repository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,7 @@ import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository

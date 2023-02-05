@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
@@ -11,7 +12,7 @@ import pl.coderslab.pokersessionmanager.enums.TournamentType;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.TournamentMapper;
 import pl.coderslab.pokersessionmanager.repository.TournamentRepository;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
