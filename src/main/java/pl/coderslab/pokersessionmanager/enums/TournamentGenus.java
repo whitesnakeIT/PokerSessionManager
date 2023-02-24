@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 public enum TournamentGenus {
     GLOBAL,
     LOCAL,
-    SUGGESTION
+    ABSTRACT, SUGGESTION
 
 }

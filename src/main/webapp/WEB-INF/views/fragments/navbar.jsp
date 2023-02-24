@@ -7,14 +7,6 @@
 
 </head>
 <body>
-<%--<h1>url = <c:url/></h1>--%>
-<%--<h2>context = ${pageContext.request.requestURL}</h2>--%>
-<%--<h2>context = ${pageContext.request.requestURI}</h2>--%>
-<%--<h2>context = ${pageContext.request.serverName}</h2>--%>
-<%--<h2>context = ${pageContext.request.localPort}</h2>--%>
-<%--<h2>context = ${pageContext.request.servletContext.contextPath}</h2>--%>
-<%--<h2>context = ${pageContext.request.servletPath}</h2>--%>
-<%--<h2>context = ${pageContext.request}</h2>--%>
 
 <nav class="navbar navbar-expand-lg bg-dark">
     <div class="container-fluid">
@@ -51,14 +43,14 @@
                     </a>
                     <sec:authorize access="hasRole('ROLE_ADMIN') || isAnonymous()">
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-danger" href="<c:url value='/tournament/add'/>">Add
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/global/add'/>">Add
                                 tournament</a></li>
 <%--                            <li><a class="dropdown-item text-danger" href="<c:url value='/admin/suggest'/>">Accept--%>
 <%--                                suggestion tournament</a></li>--%>
 <%--                            <li>--%>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item text-danger" href="<c:url value='/tournament/all'/>">Tournament
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/global/all'/>">Tournament global
                                 list</a></li>
                         </ul>
                     </sec:authorize>
@@ -66,14 +58,16 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/local/add'/>">Add
                                 tournament to local list</a></li>
-                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/suggest/add'/>">Suggest tournament for moderators</a></li>
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/suggestion/add'/>">Suggest tournament for moderators</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/favourites'/>">Favourite tournaments</a></li>
                             <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/local/all'/>">Tournament local
                                 list</a></li>
-                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/suggest/all'/>">Tournament suggestions
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/suggestion/all'/>">Tournament suggestions
+                                list</a></li>
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/global/all'/>">Tournament global
                                 list</a></li>
                         </ul>
                     </sec:authorize>

@@ -16,6 +16,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
 import pl.coderslab.pokersessionmanager.entity.Role;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.validator.Adult;
 
 //import javax.persistence.*;
@@ -99,9 +100,9 @@ public class User {
     }
 
 
-    public boolean hasRole(String roleName) {
+    public boolean hasRole(RoleName roleName) {
         for (Role role : this.roles) {
-            if (role.getName().equals(roleName)) {
+            if (role.getName().equalsIgnoreCase(roleName.toString())) {
                 return true;
             }
         }

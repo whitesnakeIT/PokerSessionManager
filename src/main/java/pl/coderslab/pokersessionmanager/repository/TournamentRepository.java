@@ -46,9 +46,14 @@ public interface TournamentRepository extends JpaRepository<AbstractTournament, 
             nativeQuery = true)
     List<TournamentSuggestion> findSuggestedTournamentsById(@Param("playerId") Long playerId);
 
+    @Query(value = "select * from tournaments where tournament_genus = 'global' and player_id = (:playerId)",
+            nativeQuery = true)
+    List<TournamentGlobal> findGlobalTournamentsById(@Param("playerId") Long userId);
+
 
     @Query(value = "select * from tournaments where tournament_genus = 'global'",
             nativeQuery = true)
     List<TournamentGlobal> findGlobalTournaments();
+
 }
 

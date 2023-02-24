@@ -25,4 +25,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "update users set first_name = (:firstName), last_name = (:lastName), username = (:username) where id = (:user)", nativeQuery = true)
     void update(@Param("user") User user, @Param("firstName")  String firstName, @Param("lastName")  String lastName,@Param("username")  String username);
+
+//    @Override
+//    @Query(value =
+//            "select *" +
+//                    "from users u " +
+//                    "left join tournaments t " +
+//                    "on u.id = t.player_id where u.id = (:userId)"
+//            ,nativeQuery = true)
+//    Optional<User> findById(@Param("userId") Long userId);
 }

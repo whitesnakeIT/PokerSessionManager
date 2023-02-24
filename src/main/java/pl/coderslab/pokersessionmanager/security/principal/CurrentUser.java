@@ -3,6 +3,7 @@ package pl.coderslab.pokersessionmanager.security.principal;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
 
 import java.util.Collection;
 
@@ -19,7 +20,7 @@ public class CurrentUser extends User {
         this.user = user;
     }
 
-    public boolean hasRole(String roleName) {
+    public boolean hasRole(RoleName roleName) {
         return this.user.hasRole(roleName);
     }
 }

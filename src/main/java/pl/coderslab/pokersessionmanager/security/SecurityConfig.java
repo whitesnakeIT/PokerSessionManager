@@ -33,9 +33,11 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 .requestMatchers("/tournament/all", "/poker_room/all").permitAll()
-                .requestMatchers("/logout", "/tournament/**", "/poker_room/**", "/app/user/**").authenticated()
-                .requestMatchers("/app/**").hasRole("USER")
+                .requestMatchers("/logout", "/poker_room/**", "/app/user/**").authenticated()
+                .requestMatchers("/app/tournament/global/all").permitAll()
+                .requestMatchers("/app/tournament/global/**").hasRole("ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/app/**").hasRole("USER")
                 .requestMatchers("/registration").anonymous()
                 .and()
                 .formLogin()

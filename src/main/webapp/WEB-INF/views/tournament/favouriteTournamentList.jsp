@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<jsp:include page="../../fragments/header.jsp"/>
+<jsp:include page="../fragments/header.jsp"/>
 <title>Favourite tournament list</title>
-<jsp:include page="../../fragments/navbar.jsp"/>
+<jsp:include page="../fragments/navbar.jsp"/>
 
 <div class="table-responsive bg-danger">
     <h1>Favourite tournaments</h1>
@@ -76,4 +76,4 @@
     <h3 class="text-white d-flex justify-content-center mt-5">List of possible tournaments to add is empty</h3>
 </c:if>
 
-<jsp:include page="../../fragments/footer.jsp"/>
+<jsp:include page="../fragments/footer.jsp"/>

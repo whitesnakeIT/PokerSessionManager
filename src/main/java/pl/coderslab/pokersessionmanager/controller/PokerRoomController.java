@@ -20,36 +20,38 @@ import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 public class PokerRoomController {
 
     private final PokerRoomService pokerRoomService;
+
     @GetMapping("all")
     public String showAllPokerRooms(Model model) {
-
         model.addAttribute("allPokerRooms", pokerRoomService.findAllByRole());
+
         return "poker_room/pokerRoomList";
     }
 
     @GetMapping("/add")
     public String addPokerRoomGet(Model model) {
         model.addAttribute("pokerRoom", new PokerRoom());
+
         return "poker_room/pokerRoomForm";
     }
 
     @PostMapping("/add")
     public String addPokerRoomPost(@Valid PokerRoom pokerRoom,
                                    BindingResult result) {
-
         if (result.hasErrors()) {
+
             return "poker_room/pokerRoomForm";
         }
         pokerRoomService.create(pokerRoom);
-        return "redirect:/poker_room/all";
 
+        return "redirect:/poker_room/all";
     }
 
     @GetMapping("/edit/{pokerRoomId}")
     public String editPokerRoomGet(@PathVariable Long pokerRoomId,
                                    Model model) {
-        PokerRoom pokerRoom = pokerRoomService.findById(pokerRoomId);
-        model.addAttribute("pokerRoom", pokerRoom);
+        model.addAttribute("pokerRoom", pokerRoomService.findById(pokerRoomId));
+
         return "poker_room/pokerRoomForm";
     }
 
@@ -57,18 +59,18 @@ public class PokerRoomController {
     public String editPokerRoomPost(@Valid PokerRoom pokerRoom,
                                     BindingResult result) {
         if (result.hasErrors()) {
+
             return "poker_room/pokerRoomForm";
         }
-
         pokerRoomService.create(pokerRoom);
+
         return "redirect:/poker_room/all";
     }
 
     @GetMapping("/delete/{id}")
     public String deletePokerRoom(@PathVariable Long id) {
         pokerRoomService.delete(id);
+
         return "redirect:/poker_room/all";
-
     }
-
 }

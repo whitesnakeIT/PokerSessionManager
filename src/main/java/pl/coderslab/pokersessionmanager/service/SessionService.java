@@ -9,6 +9,7 @@ import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.SessionRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
@@ -64,11 +65,11 @@ public class SessionService {
     }
 
     public void loadTournamentsToSession(Session session) {
-//        Hibernate.initialize(session.getSessionTournaments());
+        Hibernate.initialize(session.getSessionTournaments());
     }
 
     public boolean checkIfPokerSessionBelongsToUser(Session session, User user) {
-        if (user.hasRole("ROLE_ADMIN")) {
+        if (user.hasRole(RoleName.ROLE_ADMIN)) {
             return false;  // admin nie ma sesji
         }
         Optional<User> owner = Optional.ofNullable(session.getPlayer());
