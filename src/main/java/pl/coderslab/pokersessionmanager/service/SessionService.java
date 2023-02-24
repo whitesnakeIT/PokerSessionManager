@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,10 +9,11 @@ import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.SessionRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +69,7 @@ public class SessionService {
     }
 
     public boolean checkIfPokerSessionBelongsToUser(Session session, User user) {
-        if (user.hasRole("ROLE_ADMIN")) {
+        if (user.hasRole(RoleName.ROLE_ADMIN)) {
             return false;  // admin nie ma sesji
         }
         Optional<User> owner = Optional.ofNullable(session.getPlayer());

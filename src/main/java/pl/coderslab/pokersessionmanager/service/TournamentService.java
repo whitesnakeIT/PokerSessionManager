@@ -1,17 +1,21 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
+import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
+import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
 import pl.coderslab.pokersessionmanager.enums.TournamentSpeed;
 import pl.coderslab.pokersessionmanager.enums.TournamentType;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.TournamentMapper;
 import pl.coderslab.pokersessionmanager.repository.TournamentRepository;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,16 +29,39 @@ public class TournamentService {
     private final TournamentMapper tournamentMapper;
     private final TournamentRepository tournamentRepository;
 
+    private final PlayerService playerService;
+    private final UtilityService utilityService;
 
-    public void create(AbstractTournament tournament) {
-        tournamentRepository.save(tournament);
+    private final UserService userService;
+
+    // boiler ???
+    public void create(AbstractTournament abstractTournament) {
+        if (abstractTournament instanceof TournamentSuggestion) {
+            TournamentSuggestion tournament = utilityService.convertAbstractTournament(abstractTournament);
+            tournament.setPlayer((Player) userService.getLoggedUser());
+            tournamentRepository.save(tournament);
+        } else if (abstractTournament instanceof TournamentLocal) {
+            TournamentLocal tournament = utilityService.convertAbstractTournament(abstractTournament);
+            tournament.setPlayer((Player) userService.getLoggedUser());
+            tournamentRepository.save(tournament);
+        }
+        tournamentRepository.save(abstractTournament);
     }
 
     public AbstractTournament findById(Long tournamentId) {
         AbstractTournament tournament = tournamentRepository
                 .findById(tournamentId)
-                .orElseThrow(() -> new RuntimeException("I can't find/convert tournament by tournament Id."));
+                .orElseThrow(() -> new RuntimeException("I can't find/convert tournament by tournament Id: " + tournamentId));
+
+        User loggedUser =  userService.findById(userService.getLoggedUser().getId());
+
+
+
+        if (!checkIfTournamentBelongsToUser(tournament, loggedUser)) {
+            throw new RuntimeException("Tournament not belongs to user, tournament Id: " + tournamentId);
+        }
         return tournament;
+
     }
 //
 //    public List<AbstractTournament> findAll() {
@@ -42,9 +69,7 @@ public class TournamentService {
 //    }
 
     public void delete(Long tournamentId) {
-        AbstractTournament tournament = tournamentRepository
-                .findById(tournamentId)
-                .orElseThrow(() -> new RuntimeException("I can't find/convert tournament by tournament Id."));
+        AbstractTournament tournament = findById(tournamentId);
         tournamentRepository.delete(tournament);
     }
 
@@ -71,6 +96,19 @@ public class TournamentService {
 
     public List<TournamentSuggestion> findSuggestedTournamentsById(Long userId) {
         return tournamentRepository.findSuggestedTournamentsById(userId);
+    }
+
+//    public List<TournamentGlobal> findGlobalTournamentsById(Long userId) {
+//        return tournamentRepository.findGlobalTournamentsById(userId);
+//    }
+
+    public List<AbstractTournament> findAllUserTournamentsById(Long userId) {
+        List<AbstractTournament> allUserTournamentsById = new ArrayList<>();
+//        allUserTournamentsById.addAll(findGlobalTournamentsById(userId));
+        allUserTournamentsById.addAll(findSuggestedTournamentsById(userId));
+        allUserTournamentsById.addAll(findLocalTournamentsById(userId));
+        return allUserTournamentsById;
+
     }
 
     public List<TournamentGlobal> findGlobalTournaments() {
@@ -135,5 +173,48 @@ public class TournamentService {
         return availableTournamentForSession;
     }
 
+    public List<? extends AbstractTournament> getTournamentListByTournamentGenus(String tournamentScope) {
 
+        TournamentGenus tournamentGenus = convertStringToTournamentGenus(tournamentScope);
+        switch (tournamentGenus) {
+            case GLOBAL -> {
+                return findGlobalTournaments();
+            }
+            case LOCAL -> {
+                return findLocalTournamentsById(userService.getLoggedUser().getId());
+            }
+            case SUGGESTION -> {
+                return findSuggestedTournamentsById(userService.getLoggedUser().getId());
+            }
+            default -> throw new RuntimeException("I can't find list of tournaments by genus: " + tournamentGenus);
+        }
+    }
+
+    public TournamentGenus convertStringToTournamentGenus(String tournamentGenus) {
+
+        switch (tournamentGenus) {
+            case TournamentGlobal.TOURNAMENT_GENUS -> {
+                return TournamentGenus.GLOBAL;
+            }
+            case TournamentLocal.TOURNAMENT_GENUS -> {
+                return TournamentGenus.LOCAL;
+            }
+            case TournamentSuggestion.TOURNAMENT_GENUS -> {
+                return TournamentGenus.SUGGESTION;
+            }
+            default -> throw new RuntimeException("I don't know Tournament genus under string: " + tournamentGenus);
+        }
+
+    }
+
+    public <T extends AbstractTournament> boolean checkIfTournamentBelongsToUser(T tournament, User user) {
+        // admin can delete all tournaments
+        if (user.hasRole(RoleName.ROLE_ADMIN)) {
+            return true;
+        }
+
+        return findAllUserTournamentsById(user.getId())
+                .stream()
+                .anyMatch(abstractTournament -> abstractTournament.getId().equals(tournament.getId()));
+    }
 }

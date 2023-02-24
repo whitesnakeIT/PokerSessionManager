@@ -32,11 +32,13 @@ public class SecurityConfig {
 
         http
                 .authorizeRequests()
-                .antMatchers("/tournament/all", "/poker_room/all").permitAll()
-                .antMatchers("/logout", "/tournament/**", "/poker_room/**", "/app/user/**").authenticated()
-                .antMatchers("/app/**").hasRole("USER")
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/registration").anonymous()
+                .requestMatchers("/tournament/all", "/poker_room/all").permitAll()
+                .requestMatchers("/logout", "/poker_room/**", "/app/user/**").authenticated()
+                .requestMatchers("/app/tournament/global/all").permitAll()
+                .requestMatchers("/app/tournament/global/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/app/**").hasRole("USER")
+                .requestMatchers("/registration").anonymous()
                 .and()
                 .formLogin()
                 .loginPage("/login").usernameParameter("email")

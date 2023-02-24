@@ -1,12 +1,12 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.repository.PlayerRepository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -15,6 +15,7 @@ import java.util.List;
 public class PlayerService {
 
     private final PlayerRepository playerRepository;
+
 
     public List<Player> findAllPlayers() {
         List<Player> allPlayers = playerRepository.findAll().stream().peek(this::loadLazyDataToPlayer).toList();
@@ -47,6 +48,7 @@ public class PlayerService {
 
     public void loadLazyDataToPlayer(Player player) {
         loadSessionsToPlayer(player);
+//        Hibernate.initialize(player.getSessions());
         loadFavouriteTournamentsToPlayer(player);
         loadSuggestedTournamentsToPlayer(player);
         loadLocalTournamentsToPlayer(player);

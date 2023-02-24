@@ -1,13 +1,19 @@
 package pl.coderslab.pokersessionmanager.entity.user;
 
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
+import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 
-import javax.persistence.*;
+//import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,36 +26,38 @@ import java.util.List;
 public class Player extends User {
     //    public static final String TABLE_NAME = "players";
         public static final String USER_TYPE = "player";
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(
             name = "player_favourite_tournaments",
             joinColumns = {@JoinColumn(name = "player_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id", referencedColumnName = "id")}
     )
-    @ToString.Exclude
+//    @ToString.Exclude
     private List<AbstractTournament> favouriteTournaments = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "player_id", referencedColumnName = "id")
     @ToString.Exclude
-    private List<AbstractTournament> suggestedTournaments = new ArrayList<>();
+    private List<TournamentSuggestion> suggestedTournaments = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(orphanRemoval = true)
     @JoinColumn(name = "player_id", referencedColumnName = "id")
     @ToString.Exclude
-    private List<AbstractTournament> localTournaments = new ArrayList<>();
+    private List<TournamentLocal> localTournaments = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "player")
     @ToString.Exclude
-    private List<Session> sessions;
+    private List<Session> sessions = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "player")
+    @OneToOne(mappedBy = "player")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PlayerStats playerStats;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "player_id", referencedColumnName = "id")
     @ToString.Exclude
     private List<PokerRoom> pokerRoomsLocal;
-
 }

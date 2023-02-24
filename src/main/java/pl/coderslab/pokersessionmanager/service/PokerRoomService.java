@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.PokerRoomRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,9 +35,9 @@ public class PokerRoomService {
                 .getUser();
 
         // admin edytuje turniej usera, turniej userowi sie usuwa
-        if (user.hasRole(RoleName.ROLE_ADMIN.name())) {
+        if (user.hasRole(RoleName.ROLE_ADMIN)) {
             pokerRoom.setScope(PokerRoomScope.GLOBAL.name().toLowerCase());
-        } else if (user.hasRole(RoleName.ROLE_USER.name())) {
+        } else if (user.hasRole(RoleName.ROLE_USER)) {
             pokerRoom.setScope(PokerRoomScope.LOCAL.name().toLowerCase());
             pokerRoom.setPlayer((Player) user);
         }
@@ -80,9 +81,9 @@ public class PokerRoomService {
             allPokerRooms.addAll(findAllGlobal());
         } else {
             User user = ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
-            if (user.hasRole("ROLE_ADMIN")) {
+            if (user.hasRole(RoleName.ROLE_ADMIN)) {
                 allPokerRooms.addAll(findAll());
-            } else if (user.hasRole("ROLE_USER")) {
+            } else if (user.hasRole(RoleName.ROLE_USER)) {
                 allPokerRooms.addAll(findPokerRoomsByUserId(user.getId()));
                 allPokerRooms.addAll(findAllGlobal());
             }
@@ -92,7 +93,7 @@ public class PokerRoomService {
     }
 
     public boolean checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user) {
-        if (user.hasRole("ROLE_ADMIN")) {
+        if (user.hasRole(RoleName.ROLE_ADMIN)) {
             return true;  // admin może usuwać edytować wszystko
         }
         Optional<User> owner = Optional.ofNullable(pokerRoom.getPlayer());

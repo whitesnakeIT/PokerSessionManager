@@ -1,13 +1,15 @@
 package pl.coderslab.pokersessionmanager.entity.tournament;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
+import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
+import pl.coderslab.pokersessionmanager.enums.TournamentType;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
 import java.util.Objects;
 
 @Entity
@@ -55,6 +57,8 @@ public abstract class AbstractTournament {
     @JoinColumn(name = "poker_room_id")
     private PokerRoom pokerRoom;
 
+@Transient
+    private final TournamentGenus tournamentGenus = TournamentGenus.ABSTRACT;
     public String getConcatFields() {
         return name + " " + type + " " + speed;
 

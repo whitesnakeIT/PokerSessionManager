@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.controller.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,7 @@ import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 import pl.coderslab.pokersessionmanager.service.PlayerService;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
-import javax.validation.Valid;
+//import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,11 +21,9 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
 
-    private final PlayerService playerService;
-
     @GetMapping("/show-details")
-    public String showUserDetails(Model model, @AuthenticationPrincipal CurrentUser loggedUser) {
-        User user = loggedUser.getUser();
+    public String showUserDetails(Model model) {
+        User user = userService.getLoggedUser();
         UserSlimWithOutPassword userSlim = userService.convertUserToUserSlimWithOutPassword(user);
         model.addAttribute("userSlim", userSlim);
 
@@ -44,11 +43,10 @@ public class UserController {
     @PostMapping("/edit-details")
     public String editUserDetailsPost(@Valid @ModelAttribute(name = "userSlim") UserSlimWithOutPassword userSlimWithOutPassword,
                                       BindingResult result,
-                                      @AuthenticationPrincipal CurrentUser loggedUser,
                                       @RequestParam String passwordToCheck,
                                       Model model) {
 
-        User user = loggedUser.getUser();
+        User user = userService.getLoggedUser();
         boolean wrongPassword = false;
         if (userService.isPasswordCorrect(passwordToCheck, user.getPassword())) {
 
@@ -76,12 +74,11 @@ public class UserController {
     }
 
     @PostMapping("/edit-password")
-    public String editUserPasswordPost(@AuthenticationPrincipal CurrentUser loggedUser,
-                                       Model model,
+    public String editUserPasswordPost(Model model,
                                        @RequestParam String oldPassword,
                                        @RequestParam String newPassword,
                                        @RequestParam String confirmNewPassword) {
-        User user = loggedUser.getUser();
+        User user = userService.getLoggedUser();
         String message;
         if (!userService.updatePassword(user, oldPassword, newPassword, confirmNewPassword)) {
             message = "error";

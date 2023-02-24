@@ -1,7 +1,11 @@
 package pl.coderslab.pokersessionmanager.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.Role;
@@ -12,12 +16,10 @@ import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithOutPasswo
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithPassword;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;
 import pl.coderslab.pokersessionmanager.repository.UserRepository;
+import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
-import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+//import javax.transaction.Transactional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -34,6 +36,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private final UserMapper userMapper;
+
 
     public User findByEmail(String email) {
         Optional<User> userOptional = userRepository.findByEmail(email);
@@ -72,7 +75,7 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             loadRolesToUser(user);
-            if (user.hasRole(RoleName.ROLE_USER.name())) {
+            if (user.hasRole(RoleName.ROLE_USER)) {
                 playerService.loadLazyDataToPlayer((Player) user);
             }
             return user;
@@ -131,5 +134,16 @@ public class UserService {
 
     public void update(User user, String firstName, String lastName, String username) {
         userRepository.update(user, firstName, lastName, username);
+    }
+
+    public User getLoggedUser() {
+
+        return ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser();
+    }
+
+    public Collection<? extends GrantedAuthority> getLoggedUserAuthority(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities();
     }
 }

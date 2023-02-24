@@ -1,7 +1,10 @@
 package pl.coderslab.pokersessionmanager.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+//import javax.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+
+//import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 import java.time.Period;
 

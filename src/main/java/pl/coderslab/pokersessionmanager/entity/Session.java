@@ -1,5 +1,7 @@
 package pl.coderslab.pokersessionmanager.entity;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,8 +9,8 @@ import org.hibernate.Hibernate;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+//import javax.persistence.*;
+//import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Objects;
 

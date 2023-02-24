@@ -1,10 +1,13 @@
+<%--<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>--%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--<%@ taglib prefix="d" uri="" %>--%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 
 </head>
 <body>
+
 <nav class="navbar navbar-expand-lg bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand text-danger"
@@ -38,16 +41,16 @@
                        aria-expanded="false">
                         Tournaments
                     </a>
-                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <sec:authorize access="hasRole('ROLE_ADMIN') || isAnonymous()">
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item text-danger" href="<c:url value='/tournament/add'/>">Add
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/global/add'/>">Add
                                 tournament</a></li>
 <%--                            <li><a class="dropdown-item text-danger" href="<c:url value='/admin/suggest'/>">Accept--%>
 <%--                                suggestion tournament</a></li>--%>
 <%--                            <li>--%>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item text-danger" href="<c:url value='/tournament/all'/>">Tournament
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/global/all'/>">Tournament global
                                 list</a></li>
                         </ul>
                     </sec:authorize>
@@ -55,17 +58,18 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/local/add'/>">Add
                                 tournament to local list</a></li>
-                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/suggest/add'/>">Suggest tournament for moderators</a></li>
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/suggestion/add'/>">Suggest tournament for moderators</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/favourites'/>">Favourite tournaments</a></li>
                             <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/local/all'/>">Tournament local
                                 list</a></li>
-                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/suggest/all'/>">Tournament suggestions
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/suggestion/all'/>">Tournament suggestions
+                                list</a></li>
+                            <li><a class="dropdown-item text-danger" href="<c:url value='/app/tournament/global/all'/>">Tournament global
                                 list</a></li>
                         </ul>
-
                     </sec:authorize>
                 </li>
                 <li class="nav-item dropdown">
