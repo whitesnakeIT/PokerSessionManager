@@ -3,6 +3,7 @@ package pl.coderslab.pokersessionmanager.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
@@ -15,6 +16,7 @@ import pl.coderslab.pokersessionmanager.enums.TournamentSpeed;
 import pl.coderslab.pokersessionmanager.enums.TournamentType;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.TournamentMapper;
 import pl.coderslab.pokersessionmanager.repository.TournamentRepository;
+import pl.coderslab.pokersessionmanager.utilities.Factory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,11 +30,10 @@ public class TournamentService {
 
     private final TournamentMapper tournamentMapper;
     private final TournamentRepository tournamentRepository;
+    private final UtilityService utilityService;
+    private final UserService userService;
 
     private final PlayerService playerService;
-    private final UtilityService utilityService;
-
-    private final UserService userService;
 
     // boiler ???
     public void create(AbstractTournament abstractTournament) {
@@ -53,9 +54,7 @@ public class TournamentService {
                 .findById(tournamentId)
                 .orElseThrow(() -> new RuntimeException("I can't find/convert tournament by tournament Id: " + tournamentId));
 
-        User loggedUser =  userService.findById(userService.getLoggedUser().getId());
-
-
+        User loggedUser = userService.findById(userService.getLoggedUser().getId());
 
         if (!checkIfTournamentBelongsToUser(tournament, loggedUser)) {
             throw new RuntimeException("Tournament not belongs to user, tournament Id: " + tournamentId);
@@ -70,10 +69,58 @@ public class TournamentService {
 
     public void delete(Long tournamentId) {
         AbstractTournament tournament = findById(tournamentId);
+        removeTournamentFromSessionsBeforeDeleting(tournament);
         tournamentRepository.delete(tournament);
+
     }
+    //do sprawdzenia
+    // usuwa z bazy z sesji turniej
 
+    public <T extends AbstractTournament> void removeTournamentFromSessionsBeforeDeleting(T tournamentToCheck) {
 
+        // removing as Administrator
+        if (userService.getLoggedUserAuthority().contains(Factory.create(RoleName.ROLE_ADMIN))) {
+            Player tournamentOwner = null;
+            if (tournamentToCheck instanceof TournamentLocal) {
+                tournamentOwner = findTournamentOwner((TournamentLocal) tournamentToCheck);
+            } else if (tournamentToCheck instanceof TournamentSuggestion) {
+                tournamentOwner = findTournamentOwner((TournamentSuggestion) tournamentToCheck);
+            }
+            // Deleting Global tournament (without owner) as Administrator even is in sessions
+            if (tournamentOwner == null) {
+                for (Player player : playerService.findAllPlayers()) {
+                    player.getSessions()
+                            .stream()
+                            .filter(session -> session.getSessionTournaments().contains(tournamentToCheck))
+                            .forEach(session -> session.getSessionTournaments().remove(tournamentToCheck));
+                }
+
+            } else {
+// Deleting Local and Suggestion tournaments from user Session as administrator
+                for (Session session : tournamentOwner.getSessions()) {
+                    if (session.getSessionTournaments()
+                            .stream()
+                            .anyMatch(tournament -> tournament.getId().equals(tournamentToCheck.getId()))) {
+                        session.getSessionTournaments().remove(tournamentToCheck);
+
+                    }
+                }
+
+            }
+        } else {
+            // deleting as logged Player
+            Player loggedUser = (Player) userService.getLoggedUser();
+            List<Session> sessions = loggedUser.getSessions();
+            for (Session session : sessions) {
+                if (session.getSessionTournaments()
+                        .stream()
+                        .anyMatch(tournament -> tournament.getId().equals(tournamentToCheck.getId()))) {
+
+                    session.getSessionTournaments().remove(tournamentToCheck);
+                }
+            }
+        }
+    }
 //    public List<TournamentSlimDto> convertTournamentToSlimDto(List<TournamentGlobal> tournaments) {
 //        return tournamentMapper.tournamentToTournamentSlimDto(tournaments);
 //    }
@@ -116,9 +163,7 @@ public class TournamentService {
     }
 
     public List<AbstractTournament> findFavouriteTournaments(Long userId) {
-
         return tournamentRepository.findFavouriteTournaments(userId);
-
     }
 
     public List<AbstractTournament> findTournamentsPossibleToFavourites(Long userId) {
@@ -134,29 +179,26 @@ public class TournamentService {
                         .stream()
                         .filter(tournament -> !favouriteTournamentsId.contains(tournament.getId()))
                         .toList();
+
         return tournamentsPossibleToFavourites;
     }
 
     public List<String> getAvailableTournamentSpeed() {
 
-        List<String> availableSpeedList =
-                Arrays.stream(TournamentSpeed.values())
-                        .map(Enum::name)
-                        .map(String::toLowerCase)
-                        .map(item -> item.replaceAll("_", " "))
-                        .collect(Collectors.toList());
-        return availableSpeedList;
+        return Arrays.stream(TournamentSpeed.values())
+                .map(Enum::name)
+                .map(String::toLowerCase)
+                .map(item -> item.replaceAll("_", " "))
+                .collect(Collectors.toList());
     }
 
     public List<String> getAvailableTournamentTypes() {
 
-        List<String> availableTypes =
-                Arrays.stream(TournamentType.values())
-                        .map(Enum::name)
-                        .map(String::toLowerCase)
-                        .map(item -> item.replaceAll("_", " "))
-                        .collect(Collectors.toList());
-        return availableTypes;
+        return Arrays.stream(TournamentType.values())
+                .map(Enum::name)
+                .map(String::toLowerCase)
+                .map(item -> item.replaceAll("_", " "))
+                .collect(Collectors.toList());
     }
 
     public void deleteTournamentFromFavourites(Long userId, Long tournamentId) {
@@ -208,7 +250,7 @@ public class TournamentService {
     }
 
     public <T extends AbstractTournament> boolean checkIfTournamentBelongsToUser(T tournament, User user) {
-        // admin can delete all tournaments
+        // Administrator can delete all tournaments
         if (user.hasRole(RoleName.ROLE_ADMIN)) {
             return true;
         }
@@ -216,5 +258,22 @@ public class TournamentService {
         return findAllUserTournamentsById(user.getId())
                 .stream()
                 .anyMatch(abstractTournament -> abstractTournament.getId().equals(tournament.getId()));
+    }
+
+    public Player findTournamentOwner(TournamentLocal tournament) {
+        return playerService.findAllPlayers()
+                .stream()
+                .filter(player -> player.getLocalTournaments().contains(tournament))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public Player findTournamentOwner(TournamentSuggestion tournament) {
+        return playerService
+                .findAllPlayers()
+                .stream()
+                .filter(player -> player.getSuggestedTournaments().contains(tournament))
+                .findFirst()
+                .orElse(null);
     }
 }

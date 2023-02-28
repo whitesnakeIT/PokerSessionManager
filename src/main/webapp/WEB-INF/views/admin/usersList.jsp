@@ -17,6 +17,7 @@
             <th scope="col">Last name</th>
             <th scope="col">Password</th>
             <th scope="col">Delete</th>
+            <th scope="col">More info</th>
         </tr>
         </thead>
         <tbody>
@@ -30,8 +31,9 @@
                 <td>${user.lastName}</td>
                 <td>${user.password}</td>
                 <td><label onclick="return confirm('Are You sure to delete this user?')">
-                    <a href="<c:url value='/admin/users/delete/${user.id}'/>">Delete</a></label>
+                    <a class="text-white" href="<c:url value='/admin/users/delete/${user.id}'/>">Delete</a></label>
                 </td>
+                <td><a class="text-white" href="<c:url value='/admin/users/details/${user.id}'/>">More info</a></td>
             </tr>
         </c:forEach>
         </tbody>

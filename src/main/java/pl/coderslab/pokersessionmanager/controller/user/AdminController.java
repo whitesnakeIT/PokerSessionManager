@@ -1,11 +1,18 @@
 package pl.coderslab.pokersessionmanager.controller.user;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import pl.coderslab.pokersessionmanager.entity.Session;
+import pl.coderslab.pokersessionmanager.service.PlayerService;
+import pl.coderslab.pokersessionmanager.service.SessionService;
+import pl.coderslab.pokersessionmanager.service.TournamentService;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
 @Controller
@@ -14,6 +21,12 @@ import pl.coderslab.pokersessionmanager.service.UserService;
 public class AdminController {
 
     private final UserService userService;
+
+    private final TournamentService tournamentService;
+
+    private final SessionService sessionService;
+
+    private final PlayerService playerService;
 
     //do usuniecia zwyklych czy adminow tez
 
@@ -30,4 +43,55 @@ public class AdminController {
 
         return "redirect:/admin/users/all";
     }
+
+    @GetMapping("/users/details/{playerId}")
+    public String showUserById(@PathVariable Long playerId,
+                               Model model) {
+        model.addAttribute("player", playerService.findById(playerId));
+
+        return "admin/userDetails";
+    }
+
+    @GetMapping("/users/details/{userId}/tournament/delete/{tournamentId}")
+    public String deleteUserTournamentAsAdmin(@PathVariable Long userId,
+                                              @PathVariable Long tournamentId) {
+        tournamentService.delete(tournamentId);
+
+        return "redirect:/admin/users/details/".concat(String.valueOf(userId));
+    }
+
+
+    @GetMapping("/users/details/{playerId}/session/edit/{sessionId}")
+    public String editUserSessionAsAdminGet(@PathVariable Long playerId,
+                                            @PathVariable Long sessionId,
+                                            Model model) {
+        model.addAttribute(sessionService.findById(sessionId));
+        model.addAttribute("availableSessionTournaments",
+                tournamentService.getAvailableTournamentsForSessionOrderByFavourites(playerId));
+        return "player/session/sessionForm";
+    }
+
+    @PostMapping("/users/details/{playerId}/session/edit/{id}")
+    public String editUserSessionAsAdminPost(@PathVariable Long playerId,
+                                             @Valid Session session,
+                                             BindingResult result) {
+        if (result.hasErrors()) {
+
+            return "player/session/sessionForm";
+        }
+
+        session.setPlayer(playerService.findById(playerId));
+        sessionService.create(session);
+
+        return "redirect:/admin/users/details/".concat(String.valueOf(playerId));
+    }
+
+    @GetMapping("/users/details/{playerId}/session/delete/{sessionId}")
+    public String deleteUserSessionAsAdmin(@PathVariable Long playerId,
+                                           @PathVariable Long sessionId) {
+        sessionService.delete(sessionId);
+
+        return "redirect:/admin/users/details/".concat(String.valueOf(playerId));
+    }
+
 }

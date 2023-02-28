@@ -34,15 +34,15 @@ public class RegistrationController {
                                             @RequestParam(name = "passwordCheck") String passwordCheck,
                                             Model model) {
         if (result.hasErrors()) {
-
             return "registration/registrationForm";
-        }
-        if (!passwordCheck.equals(newPlayer.getPassword())) {
+
+        } else if (!passwordCheck.equals(newPlayer.getPassword())) {
             model.addAttribute("isCorrectPass", false);
-
             return "registration/registrationForm";
+
+        } else {
+            model.addAttribute("isCorrectPass", true);
         }
-        model.addAttribute("isCorrectPass", true);
         userService.create(newPlayer);
 
         return "redirect:/";

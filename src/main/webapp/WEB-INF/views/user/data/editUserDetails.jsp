@@ -32,13 +32,10 @@
         Enter the password to confirm<br>
         <label>
             <input type="password" name="passwordToCheck"><br>
-            <c:choose>
-                <c:when test="${wrongPassword}">
-                    <p class="text-white">Password is wrong!</p>
-                </c:when>
-            </c:choose>
         </label><br>
-
+        <c:if test="${wrongPassword}">
+            <p class="text-white">Password is wrong!</p>
+        </c:if>
         <input class="bg-black btn btn-outline-danger" type="submit" value="Edit details">
     </form:form>
 </div>

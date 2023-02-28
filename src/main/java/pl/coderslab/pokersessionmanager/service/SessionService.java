@@ -13,7 +13,6 @@ import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.SessionRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
-//import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,14 +23,15 @@ public class SessionService {
 
     private final SessionRepository sessionRepository;
 
-//    private final UtilityService utilityService;
+    private final UserService userService;
 
     public void create(Session session) {
-        Player player = (Player) ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUser();
-        session.setPlayer(player);
+        if (session.getPlayer()==null) {
+            Player player = (Player) userService.getLoggedUser();
+            session.setPlayer(player);
+        }
         session.setTournamentCount(session.getSessionTournaments().size());
-        session.setTotalCost(session.getSessionTournaments().stream().mapToDouble(AbstractTournament::getBuyIn).sum());
+        session.setTotalCost(countTotalSessionCost(session));
         sessionRepository.save(session);
     }
 
@@ -46,8 +46,7 @@ public class SessionService {
 
         loadTournamentsToSession(session);
 
-        User user = ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUser();
+        User user = userService.getLoggedUser();
         if (!checkIfPokerSessionBelongsToUser(session, user)) {
             throw new RuntimeException("Session not belongs to You");
         }
@@ -55,13 +54,8 @@ public class SessionService {
 
     }
 
-//    public Optional<Session> findBySessionName(User user, String sessionName) {
-//        return sessionRepository.findFirstByUserIdAndName(user.getId(), sessionName);
-//    }
-
     public void delete(Long sessionId) {
-        Session session = findById(sessionId);
-        sessionRepository.delete(session);
+        sessionRepository.delete(findById(sessionId));
     }
 
     public void loadTournamentsToSession(Session session) {
@@ -69,8 +63,9 @@ public class SessionService {
     }
 
     public boolean checkIfPokerSessionBelongsToUser(Session session, User user) {
+        // Administrator can't have poker sessions
         if (user.hasRole(RoleName.ROLE_ADMIN)) {
-            return false;  // admin nie ma sesji
+            return true;
         }
         Optional<User> owner = Optional.ofNullable(session.getPlayer());
         if (owner.isEmpty()) {
@@ -79,4 +74,7 @@ public class SessionService {
         return session.getPlayer().equals(user);
     }
 
+    public double countTotalSessionCost(Session session) {
+        return session.getSessionTournaments().stream().mapToDouble(AbstractTournament::getBuyIn).sum();
+    }
 }

@@ -8,9 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.enums.PasswordErrors;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithOutPassword;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
-import pl.coderslab.pokersessionmanager.service.PlayerService;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
 //import javax.validation.Valid;
@@ -61,7 +61,7 @@ public class UserController {
         user.setFirstName(userSlimWithOutPassword.getFirstName());
         user.setLastName(userSlimWithOutPassword.getLastName());
         user.setUsername(userSlimWithOutPassword.getUsername());
-        userService.update(user, userSlimWithOutPassword.getFirstName(), userSlimWithOutPassword.getLastName(), userSlimWithOutPassword.getUsername());
+        userService.update(user.getId(), userSlimWithOutPassword.getFirstName(), userSlimWithOutPassword.getLastName(), userSlimWithOutPassword.getUsername());
 //        userService.create(user);
 
         return "redirect:/app/user/show-details?msg=data-changed";
@@ -79,14 +79,43 @@ public class UserController {
                                        @RequestParam String newPassword,
                                        @RequestParam String confirmNewPassword) {
         User user = userService.getLoggedUser();
-        String message;
-        if (!userService.updatePassword(user, oldPassword, newPassword, confirmNewPassword)) {
-            message = "error";
-            model.addAttribute("message", message);
-            return "user/data/editPassword";
+        PasswordErrors message ;
+        switch (userService.updatePassword(user, oldPassword, newPassword, confirmNewPassword)) {
+
+            case NO_ERROR -> {
+                message = PasswordErrors.NO_ERROR;
+            }
+            case PASSWORDS_NOT_MATCH -> {
+                message = PasswordErrors.PASSWORDS_NOT_MATCH;
+            }
+            case OLD_PASSWORD_WRONG -> {
+                message = PasswordErrors.OLD_PASSWORD_WRONG;
+            }
+            case EMPTY_INPUT -> {
+                message = PasswordErrors.EMPTY_INPUT;
+            }
+            case NEW_PASSWORD_SAME_AS_OLD -> {
+                message = PasswordErrors.NEW_PASSWORD_SAME_AS_OLD;
+            }
+            default -> {
+                throw new RuntimeException("Unable to change password.");
+            }
+
         }
-        message = "password-changed";
-        return "redirect:/app/user/show-details?msg=password-changed";
+        model.addAttribute("message", message);
+        if (!message.equals(PasswordErrors.NO_ERROR)) {
+            return "user/data/editPassword";
+        } else {
+            return "redirect:/app/user/show-details?message="
+                    .concat(message.name().toLowerCase());
+        }
+//        if (!userService.updatePassword(user, oldPassword, newPassword, confirmNewPassword)) {
+//            message = "error";
+//            model.addAttribute("message", message);
+//            return "user/data/editPassword";
+//        }
+//        message = "password-changed";
+
 
     }
 }

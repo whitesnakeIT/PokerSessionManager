@@ -8,6 +8,7 @@ import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.repository.PlayerRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,8 +19,28 @@ public class PlayerService {
 
 
     public List<Player> findAllPlayers() {
-        List<Player> allPlayers = playerRepository.findAll().stream().peek(this::loadLazyDataToPlayer).toList();
-        return allPlayers;
+        return playerRepository
+                .findAll()
+                .stream()
+                .peek(this::loadLazyDataToPlayer)
+                .toList();
+    }
+
+    public Player findById(Long playerId) {
+        Optional<Player> playerOptional = playerRepository.findById(playerId);
+        return ifPlayerExist(playerOptional);
+
+    }
+
+    public Player ifPlayerExist(Optional<Player> playerOptional) {
+        if (playerOptional.isPresent()) {
+            Player player = playerOptional.get();
+//            loadRolesToUser(player);
+            loadLazyDataToPlayer(player);
+
+            return player;
+        }
+        throw new RuntimeException("Player not exist");
     }
 
     public void loadFavouriteTournamentsToPlayer(Player player) {
