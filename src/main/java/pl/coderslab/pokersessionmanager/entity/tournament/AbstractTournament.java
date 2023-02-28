@@ -8,7 +8,6 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
-import pl.coderslab.pokersessionmanager.enums.TournamentType;
 
 import java.util.Objects;
 
@@ -24,6 +23,8 @@ public abstract class AbstractTournament {
     public static final String TABLE_NAME = "tournaments";
 
     public static final String TOURNAMENT_TYPE_COLUMN = "tournament_genus";
+    @Transient
+    private final TournamentGenus tournamentGenus = TournamentGenus.ABSTRACT;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,23 +43,18 @@ public abstract class AbstractTournament {
     private double buyIn;
     @NotNull
     private boolean reBuy;
+    //    @NotNull  for creating we dont't need starting date
+//    private LocalDateTime tournamentStartDateTime;
     @NotNull
     @Min(2)
     @Max(10)
     private int handed;
-    //    @NotNull  for creating we dont't need starting date
-//    private LocalDateTime tournamentStartDateTime;
-
     @Transient
     private String concatFields;
-
-
     @ManyToOne
     @JoinColumn(name = "poker_room_id")
     private PokerRoom pokerRoom;
 
-@Transient
-    private final TournamentGenus tournamentGenus = TournamentGenus.ABSTRACT;
     public String getConcatFields() {
         return name + " " + type + " " + speed;
 

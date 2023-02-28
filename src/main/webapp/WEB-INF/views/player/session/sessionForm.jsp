@@ -8,7 +8,6 @@
     <form:form method="post" modelAttribute="session">
         Session name<br>
         <label>
-                <%--    <input type="text" name="name"/><br>--%>
             <form:input path="name"/><br>
             <form:errors path="name"/><br>
         </label><br>

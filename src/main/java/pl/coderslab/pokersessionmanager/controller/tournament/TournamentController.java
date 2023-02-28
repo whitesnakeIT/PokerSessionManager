@@ -34,7 +34,6 @@ public class TournamentController {
     public String addTournament(@Valid @ModelAttribute(name = "tournament") AbstractTournament tournament,
                                 BindingResult result,
                                 @PathVariable(value = "tournamentScopeFromUrl") String tournamentScopeFromUrl) {
-
         if (result.hasErrors()) {
             return "tournament/tournamentForm";
         }
@@ -46,17 +45,17 @@ public class TournamentController {
     @GetMapping("/all")
     public String getTournaments(Model model,
                                  @PathVariable(value = "tournamentScopeFromUrl") String tournamentScopeFromUrl) {
-
         model.addAttribute("tournamentList",
                 tournamentService.getTournamentListByTournamentGenus(tournamentScopeFromUrl));
+
         return "tournament/userTournamentList";
     }
 
     @GetMapping("/delete/{tournamentId}")
     public String deleteTournament(@PathVariable Long tournamentId,
                                    @PathVariable(value = "tournamentScopeFromUrl") String tournamentScopeFromUrl) {
-
         tournamentService.delete(tournamentId);
+
         return "redirect:/app/tournament/".concat(tournamentScopeFromUrl).concat("/all");
     }
 
@@ -68,6 +67,7 @@ public class TournamentController {
 
     @ModelAttribute("tournamentGenus")
     public TournamentGenus getTournamentGenusToCorrectDisplayUrlOnTournamentLists(@PathVariable(name = "tournamentScopeFromUrl") String tournamentScopeFromUrl) {
+
         return tournamentService.convertStringToTournamentGenus(tournamentScopeFromUrl);
     }
 

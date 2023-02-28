@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.Role;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.enums.PasswordErrors;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithOutPassword;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithPassword;
@@ -18,7 +19,6 @@ import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;
 import pl.coderslab.pokersessionmanager.repository.UserRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
-//import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -89,39 +89,35 @@ public class UserService {
         return bCryptPasswordEncoder.matches(passwordToCheck, userPassword);
     }
 
-    public boolean updatePassword(User user, String oldPassword, String newPassword, String confirmNewPassword) {
+    public PasswordErrors updatePassword(User user, String oldPassword, String newPassword, String confirmNewPassword) {
 
         boolean compareActualAndOldPassword = bCryptPasswordEncoder.matches(oldPassword, user.getPassword());
-
 
         boolean compareActualAndNewPassword = bCryptPasswordEncoder.matches(newPassword, user.getPassword());
         boolean compareActualAndConfirmNewPassword = bCryptPasswordEncoder.matches(confirmNewPassword, user.getPassword());
 
-
         boolean compareNewPasswordAndConfirmNewPassword = newPassword.equals(confirmNewPassword);
 
         if ((oldPassword.equals("")) || (newPassword.equals("")) || (confirmNewPassword.equals(""))) {
-            System.out.println("jakies polle puste");
-            return false;
+
+            return PasswordErrors.EMPTY_INPUT;
         }
 
         if (!compareActualAndOldPassword) {
-            System.out.println("stare haslo bledne");
-            return false;
+
+            return PasswordErrors.OLD_PASSWORD_WRONG;
         } else if (compareActualAndNewPassword || compareActualAndConfirmNewPassword) {
-            System.out.println("Stare ok ale nowe lub confirm jak stare");
-            return false;
-        }
 
+            return PasswordErrors.NEW_PASSWORD_SAME_AS_OLD;
+        }
         if (!compareNewPasswordAndConfirmNewPassword) {
-            System.out.println("Stare ok ale 2 rozne");
-            return false;
-        }
 
+            return PasswordErrors.PASSWORDS_NOT_MATCH;
+        }
         user.setPassword(bCryptPasswordEncoder.encode(newPassword));
         userRepository.save(user);
-        return true;
 
+        return PasswordErrors.NO_ERROR;
     }
 
     public UserSlimWithPassword convertUserToUserSlimWithPassword(User user) {
@@ -132,17 +128,17 @@ public class UserService {
         return userMapper.userToUserToUserSlimWithOutPassword(user);
     }
 
-    public void update(User user, String firstName, String lastName, String username) {
-        userRepository.update(user, firstName, lastName, username);
+    public void update(Long userId, String firstName, String lastName, String username) {
+        userRepository.update(userId, firstName, lastName, username);
     }
 
     public User getLoggedUser() {
 
-        return ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUser();
+        return findById(((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .getUser().getId());
     }
 
-    public Collection<? extends GrantedAuthority> getLoggedUserAuthority(){
+    public Collection<? extends GrantedAuthority> getLoggedUserAuthority() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getAuthorities();
     }

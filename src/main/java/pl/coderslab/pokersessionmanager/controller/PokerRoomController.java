@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.service.PokerRoomService;
+import pl.coderslab.pokersessionmanager.utilities.Factory;
 
 //import javax.validation.Valid;
 
@@ -30,12 +31,12 @@ public class PokerRoomController {
 
     @GetMapping("/add")
     public String addPokerRoomGet(Model model) {
-        model.addAttribute("pokerRoom", new PokerRoom());
+        model.addAttribute("pokerRoom", Factory.createPokerRoom());
 
         return "poker_room/pokerRoomForm";
     }
 
-    @PostMapping("/add")
+    @PostMapping({"/add","/edit/{id}"})
     public String addPokerRoomPost(@Valid PokerRoom pokerRoom,
                                    BindingResult result) {
         if (result.hasErrors()) {
@@ -47,25 +48,25 @@ public class PokerRoomController {
         return "redirect:/poker_room/all";
     }
 
-    @GetMapping("/edit/{pokerRoomId}")
-    public String editPokerRoomGet(@PathVariable Long pokerRoomId,
+    @GetMapping("/edit/{id}")
+    public String editPokerRoomGet(@PathVariable Long id,
                                    Model model) {
-        model.addAttribute("pokerRoom", pokerRoomService.findById(pokerRoomId));
+        model.addAttribute("pokerRoom", pokerRoomService.findById(id));
 
         return "poker_room/pokerRoomForm";
     }
 
-    @PostMapping("/edit/{id}")
-    public String editPokerRoomPost(@Valid PokerRoom pokerRoom,
-                                    BindingResult result) {
-        if (result.hasErrors()) {
-
-            return "poker_room/pokerRoomForm";
-        }
-        pokerRoomService.create(pokerRoom);
-
-        return "redirect:/poker_room/all";
-    }
+//    @PostMapping("/edit/{id}")
+//    public String editPokerRoomPost(@Valid PokerRoom pokerRoom,
+//                                    BindingResult result) {
+//        if (result.hasErrors()) {
+//
+//            return "poker_room/pokerRoomForm";
+//        }
+//        pokerRoomService.create(pokerRoom);
+//
+//        return "redirect:/poker_room/all";
+//    }
 
     @GetMapping("/delete/{id}")
     public String deletePokerRoom(@PathVariable Long id) {

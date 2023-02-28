@@ -1,7 +1,6 @@
 package pl.coderslab.pokersessionmanager.entity.user;
 
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,7 +12,6 @@ import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 
-//import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +23,7 @@ import java.util.List;
 @DiscriminatorValue(value = Player.USER_TYPE)
 public class Player extends User {
     //    public static final String TABLE_NAME = "players";
-        public static final String USER_TYPE = "player";
+    public static final String USER_TYPE = "player";
     @ManyToMany
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(
@@ -33,7 +31,7 @@ public class Player extends User {
             joinColumns = {@JoinColumn(name = "player_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id", referencedColumnName = "id")}
     )
-//    @ToString.Exclude
+    @ToString.Exclude
     private List<AbstractTournament> favouriteTournaments = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true)
