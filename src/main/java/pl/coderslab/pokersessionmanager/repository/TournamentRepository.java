@@ -21,7 +21,7 @@ public interface TournamentRepository extends JpaRepository<AbstractTournament, 
     @Query(value = "select t.* from player_favourite_tournaments pft " +
             "join tournaments t on t.id = pft.tournament_id " +
             "where pft.player_id = (:playerId) " +
-            "order by field (t.tournament_genus, 'local','global'),t.id",
+            "order by field (t.tournament_scope, 'local','global'),t.id",
             nativeQuery = true)
     List<AbstractTournament> findFavouriteTournaments(@Param("playerId") Long playerId);
 
@@ -38,20 +38,20 @@ public interface TournamentRepository extends JpaRepository<AbstractTournament, 
             nativeQuery = true)
     void addTournamentToFavourites(@Param("playerId") Long playerId, @Param("tournamentId") Long tournamentId);
 
-    @Query(value = "select * from tournaments where tournament_genus = 'local' and player_id = (:playerId)",
+    @Query(value = "select * from tournaments where tournament_scope = 'local' and player_id = (:playerId)",
             nativeQuery = true)
     List<TournamentLocal> findLocalTournamentsById(@Param("playerId") Long playerId);
 
-    @Query(value = "select * from tournaments where tournament_genus = 'suggestion' and player_id = (:playerId)",
+    @Query(value = "select * from tournaments where tournament_scope = 'suggestion' and player_id = (:playerId)",
             nativeQuery = true)
     List<TournamentSuggestion> findSuggestedTournamentsById(@Param("playerId") Long playerId);
 
-    @Query(value = "select * from tournaments where tournament_genus = 'global' and player_id = (:playerId)",
+    @Query(value = "select * from tournaments where tournament_scope = 'global' and player_id = (:playerId)",
             nativeQuery = true)
     List<TournamentGlobal> findGlobalTournamentsById(@Param("playerId") Long userId);
 
 
-    @Query(value = "select * from tournaments where tournament_genus = 'global'",
+    @Query(value = "select * from tournaments where tournament_scope = 'global'",
             nativeQuery = true)
     List<TournamentGlobal> findGlobalTournaments();
 

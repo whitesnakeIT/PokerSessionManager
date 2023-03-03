@@ -3,7 +3,6 @@ package pl.coderslab.pokersessionmanager.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
@@ -11,7 +10,6 @@ import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.SessionRepository;
-import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +24,20 @@ public class SessionService {
     private final UserService userService;
 
     public void create(Session session) {
-        if (session.getPlayer()==null) {
-            Player player = (Player) userService.getLoggedUser();
-            session.setPlayer(player);
+        sessionRepository.save(setOwnerAndDetails(session));
+    }
+
+    public Session setOwnerAndDetails(Session session) {
+        if (session.getId() == null) {
+            User loggedUser = userService.getLoggedUser();
+            session.setPlayer((Player) loggedUser);
+        } else {
+            Session sessionFromDb = findById(session.getId());
+            session.setPlayer(sessionFromDb.getPlayer());
         }
         session.setTournamentCount(session.getSessionTournaments().size());
         session.setTotalCost(countTotalSessionCost(session));
-        sessionRepository.save(session);
+        return session;
     }
 
     public List<Session> findAllUserSessions(Long userId) {

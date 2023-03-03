@@ -22,18 +22,18 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 //        if (principal.hasRole(RoleName.ROLE_ADMIN)) {
 //            redirectUrl += "admin/dashboard";
 //        } else if (principal.hasRole(RoleName.ROLE_USER)) {
-//            redirectUrl += "app/dashboard";
+//            redirectUrl += "app/player/dashboard";
 //        }
 
 //        response.sendRedirect(redirectUrl);
 //    }
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String redirectUrl = request.getContextPath();
-
+        System.out.println(redirectUrl);
         if (authorities.contains(Factory.create(RoleName.ROLE_ADMIN))) {
-            redirectUrl = redirectUrl.concat("admin/dashboard");
+            redirectUrl = redirectUrl.concat("app/admin/dashboard");
         } else if (authorities.contains(Factory.create(RoleName.ROLE_USER))) {
-            redirectUrl = redirectUrl.concat("app/dashboard");
+            redirectUrl = redirectUrl.concat("app/player/dashboard");
         }
 
         response.sendRedirect(redirectUrl);

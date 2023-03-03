@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="jakarta.tags.core" prefix="c" %>
 
-<jsp:include page="../fragments/header.jsp"/>
+<jsp:include page="../../fragments/header.jsp"/>
 <title>Login page</title>
-<jsp:include page="../fragments/navbar.jsp"/>
+<jsp:include page="../../fragments/navbar.jsp"/>
 
 <div class="bg-danger d-flex justify-content-center ">
 <form method="post">
@@ -25,4 +25,4 @@
     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form>
 </div>
-<jsp:include page="../fragments/footer.jsp"/>
+<jsp:include page="../../fragments/footer.jsp"/>

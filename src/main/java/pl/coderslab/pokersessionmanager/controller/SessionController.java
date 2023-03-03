@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.User;
+import pl.coderslab.pokersessionmanager.service.RedirectService;
 import pl.coderslab.pokersessionmanager.service.SessionService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 import pl.coderslab.pokersessionmanager.service.UserService;
@@ -25,6 +26,8 @@ public class SessionController {
     private final TournamentService tournamentService;
     private final UserService userService;
 
+    private final RedirectService redirectService;
+
     @GetMapping("/all")
     public String showAllSessions(Model model) {
 
@@ -32,14 +35,14 @@ public class SessionController {
         model.addAttribute("allUserSessions",
                 sessionService.findAllUserSessions(player.getId()));
 
-        return "player/session/allSessionList";
+        return "session/allSessionList";
     }
 
     @GetMapping("/add")
     public String addSessionGet(Model model) {
-        model.addAttribute("session", Factory.createSession());
+        model.addAttribute("session", Factory.create(Session.class));
 
-        return "player/session/sessionForm";
+        return "session/sessionForm";
     }
 
     @PostMapping({"/add", "/edit/{id}"})
@@ -47,12 +50,13 @@ public class SessionController {
                                  BindingResult result) {
         if (result.hasErrors()) {
 
-            return "player/session/sessionForm";
+            return "session/sessionForm";
         }
         sessionService.create(session);
 
-        return "redirect:/app/session/all";
+//        return "redirect:/app/session/all";
 
+        return redirectService.sendRedirectAfterEditingEntity(Session.class, session.getPlayer());
     }
 
 
@@ -61,7 +65,7 @@ public class SessionController {
                                  Model model) {
         model.addAttribute(sessionService.findById(sessionId));
 
-        return "player/session/sessionForm";
+        return "session/sessionForm";
     }
 
 //    @PostMapping("/edit/{id}")
@@ -69,7 +73,7 @@ public class SessionController {
 //                                  BindingResult result) {
 //        if (result.hasErrors()) {
 //
-//            return "player/session/sessionForm";
+//            return "/session/sessionForm";
 //        }
 //        sessionService.create(session);
 //
@@ -78,9 +82,11 @@ public class SessionController {
 
     @GetMapping("/delete/{id}")
     public String deleteSession(@PathVariable Long id) {
+        Session session = sessionService.findById(id);
         sessionService.delete(id);
 
-        return "redirect:/app/session/all";
+//        return "redirect:/app/session/all";
+        return redirectService.sendRedirectAfterEditingEntity(Session.class, session.getPlayer());
     }
 
     @ModelAttribute("availableSessionTournaments")

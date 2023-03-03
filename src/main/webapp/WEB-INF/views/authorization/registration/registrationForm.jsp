@@ -2,9 +2,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
-<jsp:include page="../fragments/header.jsp"/>
+<jsp:include page="../../fragments/header.jsp"/>
 <title>Registration page</title>
-<jsp:include page="../fragments/navbar.jsp"/>
+<jsp:include page="../../fragments/navbar.jsp"/>
 
 <div class="d-flex justify-content-center bg-danger">
     <form:form modelAttribute="newPlayer" method="post">
@@ -49,4 +49,4 @@
     </form:form>
 </div>
 
-<jsp:include page="../fragments/footer.jsp"/>
+<jsp:include page="../../fragments/footer.jsp"/>

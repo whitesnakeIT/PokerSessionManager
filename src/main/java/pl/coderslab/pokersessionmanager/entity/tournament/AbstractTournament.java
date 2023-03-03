@@ -7,7 +7,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
-import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
+import pl.coderslab.pokersessionmanager.entity.user.Player;
+import pl.coderslab.pokersessionmanager.enums.TournamentScope;
 
 import java.util.Objects;
 
@@ -16,18 +17,21 @@ import java.util.Objects;
 @Setter
 @ToString
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = AbstractTournament.TOURNAMENT_TYPE_COLUMN, discriminatorType = DiscriminatorType.STRING)
-@Table(name = AbstractTournament.TABLE_NAME)
+@DiscriminatorColumn(name = "tournament_scope", discriminatorType = DiscriminatorType.STRING)
+@Table(name = "tournaments")
 public abstract class AbstractTournament {
 
-    public static final String TABLE_NAME = "tournaments";
+//    public static final String TABLE_NAME = "tournaments";
 
-    public static final String TOURNAMENT_TYPE_COLUMN = "tournament_genus";
+//    public static final String TOURNAMENT_SCOPE_COLUMN = "tournament_scope";
+
     @Transient
-    private final TournamentGenus tournamentGenus = TournamentGenus.ABSTRACT;
+    protected TournamentScope tournamentScope;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
     @NotNull
     @NotEmpty
     private String name;
@@ -43,8 +47,6 @@ public abstract class AbstractTournament {
     private double buyIn;
     @NotNull
     private boolean reBuy;
-    //    @NotNull  for creating we dont't need starting date
-//    private LocalDateTime tournamentStartDateTime;
     @NotNull
     @Min(2)
     @Max(10)
@@ -60,6 +62,9 @@ public abstract class AbstractTournament {
 
 
     }
+    @ManyToOne
+    @ToString.Exclude
+    private Player player;
 
     @Override
     public boolean equals(Object o) {

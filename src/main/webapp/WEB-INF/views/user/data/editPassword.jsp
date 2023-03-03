@@ -12,19 +12,19 @@
         <label>
             <input type="password" name="oldPassword"/><br>
                 <%--        <form:input path="password"/>--%>
-                <%--        <form:errors path="password"/>--%>
+                <%--        <form:errors path="password" cssClass="text-white"/>--%>
         </label><br>
         New Password<br>
         <label>
             <input type="password" name="newPassword"/><br>
                 <%--        <form:input path="password"/>--%>
-                <%--        <form:errors path="password"/>--%>
+                <%--        <form:errors path="password" cssClass="text-white"/>--%>
         </label><br>
         Confirm new password<br>
         <label>
             <input type="password" name="confirmNewPassword"/><br>
                 <%--        <form:input path="password"/>--%>
-                <%--        <form:errors path="password"/>--%>
+                <%--        <form:errors path="password" cssClass="text-white"/>--%>
         </label><br>
 
         <input class="bg-black btn btn-outline-danger" type="submit" value="Edit password">

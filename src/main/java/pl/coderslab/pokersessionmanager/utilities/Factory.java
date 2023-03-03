@@ -13,14 +13,17 @@ import pl.coderslab.pokersessionmanager.entity.user.Admin;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
-import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
+import pl.coderslab.pokersessionmanager.enums.TournamentScope;
 import pl.coderslab.pokersessionmanager.enums.UserType;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public abstract class Factory implements AbstractFactory {
+public abstract class Factory {
 
-    public static AbstractTournament create(TournamentGenus tournamentGenus) {
-        switch (tournamentGenus) {
+    public static final String POKER_ROOM = "PokerRoom";
+    public static final String SESSION = "Session";
+
+    public static AbstractTournament create(TournamentScope tournamentScope) {
+        switch (tournamentScope) {
             case GLOBAL -> {
                 return new TournamentGlobal();
             }
@@ -31,7 +34,7 @@ public abstract class Factory implements AbstractFactory {
                 return new TournamentSuggestion();
             }
             default ->
-                    throw new IllegalStateException("I can't create Tournament. Unexpected value: " + tournamentGenus);
+                    throw new IllegalStateException("I can't create Tournament. Unexpected value: " + tournamentScope);
         }
 
     }
@@ -58,19 +61,17 @@ public abstract class Factory implements AbstractFactory {
                     throw new IllegalStateException("I can't create SimpleGrantedAuthority. Unexpected value: " + roleName);
         }
     }
+    public static  <T> T create(Class<T> clazz) {
+        switch (clazz.getSimpleName()) {
 
-    //    public static <T> T create(EntityNames entityNames){
-//        if (entityNames.name().equalsIgnoreCase(SESSION)) {
-//            return (T) new Session();
-//        }
-//
-//
-//    }
-    public static PokerRoom createPokerRoom() {
-        return new PokerRoom();
-    }
+            case POKER_ROOM -> {
+                return (T) new PokerRoom();
+            }
 
-    public static Session createSession() {
-        return new Session();
-    }
+            case SESSION -> {
+                return (T) new Session();
+            }
+
+            default -> throw new RuntimeException("I cant create object: " + clazz.getSimpleName());
+    }}
 }

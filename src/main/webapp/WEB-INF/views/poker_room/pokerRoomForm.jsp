@@ -11,12 +11,12 @@
         Name<br>
         <label>
             <form:input path="name"/><br>
-            <form:errors path="name"/>
+            <form:errors path="name" cssClass="text-white"/>
         </label><br>
         Url<br>
         <label>
             <form:input path="url"/><br>
-            <form:errors path="url"/>
+            <form:errors path="url" cssClass="text-white"/>
         </label><br>
         <input class="bg-black btn btn-outline-danger" type="submit" value="Save">
     </form:form>

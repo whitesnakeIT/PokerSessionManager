@@ -11,6 +11,6 @@
 
 </div>
 <div class="d-flex align-items-center justify-content-center py-3 ">
-<a class="btn btn-outline-danger" href='player/show-stats'>Show stats</a>
+<a class="btn btn-outline-danger" href='/app/player/show-stats'>Show stats</a>
 </div>
     <jsp:include page="../fragments/footer.jsp"/>

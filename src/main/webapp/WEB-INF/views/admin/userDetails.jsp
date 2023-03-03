@@ -41,7 +41,7 @@
                             <td>
                                 <label onclick="return confirm('Are You sure to delete this tournament?')">
                                     <a class="text-white"
-                                       href="<c:url value="/admin/users/details/${playerId}/tournament/delete/${tournament.id}"/>">Delete</a></label>
+                                       href="<c:url value="/app/admin/users/details/${playerId}/tournament/delete/${tournament.id}"/>">Delete</a></label>
                             </td>
                         </tr>
                     </c:forEach>
@@ -88,7 +88,7 @@
                             <td>
                                 <label onclick="return confirm('Are You sure to delete this tournament?')">
                                     <a class="text-white" href="<c:url
-                                        value="/admin/users/details/${playerId}/tournament/delete/${tournament.id}"/>">Delete</a>
+                                        value="/app/admin/users/details/${playerId}/tournament/delete/${tournament.id}"/>">Delete</a>
                                 </label>
                             </td>
                         </tr>
@@ -137,14 +137,16 @@
                             <td>${session.totalCost}</td>
                             <td>
                                 <a class="text-white"
-                                   href="<c:url value='/admin/users/details/${playerId}/session/edit/${session.id}'/>">
+<%--                                   href="<c:url value='/admin/users/details/${playerId}/session/edit/${session.id}'/>">--%>
+                                   href="<c:url value='/app/session/edit/${session.id}'/>">
                                     Edit
                                 </a>
                             </td>
                             <td>
                                 <label onclick="return confirm('Are You sure to delete?')">
                                     <a class="text-white"
-                                       href="<c:url value='/admin/users/details/${playerId}/session/delete/${session.id}'/>">
+<%--                                       href="<c:url value='/admin/users/details/${playerId}/session/delete/${session.id}'/>">--%>
+                                       href="<c:url value='/app/session/delete/${session.id}'/>">
                                         Delete
                                     </a>
                                 </label>
@@ -157,11 +159,54 @@
             </div>
         </c:if>
 
-
         <c:if test="${empty player.sessions}">
             <h3 class="text-white d-flex justify-content-center mt-5">Player don't have any sessions.</h3>
         </c:if>
+    </div>
 
+    <div class="table-responsive bg-danger">
+        <h1>Poker room list</h1>
+        <c:if test="${player.pokerRoomsLocal.size()>0}">
+            <table class="table table-hover table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Url</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${player.pokerRoomsLocal}" var="pokerRoom" varStatus="loop">
+                    <tr>
+                        <td>${pokerRoom.id}</td>
+                        <td>${pokerRoom.name}</td>
+                        <td>${pokerRoom.url}</td>
+                        <td>
+                            <a class="text-white" href="<c:url value='/app/poker_room/edit/${pokerRoom.id}'/>">
+                                    <%--                            <a class="text-white" href="<c:url value='/admin/users/details/${playerId}/poker_room/edit/${pokerRoom.id}'/>">--%>
+
+                                Edit
+                            </a>
+                        </td>
+                        <td>
+                            <label onclick="return confirm('Are You sure to delete?')">
+                                <a class="text-white"
+                                   href="<c:url value='/app/poker_room/delete/${pokerRoom.id}'/>">
+                                    Delete
+                                </a>
+                            </label>
+                        </td>
+
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </c:if>
+        <c:if test="${empty player.pokerRoomsLocal}">
+            <h3 class="text-white d-flex justify-content-center mt-5">Player don't have any local Poker Rooms.</h3>
+        </c:if>
     </div>
 </div>
 <jsp:include page="../fragments/footer.jsp"/>

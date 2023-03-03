@@ -11,7 +11,7 @@ import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
-import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
+import pl.coderslab.pokersessionmanager.enums.TournamentScope;
 import pl.coderslab.pokersessionmanager.enums.TournamentSpeed;
 import pl.coderslab.pokersessionmanager.enums.TournamentType;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.TournamentMapper;
@@ -46,6 +46,7 @@ public class TournamentService {
             tournament.setPlayer((Player) userService.getLoggedUser());
             tournamentRepository.save(tournament);
         }
+
         tournamentRepository.save(abstractTournament);
     }
 
@@ -215,10 +216,10 @@ public class TournamentService {
         return availableTournamentForSession;
     }
 
-    public List<? extends AbstractTournament> getTournamentListByTournamentGenus(String tournamentScope) {
+    public List<? extends AbstractTournament> getTournamentListByTournamentScope(TournamentScope tournamentScope) {
 
-        TournamentGenus tournamentGenus = convertStringToTournamentGenus(tournamentScope);
-        switch (tournamentGenus) {
+//        TournamentScope tournamentScope = convertStringToTournamentScope(tournamentScope);
+        switch (tournamentScope) {
             case GLOBAL -> {
                 return findGlobalTournaments();
             }
@@ -228,26 +229,26 @@ public class TournamentService {
             case SUGGESTION -> {
                 return findSuggestedTournamentsById(userService.getLoggedUser().getId());
             }
-            default -> throw new RuntimeException("I can't find list of tournaments by genus: " + tournamentGenus);
+            default -> throw new RuntimeException("I can't find list of tournaments by scope: " + tournamentScope);
         }
     }
 
-    public TournamentGenus convertStringToTournamentGenus(String tournamentGenus) {
-
-        switch (tournamentGenus) {
-            case TournamentGlobal.TOURNAMENT_GENUS -> {
-                return TournamentGenus.GLOBAL;
-            }
-            case TournamentLocal.TOURNAMENT_GENUS -> {
-                return TournamentGenus.LOCAL;
-            }
-            case TournamentSuggestion.TOURNAMENT_GENUS -> {
-                return TournamentGenus.SUGGESTION;
-            }
-            default -> throw new RuntimeException("I don't know Tournament genus under string: " + tournamentGenus);
-        }
-
-    }
+//    public TournamentScope convertStringToTournamentScope(String tournamentScope) {
+//
+//        switch (tournamentScope) {
+//            case TournamentGlobal.TOURNAMENT_SCOPE -> {
+//                return TournamentScope.GLOBAL;
+//            }
+//            case TournamentLocal.TOURNAMENT_SCOPE -> {
+//                return TournamentScope.LOCAL;
+//            }
+//            case TournamentSuggestion.TOURNAMENT_SCOPE -> {
+//                return TournamentScope.SUGGESTION;
+//            }
+//            default -> throw new RuntimeException("I don't know Tournament cope under string: " + tournamentScope);
+//        }
+//
+//    }
 
     public <T extends AbstractTournament> boolean checkIfTournamentBelongsToUser(T tournament, User user) {
         // Administrator can delete all tournaments

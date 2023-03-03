@@ -9,9 +9,8 @@ import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.URL;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
+import pl.coderslab.pokersessionmanager.enums.PokerRoomScope;
 
-//import javax.persistence.*;
-//import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +22,9 @@ import java.util.Objects;
 public class PokerRoom {
     public static final String TABLE_NAME = "poker_rooms";
 
-    private String scope;
+//    @Enumerated(EnumType.STRING)
+    private PokerRoomScope pokerRoomScope;
+    //    private String scope;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,6 +1,6 @@
-INSERT INTO poker_session_manager.poker_rooms ( id, name, scope, url) VALUES (1, 'PokerStars','global',  'https://www.pokerstars.com/');
-INSERT INTO poker_session_manager.poker_rooms ( id, name, scope, url) VALUES (2, 'GGPoker', 'global', 'https://www.ggpoker.com/');
-INSERT INTO poker_session_manager.poker_rooms ( id, name, scope, url) VALUES (3, 'PartyPoker','global',  'https://www.partypoker.com/');
+INSERT INTO poker_session_manager.poker_rooms ( id, name, poker_room_scope, url) VALUES (1, 'PokerStars','global',  'https://www.pokerstars.com/');
+INSERT INTO poker_session_manager.poker_rooms ( id, name, poker_room_scope, url) VALUES (2, 'GGPoker', 'global', 'https://www.ggpoker.com/');
+INSERT INTO poker_session_manager.poker_rooms ( id, name, poker_room_scope, url) VALUES (3, 'PartyPoker','global',  'https://www.partypoker.com/');
 
 
 INSERT INTO poker_session_manager.roles (id, name) VALUES (1, 'ROLE_USER');
@@ -17,18 +17,18 @@ INSERT INTO poker_session_manager.users (user_type, id, birthday_date, created, 
 INSERT INTO poker_session_manager.player_stats (player_id, average_profit, balance, profit, tournament_count, tournament_wins) VALUES (2, 10, 5000, 1000, 100, 1);
 INSERT INTO poker_session_manager.player_stats (player_id, average_profit, balance, profit, tournament_count, tournament_wins) VALUES (3, 200, 10000, 2000, 10, 2);
 
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 1, 100, 6, '6-handed Bounty 100$', true, 'turbo',  'progressive-bounty', 1,null);
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 2, 55, 9, '9-handed Special 55$', true, 'slow',  'normal', 2,null);
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 3, 33.33, 8, '8-handed Freezout 33.33$', false, 'slow',  'normal', 3,null);
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 4, 10, 2, 'Heads-up Zoom 10$', true, 'zoom',  'zoom', 1,null);
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 5, 21, 8, '8-handed Bounty 21$', true, 'regular',  'progressive-bounty', 2,null);
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 6, 10.5, 8, '8-handed Bounty 10.5$', true, 'regular',  'progressive-bounty', 2,null);
+INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_scope, type, poker_room_id, player_id) VALUES ( 1, 100, 6, '6-handed Bounty 100$', true, 'turbo' ,'global',  'progressive-bounty',1,null);
+INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_scope, type, poker_room_id, player_id) VALUES ( 2, 55, 9, '9-handed Special 55$', true, 'slow', 'global', 'normal', 2,null);
+INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_scope, type, poker_room_id, player_id) VALUES ( 3, 33.33, 8, '8-handed Freezout 33.33$', false, 'slow','global',  'normal', 3,null);
+INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_scope, type, poker_room_id, player_id) VALUES ( 4, 10, 2, 'Heads-up Zoom 10$', true, 'zoom',  'global','zoom', 1,null);
+INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_scope, type, poker_room_id, player_id) VALUES ( 5, 21, 8, '8-handed Bounty 21$', true, 'regular', 'global', 'progressive-bounty', 2,null);
+INSERT INTO poker_session_manager.tournaments (id, buy_in, handed, name, re_buy, speed, tournament_scope, type, poker_room_id, player_id) VALUES ( 6, 10.5, 8, '8-handed Bounty 10.5$', true, 'regular','global',  'progressive-bounty', 2,null);
 
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('local', 7, 100, 4, '4-handed Freezout 100$', false, 'slow',  'normal', 3,2);
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('local', 8, 200, 5, 'Heads-up Zoom 200$', true, 'zoom',  'zoom', 1,2);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('local', 7, 100, 4, '4-handed Freezout 100$', false, 'slow',  'normal', 3,2);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('local', 8, 200, 5, 'Heads-up Zoom 200$', true, 'zoom',  'zoom', 1,2);
 
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('suggestion', 9, 300, 6, '6-handed Bounty 300$', true, 'regular',  'progressive-bounty', 2,2);
-INSERT INTO poker_session_manager.tournaments (tournament_genus, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('suggestion', 10, 400, 7, '7-handed Bounty 400$', true, 'regular',  'progressive-bounty', 2,2);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('suggestion', 9, 300, 6, '6-handed Bounty 300$', true, 'regular',  'progressive-bounty', 2,2);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('suggestion', 10, 400, 7, '7-handed Bounty 400$', true, 'regular',  'progressive-bounty', 2,2);
 
 
 INSERT INTO poker_session_manager.player_favourite_tournaments (player_id, tournament_id) VALUES (2, 1);
@@ -49,3 +49,33 @@ INSERT INTO poker_session_manager.sessions_tournaments (session_id, tournament_i
 INSERT INTO poker_session_manager.sessions_tournaments (session_id, tournament_id) VALUES (1, 2);
 INSERT INTO poker_session_manager.sessions_tournaments (session_id, tournament_id) VALUES (2, 3);
 
+INSERT INTO poker_session_manager.users (user_type, birthday_date, created, email, enabled, first_name, last_name, password, username) VALUES ('admin', '2000-01-01', '2023-03-02 20:15:25.000000', 'aa@aa.pl', 1, 'admin', 'istrator', '$2a$10$tZ4CMcR07gULGi2OJtzhMer/jZIwT2/FW7loNfHCVfZHaSWSVmy6e', 'adminek');
+INSERT INTO poker_session_manager.users (user_type, birthday_date, created, email, enabled, first_name, last_name, password, username) VALUES ('player', '2000-01-01', '2023-03-02 20:15:25.000000', '12345@12345.pl', 1, 'play', 'er', '$2a$10$tZ4CMcR07gULGi2OJtzhMer/jZIwT2/FW7loNfHCVfZHaSWSVmy6e', 'playerek');
+
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('local', 11, 50, 8, '50 $ KO Saturday Special', false, 'turbo', 'progressive knockout', 1, 2);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 12, 1, 3, 'global', false, 'turbo', 'zoom', 1, null);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 13, 1, 3, 'global ggg', false, 'turbo', 'zoom', 1, null);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('global', 14, 1, 3, 'global global', false, 'turbo', 'zoom', 1, null);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('suggestion', 15, 1, 3, 'suggestion my', false, 'turbo', 'zoom', 1, 5);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('suggestion', 16, 1, 3, 'suggestion not my', false, 'turbo', 'zoom', 1, 2);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('suggestion', 17, 1, 3, 'suggestion global', false, 'turbo', 'zoom', 1, 2);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('local', 18, 1, 3, 'local my', false, 'turbo', 'zoom', 1, 5);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('local', 19, 1, 3, 'local not my', false, 'turbo', 'zoom', 1, 2);
+INSERT INTO poker_session_manager.tournaments (tournament_scope, id, buy_in, handed, name, re_buy, speed, type, poker_room_id, player_id) VALUES ('local', 20, 1, 3, 'local global', false, 'turbo', 'zoom', 1,  2);
+
+INSERT INTO poker_session_manager.user_role (user_id, role_id) VALUES (4, 3);
+INSERT INTO poker_session_manager.user_role (user_id, role_id) VALUES (5, 1);
+#
+# INSERT INTO poker_session_manager.tournament_globals (tournament_globals.id) VALUES (1);
+# INSERT INTO poker_session_manager.tournament_globals (tournament_globals.id) VALUES (2);
+# INSERT INTO poker_session_manager.tournament_globals (tournament_globals.id) VALUES (3);
+# INSERT INTO poker_session_manager.tournament_globals (tournament_globals.id) VALUES (4);
+# INSERT INTO poker_session_manager.tournament_globals (tournament_globals.id) VALUES (5);
+# INSERT INTO poker_session_manager.tournament_globals (tournament_globals.id) VALUES (6);
+#
+# INSERT INTO poker_session_manager.tournament_suggestions (tournament_suggestions.id, player_id) VALUES (7,2 );
+# INSERT INTO poker_session_manager.tournament_suggestions (tournament_suggestions.id, player_id) VALUES (8,2 );
+#
+# INSERT INTO poker_session_manager.tournaments_local (tournaments_local.id, player_id) VALUES (9,2 );
+# INSERT INTO poker_session_manager.tournaments_local (tournaments_local.id, player_id) VALUES (10,2 );
+#

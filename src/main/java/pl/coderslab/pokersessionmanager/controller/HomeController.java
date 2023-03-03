@@ -12,7 +12,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String showIndex() {
-
-        return redirectService.sendRedirectAfterLoginByRole();
+        return redirectService.sendRedirectEmptyUrl();
     }
 }
