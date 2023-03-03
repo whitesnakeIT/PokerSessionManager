@@ -1,8 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<jsp:include page="../../fragments/header.jsp"/>
+<jsp:include page="../fragments/header.jsp"/>
 <title>Session list</title>
-<jsp:include page="../../fragments/navbar.jsp"/>
+<jsp:include page="../fragments/navbar.jsp"/>
 
 <div class="bg-danger">
     <h1>Session List</h1>
@@ -54,4 +54,4 @@
 <div class="d-flex align-items-center justify-content-center py-3">
     <a class="bg-black btn btn-outline-danger" href="<c:url value="/app/session/add"/>">Add new Session</a>
 </div>
-<jsp:include page="../../fragments/footer.jsp"/>
+<jsp:include page="../fragments/footer.jsp"/>

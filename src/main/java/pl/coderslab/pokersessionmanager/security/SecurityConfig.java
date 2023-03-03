@@ -27,26 +27,28 @@ public class SecurityConfig {
         return new AntPathRequestMatcher("/logout", "GET");
     }
 
+
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
         http
-                .authorizeRequests()
-                .requestMatchers("/tournament/all", "/poker_room/all").permitAll()
-                .requestMatchers("/logout", "/poker_room/**", "/app/user/**").authenticated()
-                .requestMatchers("/app/tournament/global/all").permitAll()
-                .requestMatchers("/app/tournament/global/**").hasRole("ADMIN")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/app/session/delete/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/app/session/edit/**").hasAnyRole("USER", "ADMIN")
-//                .requestMatchers("/app/tournament/**/delete/**").hasAnyRole("USER", "ADMIN")
-//                .requestMatchers("/app/tournament/**/edit/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/app/tournament/local/delete/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/app/tournament/suggestion/delete/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/app/**").hasRole("USER")
-                .requestMatchers("/registration").anonymous()
-                .and()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/registration",
+                                "/login",
+                                "/WEB-INF/views/authorization/**",
+                                "/registration").permitAll()
+                        .requestMatchers("/app/tournament/global/all",
+                                "/app/poker_room/global/all").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/app/tournament/global/**",
+                                "/WEB-INF/views/admin/**",
+                                "/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/app/player/**",
+                                "/app/tournament/local/**",
+                                "/app/tournament/suggestion/**",
+                                "/app/session/add", "/app/session/all").hasRole("USER")
+                        .requestMatchers("/tournament/all", "/poker_room/all", "/WEB-INF/views/unlogged/**").anonymous()
+                        .anyRequest().hasAnyRole("USER", "ADMIN"))
                 .formLogin()
                 .loginPage("/login").usernameParameter("email")
                 .successHandler(getLoginSuccessHandler())

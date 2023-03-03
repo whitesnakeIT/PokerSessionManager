@@ -17,7 +17,7 @@ public interface PokerRoomRepository extends JpaRepository<PokerRoom, Long> {
             , nativeQuery = true)
     List<PokerRoom> findPokerRoomsByUserId(@Param("playerId") Long playerId);
 
-    @Query(value = "select * from poker_rooms where scope = 'global'",
+    @Query(value = "select * from poker_rooms where poker_room_scope = 'global'",
             nativeQuery = true)
-    List<PokerRoom> findAllGlobal();
+    List<PokerRoom> findGlobalPokerRooms();
 }

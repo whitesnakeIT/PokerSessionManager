@@ -11,22 +11,22 @@
         First name<br>
         <label>
             <form:input path="firstName"/><br>
-            <form:errors path="firstName"/><br>
+            <form:errors path="firstName" cssClass="text-white"/><br>
         </label><br>
         Last name<br>
         <label>
             <form:input path="lastName"/><br>
-            <form:errors path="lastName"/><br>
+            <form:errors path="lastName" cssClass="text-white"/><br>
         </label><br>
         <%--        Username<br>--%>
         <%--    <label>--%>
         <%--        <form:input path="username"/><br>--%>
-        <%--        <form:errors path="username"/><br>--%>
+        <%--        <form:errors path="username" cssClass="text-white"/><br>--%>
         <%--    </label>--%>
         Username<br>
         <label>
             <form:input path="username"/><br>
-            <form:errors path="username"/><br>
+            <form:errors path="username" cssClass="text-white"/><br>
         </label>
         <br>
         Enter the password to confirm<br>

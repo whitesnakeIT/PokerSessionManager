@@ -79,7 +79,7 @@ public class UserController {
                                        @RequestParam String newPassword,
                                        @RequestParam String confirmNewPassword) {
         User user = userService.getLoggedUser();
-        PasswordErrors message ;
+        PasswordErrors message;
         switch (userService.updatePassword(user, oldPassword, newPassword, confirmNewPassword)) {
 
             case NO_ERROR -> {
@@ -109,13 +109,5 @@ public class UserController {
             return "redirect:/app/user/show-details?message="
                     .concat(message.name().toLowerCase());
         }
-//        if (!userService.updatePassword(user, oldPassword, newPassword, confirmNewPassword)) {
-//            message = "error";
-//            model.addAttribute("message", message);
-//            return "user/data/editPassword";
-//        }
-//        message = "password-changed";
-
-
     }
 }

@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
-import pl.coderslab.pokersessionmanager.enums.UserType;
+import pl.coderslab.pokersessionmanager.service.RedirectService;
 import pl.coderslab.pokersessionmanager.service.UserService;
-import pl.coderslab.pokersessionmanager.utilities.Factory;
 
 //import javax.validation.Valid;
 
@@ -21,11 +20,11 @@ import pl.coderslab.pokersessionmanager.utilities.Factory;
 public class RegistrationController {
     private final UserService userService;
 
+    private final RedirectService redirectService;
+
     @GetMapping("/registration")
     public String registerNewPlayerGet(Model model) {
-        model.addAttribute("newPlayer", Factory.create(UserType.PLAYER));
-
-        return "registration/registrationForm";
+        return redirectService.sendRedirectRegistrationPage(model);
     }
 
     @PostMapping("/registration")
@@ -34,11 +33,11 @@ public class RegistrationController {
                                             @RequestParam(name = "passwordCheck") String passwordCheck,
                                             Model model) {
         if (result.hasErrors()) {
-            return "registration/registrationForm";
+            return "authorization/registration/registrationForm";
 
         } else if (!passwordCheck.equals(newPlayer.getPassword())) {
             model.addAttribute("isCorrectPass", false);
-            return "registration/registrationForm";
+            return "authorization/registration/registrationForm";
 
         } else {
             model.addAttribute("isCorrectPass", true);

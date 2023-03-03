@@ -6,5 +6,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public enum PokerRoomScope {
     LOCAL,
-    GLOBAL
+    GLOBAL;
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 }

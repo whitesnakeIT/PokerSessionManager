@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.enums.TournamentGenus;
+import pl.coderslab.pokersessionmanager.enums.TournamentScope;
 import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 import pl.coderslab.pokersessionmanager.utilities.Factory;
@@ -44,9 +44,9 @@ public class TournamentController {
 
     @GetMapping("/all")
     public String getTournaments(Model model,
-                                 @PathVariable(value = "tournamentScopeFromUrl") String tournamentScopeFromUrl) {
+                                 @PathVariable(value = "tournamentScopeFromUrl") TournamentScope tournamentScopeFromUrl) {
         model.addAttribute("tournamentList",
-                tournamentService.getTournamentListByTournamentGenus(tournamentScopeFromUrl));
+                tournamentService.getTournamentListByTournamentScope(tournamentScopeFromUrl));
 
         return "tournament/userTournamentList";
     }
@@ -60,16 +60,18 @@ public class TournamentController {
     }
 
     @ModelAttribute("tournament")
-    public AbstractTournament getTournament(@PathVariable(name = "tournamentScopeFromUrl") String tournamentScopeFromUrl) {
+    public AbstractTournament getTournament(@PathVariable(name = "tournamentScopeFromUrl") TournamentScope tournamentScopeFromUrl) {
 
-        return Factory.create(tournamentService.convertStringToTournamentGenus(tournamentScopeFromUrl));
+//        return Factory.create(tournamentService.convertStringToTournamentScope(tournamentScopeFromUrl));
+        return Factory.create(tournamentScopeFromUrl);
     }
 
-    @ModelAttribute("tournamentGenus")
-    public TournamentGenus getTournamentGenusToCorrectDisplayUrlOnTournamentLists(@PathVariable(name = "tournamentScopeFromUrl") String tournamentScopeFromUrl) {
-
-        return tournamentService.convertStringToTournamentGenus(tournamentScopeFromUrl);
-    }
+//    @ModelAttribute("tournamentScope")
+//    public TournamentScope getTournamentScopeToCorrectDisplayUrlOnTournamentLists(@PathVariable(name = "tournamentScopeFromUrl") TournamentScope tournamentScopeFromUrl) {
+//
+//       return tournamentScopeFromUrl;
+////        return tournamentService.convertStringToTournamentScope(tournamentScopeFromUrl);
+//    }
 
     @ModelAttribute("availableTournamentTypes")
     public List<String> getAvailableTournamentTypes() {
@@ -83,7 +85,7 @@ public class TournamentController {
 
     @ModelAttribute("availablePokerRooms")
     public List<PokerRoom> getAvailablePokerRooms() {
-        return pokerRoomService.findAllByRole();
+        return pokerRoomService.findAvailablePokerRoomsForPlayer();
     }
 }
 

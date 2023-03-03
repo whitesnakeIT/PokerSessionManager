@@ -15,12 +15,12 @@
             <form:option value="" label="---Choose type---"/>
             <form:options items="${availableTournamentTypes}"/>
         </form:select><br>
-        <form:errors path="type"/>
+        <form:errors path="type" cssClass="text-white"/>
     </label><br>
     <label>
         Name
         <form:input path="name"/><br>
-        <form:errors path="name"/>
+        <form:errors path="name" cssClass="text-white"/>
     </label><br>
     <label>
         Speed
@@ -28,22 +28,22 @@
             <form:option value="" label="---Choose speed---"/>
             <form:options items="${availableTournamentSpeed}"/>
         </form:select><br>
-        <form:errors path="speed"/>
+        <form:errors path="speed" cssClass="text-white"/>
     </label><br>
     <label>
         Buy-in
         <form:input path="buyIn" type="number" step="0.01"/><br>
-        <form:errors path="buyIn"/>
+        <form:errors path="buyIn" cssClass="text-white"/>
     </label><br>
     <label>
         Re-buy
         <form:checkbox path="reBuy"/><br>
-        <form:errors path="reBuy"/>
+        <form:errors path="reBuy" cssClass="text-white"/>
     </label><br>
     <label>
         Handed
         <form:input path="handed" type="number" step="1"/><br>
-        <form:errors path="handed"/>
+        <form:errors path="handed" cssClass="text-white"/>
     </label><br>
     <label>
         Poker Room
@@ -51,7 +51,7 @@
             <form:option value="" label="---Choose Poker Room--"/>
             <form:options items="${availablePokerRooms}" itemLabel="name" itemValue="id"/>
         </form:select><br>
-        <form:errors path="pokerRoom"/>
+        <form:errors path="pokerRoom" cssClass="text-white"/>
     </label><br>
 
     <input class="bg-black btn btn-outline-danger" type="submit" value="Save"><br>

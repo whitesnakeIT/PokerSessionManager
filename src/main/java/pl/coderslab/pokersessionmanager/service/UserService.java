@@ -3,7 +3,6 @@ package pl.coderslab.pokersessionmanager.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -139,7 +138,6 @@ public class UserService {
     }
 
     public Collection<? extends GrantedAuthority> getLoggedUserAuthority() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getAuthorities();
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
     }
 }
