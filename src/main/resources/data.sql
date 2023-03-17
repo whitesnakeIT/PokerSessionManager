@@ -1,3 +1,5 @@
+USE poker_session_manager;
+
 INSERT INTO poker_session_manager.poker_rooms ( id, name, poker_room_scope, url) VALUES (1, 'PokerStars','global',  'https://www.pokerstars.com/');
 INSERT INTO poker_session_manager.poker_rooms ( id, name, poker_room_scope, url) VALUES (2, 'GGPoker', 'global', 'https://www.ggpoker.com/');
 INSERT INTO poker_session_manager.poker_rooms ( id, name, poker_room_scope, url) VALUES (3, 'PartyPoker','global',  'https://www.partypoker.com/');
@@ -6,6 +8,7 @@ INSERT INTO poker_session_manager.poker_rooms ( id, name, poker_room_scope, url)
 INSERT INTO poker_session_manager.roles (id, name) VALUES (1, 'ROLE_USER');
 INSERT INTO poker_session_manager.roles (id, name) VALUES (2, 'ROLE_MODERATOR');
 INSERT INTO poker_session_manager.roles (id, name) VALUES (3, 'ROLE_ADMIN');
+INSERT INTO poker_session_manager.roles (id, name) VALUES (4, 'ROLE_ANONYMOUS');
 
 
 

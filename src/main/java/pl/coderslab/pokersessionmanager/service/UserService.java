@@ -7,7 +7,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.coderslab.pokersessionmanager.entity.Role;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.enums.PasswordErrors;
@@ -17,6 +16,7 @@ import pl.coderslab.pokersessionmanager.mapstruct.dto.user.UserSlimWithPassword;
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.UserMapper;
 import pl.coderslab.pokersessionmanager.repository.UserRepository;
 import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
+import pl.coderslab.pokersessionmanager.utilities.Factory;
 
 import java.util.*;
 
@@ -37,7 +37,7 @@ public class UserService {
     private final UserMapper userMapper;
 
 
-    public User findByEmail(String email) {
+    public User findByEmail(String email) throws Exception {
         Optional<User> userOptional = userRepository.findByEmail(email);
         return ifUserExist(userOptional);
     }
@@ -50,8 +50,7 @@ public class UserService {
     public <T extends User> void create(T user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setEnabled(1);
-        Role role = roleService.findByName(RoleName.ROLE_USER.name());
-        user.setRoles(new HashSet<>(Set.of(role)));
+        user.addRole(roleService.getAdminRole());
         userRepository.save(user);
 
     }
@@ -61,6 +60,9 @@ public class UserService {
     }
 
     public User findById(Long userId) {
+        if (userId == null) {
+            throw new RuntimeException("Searching player failed. User id is null.");
+        }
         Optional<User> userOptional = userRepository.findById(userId);
         return ifUserExist(userOptional);
     }
@@ -128,7 +130,7 @@ public class UserService {
     }
 
     public void update(Long userId, String firstName, String lastName, String username) {
-        userRepository.update(userId, firstName, lastName, username);
+        userRepository.updateUserDetails(userId, firstName, lastName, username);
     }
 
     public User getLoggedUser() {
@@ -139,5 +141,15 @@ public class UserService {
 
     public Collection<? extends GrantedAuthority> getLoggedUserAuthority() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    }
+
+    public boolean isLoggedAsAdmin(){
+        return getLoggedUserAuthority().contains(Factory.create(RoleName.ROLE_ADMIN));
+    }
+    public boolean isLoggedAsUser(){
+        return getLoggedUserAuthority().contains(Factory.create(RoleName.ROLE_USER));
+    }
+    public boolean isAnonymous(){
+        return getLoggedUserAuthority().contains(Factory.create(RoleName.ROLE_ANONYMOUS));
     }
 }

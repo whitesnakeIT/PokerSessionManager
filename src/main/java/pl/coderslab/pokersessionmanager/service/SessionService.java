@@ -41,7 +41,7 @@ public class SessionService {
     }
 
     public List<Session> findAllUserSessions(Long userId) {
-        return sessionRepository.findAllUserSessions(userId);
+        return sessionRepository.findSessionsByPlayerId(userId);
     }
 
     public Session findById(Long sessionId) {

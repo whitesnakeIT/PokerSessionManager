@@ -11,7 +11,9 @@
         <table class="table table-hover table-bordered table-striped">
             <thead>
             <tr>
+                <th>Id</th>
                 <th>Name</th>
+                <th>Scope</th>
                 <th>Type</th>
                 <th>Speed</th>
                 <th>Buy In</th>
@@ -22,7 +24,9 @@
             <c:forEach items="${favouriteTournaments}" var="favouriteTournament" varStatus="loop">
                 <tr>
 
+                    <td>${favouriteTournament.id}</td>
                     <td>${favouriteTournament.name}</td>
+                    <td>${favouriteTournament.tournamentScope}</td>
                     <td>${favouriteTournament.type}</td>
                     <td>${favouriteTournament.speed}</td>
                     <td>${favouriteTournament.buyIn}</td>
@@ -46,7 +50,9 @@
     <table class="table table-hover table-bordered table-striped">
         <thead>
         <tr>
+            <th>Id</th>
             <th>Name</th>
+            <th>Scope</th>
             <th>Type</th>
             <th>Speed</th>
             <th>Buy In</th>
@@ -57,7 +63,9 @@
         <tbody>
         <c:forEach items="${tournamentsPossibleToFavourites}" var="tournamentPossibleToFavourites" varStatus="loop">
             <tr>
+                <td>${tournamentPossibleToFavourites.id}</td>
                 <td>${tournamentPossibleToFavourites.name}</td>
+                <td>${tournamentPossibleToFavourites.tournamentScope}</td>
                 <td>${tournamentPossibleToFavourites.type}</td>
                 <td>${tournamentPossibleToFavourites.speed}</td>
                 <td>${tournamentPossibleToFavourites.buyIn}</td>

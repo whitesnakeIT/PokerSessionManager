@@ -6,9 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.enums.TournamentScope;
+import pl.coderslab.pokersessionmanager.mapstruct.dto.poker_room.PokerRoomSlim;
 import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 import pl.coderslab.pokersessionmanager.utilities.Factory;
@@ -84,8 +84,8 @@ public class TournamentController {
     }
 
     @ModelAttribute("availablePokerRooms")
-    public List<PokerRoom> getAvailablePokerRooms() {
-        return pokerRoomService.findAvailablePokerRoomsForPlayer();
+    public List<PokerRoomSlim> getAvailablePokerRoomsSlim() {
+        return pokerRoomService.findAvailablePokerRoomsSlimForPlayer();
     }
 }
 

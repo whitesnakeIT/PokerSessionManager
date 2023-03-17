@@ -25,12 +25,13 @@ public class Player extends User {
     //    public static final String TABLE_NAME = "players";
     public static final String USER_TYPE = "player";
     @ManyToMany
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinTable(
             name = "player_favourite_tournaments",
             joinColumns = {@JoinColumn(name = "player_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id", referencedColumnName = "id")}
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
+
     @ToString.Exclude
     private List<AbstractTournament> favouriteTournaments = new ArrayList<>();
 
@@ -57,5 +58,5 @@ public class Player extends User {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "player_id", referencedColumnName = "id")
     @ToString.Exclude
-    private List<PokerRoom> pokerRoomsLocal;
+    private List<PokerRoom> pokerRoomsLocal = new ArrayList<>();
 }

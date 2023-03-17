@@ -6,9 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
-import pl.coderslab.pokersessionmanager.security.principal.CurrentUser;
 
 @Service
 @RequiredArgsConstructor
@@ -40,14 +38,14 @@ public class UtilityService {
 //    }
 
 
-    public Player getLoggedPlayer() {
-        Player loggedUser = (Player) ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUser();
-        playerService.loadLazyDataToPlayer(loggedUser);
-
-
-        return loggedUser;
-    }
+//    public Player getLoggedPlayer() {
+//        Player loggedUser = (Player) ((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+//                .getUser();
+//        playerService.loadLazyDataToPlayer(loggedUser);
+//
+//
+//        return loggedUser;
+//    }
 
 //    public <T extends AbstractTournament> T convertAbstractTournamentToChildTournament(AbstractTournament abstractTournament, String tournamentScopeFromUrl) {
 //        switch (tournamentScopeFromUrl) {

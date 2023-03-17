@@ -1,5 +1,6 @@
 package pl.coderslab.pokersessionmanager.repository;
 
+import jakarta.annotation.security.PermitAll;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,18 +17,18 @@ import java.util.Optional;
 @Repository
 @Transactional
 public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByEmail(@Email @NotNull @NotEmpty String email);
+    @PermitAll
+    Optional<User> findByEmail(@Email @NotNull @NotEmpty String email) throws Exception;
 
-    @Modifying
-    @Query(value = "update users set first_name = (:firstName), last_name = (:lastName), username = (:username) where id = (:userId)", nativeQuery = true)
-    void update(@Param("userId") Long userId, @Param("firstName") String firstName, @Param("lastName") String lastName, @Param("username") String username);
+    @Modifying(clearAutomatically = true)
+    @Query(value = "update users set first_name = :firstName," +
+            " last_name = :lastName," +
+            " username = :username" +
+            " where id = :userId"
+            , nativeQuery = true)
+    void updateUserDetails(@Param("userId") Long userId,
+                           @Param("firstName") String firstName,
+                           @Param("lastName") String lastName,
+                           @Param("username") String username);
 
-//    @Override
-//    @Query(value =
-//            "select *" +
-//                    "from users u " +
-//                    "left join tournaments t " +
-//                    "on u.id = t.player_id where u.id = (:userId)"
-//            ,nativeQuery = true)
-//    Optional<User> findById(@Param("userId") Long userId);
 }

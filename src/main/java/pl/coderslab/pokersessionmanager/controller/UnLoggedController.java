@@ -17,7 +17,7 @@ public class UnLoggedController {
 
     @GetMapping("/poker_room/all")
     public String showGlobalPokerPokerRooms(Model model) {
-        model.addAttribute("globalPokerRooms", pokerRoomService.findGlobalPokerRooms());
+        model.addAttribute("globalPokerRooms", pokerRoomService.findGlobalPokerRoomsSlim());
 
         return "unlogged/globalPokerRoomList";
     }

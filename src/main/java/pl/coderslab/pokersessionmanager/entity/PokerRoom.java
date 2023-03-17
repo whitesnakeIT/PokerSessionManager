@@ -6,11 +6,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.URL;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.enums.PokerRoomScope;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,10 +41,12 @@ public class PokerRoom {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pokerRoom")
     @ToString.Exclude
-    private List<AbstractTournament> tournamentList;
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<AbstractTournament> tournamentList = new ArrayList<>();
 
     @ManyToOne
     @ToString.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Player player;
 
     @Override

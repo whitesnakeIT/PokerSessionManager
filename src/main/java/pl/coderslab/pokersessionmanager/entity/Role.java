@@ -3,6 +3,8 @@ package pl.coderslab.pokersessionmanager.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
+import pl.coderslab.pokersessionmanager.converter.RoleNameEnumToColumnConverter;
+import pl.coderslab.pokersessionmanager.enums.RoleName;
 
 import java.util.Objects;
 
@@ -17,7 +19,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Convert(converter = RoleNameEnumToColumnConverter.class)
+    @Enumerated(EnumType.STRING)
+    private RoleName name;
 
     @Override
     public boolean equals(Object o) {

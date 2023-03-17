@@ -2,6 +2,7 @@ package pl.coderslab.pokersessionmanager.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,10 +28,16 @@ public class SecurityConfig {
         return new AntPathRequestMatcher("/logout", "GET");
     }
 
-
+    @Profile("1")
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
+        http.authorizeHttpRequests()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                .and().
+                csrf().ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
+                .and()
+                .headers(headers -> headers.frameOptions().sameOrigin());
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
@@ -39,12 +46,16 @@ public class SecurityConfig {
                                 "/WEB-INF/views/authorization/**",
                                 "/registration").permitAll()
                         .requestMatchers("/app/tournament/global/all",
+                                "/app/poker_room/local/edit/**",
+                                "/app/poker_room/local/delete/**",
                                 "/app/poker_room/global/all").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/app/tournament/global/**",
+                                "/app/poker_room/global/**",
                                 "/WEB-INF/views/admin/**",
                                 "/admin/**").hasRole("ADMIN")
                         .requestMatchers("/app/player/**",
                                 "/app/tournament/local/**",
+                                "/app/poker_room/local/**",
                                 "/app/tournament/suggestion/**",
                                 "/app/session/add", "/app/session/all").hasRole("USER")
                         .requestMatchers("/tournament/all", "/poker_room/all", "/WEB-INF/views/unlogged/**").anonymous()
@@ -57,6 +68,7 @@ public class SecurityConfig {
                 .logoutRequestMatcher(getAntRequestMatcher())
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID");
+
 
         return http.build();
     }

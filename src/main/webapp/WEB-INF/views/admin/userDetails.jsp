@@ -184,7 +184,7 @@
                         <td>${pokerRoom.name}</td>
                         <td>${pokerRoom.url}</td>
                         <td>
-                            <a class="text-white" href="<c:url value='/app/poker_room/edit/${pokerRoom.id}'/>">
+                            <a class="text-white" href="<c:url value='/app/poker_room/${pokerRoom.pokerRoomScope.toString()}/edit/${pokerRoom.id}'/>">
                                     <%--                            <a class="text-white" href="<c:url value='/admin/users/details/${playerId}/poker_room/edit/${pokerRoom.id}'/>">--%>
 
                                 Edit
@@ -193,7 +193,7 @@
                         <td>
                             <label onclick="return confirm('Are You sure to delete?')">
                                 <a class="text-white"
-                                   href="<c:url value='/app/poker_room/delete/${pokerRoom.id}'/>">
+                                   href="<c:url value='/app/poker_room/${pokerRoom.pokerRoomScope.toString()}/delete/${pokerRoom.id}'/>">
                                     Delete
                                 </a>
                             </label>
