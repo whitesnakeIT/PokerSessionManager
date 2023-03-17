@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 
@@ -40,9 +42,11 @@ public class Session {
             joinColumns = {@JoinColumn(name = "session_id")},
             inverseJoinColumns = {@JoinColumn(name = "tournament_id")}
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
     private List<AbstractTournament> sessionTournaments;
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Player player;
 
 

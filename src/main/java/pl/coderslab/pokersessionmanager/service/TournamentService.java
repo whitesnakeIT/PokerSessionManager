@@ -20,6 +20,7 @@ import pl.coderslab.pokersessionmanager.utilities.Factory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -164,7 +165,17 @@ public class TournamentService {
     }
 
     public List<AbstractTournament> findFavouriteTournaments(Long userId) {
-        return tournamentRepository.findFavouriteTournaments(userId);
+        List<AbstractTournament> favouriteTournaments = tournamentRepository.findFavouriteTournaments(userId);
+        sortFavouriteTournaments(favouriteTournaments);
+        return favouriteTournaments;
+    }
+
+    private void sortFavouriteTournaments(List<AbstractTournament> favouriteTournaments) {
+        favouriteTournaments
+                .sort(Comparator
+                        .comparing(AbstractTournament::getTournamentScope)
+                        .reversed()
+                        .thenComparing(AbstractTournament::getId));
     }
 
     public List<AbstractTournament> findTournamentsPossibleToFavourites(Long userId) {

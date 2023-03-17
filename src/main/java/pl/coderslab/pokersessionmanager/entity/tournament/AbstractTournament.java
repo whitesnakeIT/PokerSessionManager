@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.enums.TournamentScope;
@@ -55,6 +57,7 @@ public abstract class AbstractTournament {
     private String concatFields;
     @ManyToOne
     @JoinColumn(name = "poker_room_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private PokerRoom pokerRoom;
 
     public String getConcatFields() {
@@ -64,6 +67,7 @@ public abstract class AbstractTournament {
     }
     @ManyToOne
     @ToString.Exclude
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Player player;
 
     @Override

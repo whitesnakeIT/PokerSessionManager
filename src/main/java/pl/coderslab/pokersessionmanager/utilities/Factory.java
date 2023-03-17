@@ -15,12 +15,14 @@ import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.enums.TournamentScope;
 import pl.coderslab.pokersessionmanager.enums.UserType;
+import pl.coderslab.pokersessionmanager.mapstruct.dto.poker_room.PokerRoomSlim;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class Factory {
 
-    public static final String POKER_ROOM = "PokerRoom";
-    public static final String SESSION = "Session";
+    private static final String POKER_ROOM = "PokerRoom";
+    private static final String POKER_ROOM_SLIM = "PokerRoomSlim";
+    private static final String SESSION = "Session";
 
     public static AbstractTournament create(TournamentScope tournamentScope) {
         switch (tournamentScope) {
@@ -61,17 +63,20 @@ public abstract class Factory {
                     throw new IllegalStateException("I can't create SimpleGrantedAuthority. Unexpected value: " + roleName);
         }
     }
-    public static  <T> T create(Class<T> clazz) {
-        switch (clazz.getSimpleName()) {
 
+    public static <T> T create(Class<T> clazz) {
+        switch (clazz.getSimpleName()) {
             case POKER_ROOM -> {
                 return (T) new PokerRoom();
             }
-
+            case POKER_ROOM_SLIM -> {
+                return (T) new PokerRoomSlim();
+            }
             case SESSION -> {
                 return (T) new Session();
             }
 
             default -> throw new RuntimeException("I cant create object: " + clazz.getSimpleName());
-    }}
+        }
+    }
 }

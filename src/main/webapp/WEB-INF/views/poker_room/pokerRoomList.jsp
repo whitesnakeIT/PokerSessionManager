@@ -24,11 +24,11 @@
         </tr>
         </thead>
         <tbody>
-        <c:forEach items="${pokerRoomList}" var="pokerRoom" varStatus="loop">
+        <c:forEach items="${pokerRoomSlimList}" var="pokerRoom" varStatus="loop">
             <tr>
                 <td>${pokerRoom.id}</td>
                 <td>${pokerRoom.name}</td>
-                <td>${pokerRoom.pokerRoomScope.toString()}</td>
+                <td>${pokerRoomScope}</td>
                 <td>${pokerRoom.url}</td>
                 <sec:authorize access="isAuthenticated()">
                     <td><a class="text-white" href="<c:url value='/app/poker_room/${pokerRoomScope}/edit/${pokerRoom.id}'/>">Edit</a></td>

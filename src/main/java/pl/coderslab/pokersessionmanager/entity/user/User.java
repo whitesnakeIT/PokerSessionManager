@@ -1,8 +1,6 @@
 package pl.coderslab.pokersessionmanager.entity.user;
 
 
-//import jakarta.persistence.*;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,13 +17,9 @@ import pl.coderslab.pokersessionmanager.entity.Role;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.validator.Adult;
 
-//import javax.persistence.*;
-//import javax.validation.constraints.Email;
-//import javax.validation.constraints.NotEmpty;
-//import javax.validation.constraints.NotNull;
-//import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -39,6 +33,7 @@ import java.util.Set;
 @Table(name = User.TABLE_NAME)
 public class User {
 
+    // Children inherit this fields
     public static final String TABLE_NAME = "users";
     public static final String USER_TYPE_COLUMN = "user_type";
 
@@ -86,7 +81,7 @@ public class User {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     @ToString.Exclude
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
 
     @Transient
@@ -102,11 +97,25 @@ public class User {
 
     public boolean hasRole(RoleName roleName) {
         for (Role role : this.roles) {
-            if (role.getName().equalsIgnoreCase(roleName.toString())) {
+            if (role.getName().equals(roleName)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public void addRole(Role role){
+        this.roles.add(role);
+    }
+
+    public boolean isAdmin() {
+        return this.roles.stream()
+                .anyMatch(role -> role.getName().equals(RoleName.ROLE_ADMIN.toString()));
+    }
+
+    public boolean isUser() {
+        return this.roles.stream()
+                .anyMatch(role -> role.getName().equals(RoleName.ROLE_USER.toString()));
     }
 
     @Override

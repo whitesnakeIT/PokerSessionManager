@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
 
-//import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -15,7 +14,7 @@ import java.util.List;
 public interface PokerRoomRepository extends JpaRepository<PokerRoom, Long> {
     @Query(value = "select * from poker_rooms where player_id = (:playerId)"
             , nativeQuery = true)
-    List<PokerRoom> findPokerRoomsByUserId(@Param("playerId") Long playerId);
+    List<PokerRoom> findPokerRoomsByPlayerId(@Param("playerId") Long playerId);
 
     @Query(value = "select * from poker_rooms where poker_room_scope = 'global'",
             nativeQuery = true)

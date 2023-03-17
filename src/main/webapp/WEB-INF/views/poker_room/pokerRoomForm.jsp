@@ -7,7 +7,7 @@
 <jsp:include page="../fragments/navbar.jsp"/>
 
 <div class="bg-danger d-flex justify-content-center">
-    <form:form method="post" modelAttribute="pokerRoom">
+    <form:form method="post" modelAttribute="pokerRoomSlim">
         Name<br>
         <label>
             <form:input path="name"/><br>

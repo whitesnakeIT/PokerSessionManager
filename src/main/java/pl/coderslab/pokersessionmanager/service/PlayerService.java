@@ -15,6 +15,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PlayerService {
 
+
     private final PlayerRepository playerRepository;
 
 
@@ -28,48 +29,46 @@ public class PlayerService {
 
     public Player findById(Long playerId) {
         Optional<Player> playerOptional = playerRepository.findById(playerId);
-        return ifPlayerExist(playerOptional);
 
+        return ifPlayerExist(playerOptional);
     }
 
     public Player ifPlayerExist(Optional<Player> playerOptional) {
+        if (playerOptional==null) {
+            throw new RuntimeException("Player is null.");
+        }
         if (playerOptional.isPresent()) {
             Player player = playerOptional.get();
-//            loadRolesToUser(player);
             loadLazyDataToPlayer(player);
 
             return player;
         }
-        throw new RuntimeException("Player not exist");
+
+        throw new RuntimeException("Player not exist.");
     }
 
-    public void loadFavouriteTournamentsToPlayer(Player player) {
-        Hibernate.initialize(player.getFavouriteTournaments());
-    }
+    private void loadFavouriteTournamentsToPlayer(Player player) { Hibernate.initialize(player.getFavouriteTournaments());}
 
-    public void loadSuggestedTournamentsToPlayer(Player player) {
-        Hibernate.initialize(player.getSuggestedTournaments());
-    }
+    private void loadSuggestedTournamentsToPlayer(Player player) { Hibernate.initialize(player.getSuggestedTournaments()); }
 
-    public void loadLocalTournamentsToPlayer(Player player) {
+    private void loadLocalTournamentsToPlayer(Player player) {
         Hibernate.initialize(player.getLocalTournaments());
     }
 
-    public void loadPokerRoomLocalToPlayer(Player player) {
+    private void loadPokerRoomLocalToPlayer(Player player) {
         Hibernate.initialize(player.getPokerRoomsLocal());
     }
 
-    public void loadPlayerStatsToPlayer(Player player) {
+    private void loadPlayerStatsToPlayer(Player player) {
         Hibernate.initialize(player.getPlayerStats());
     }
 
-    public void loadSessionsToPlayer(Player player) {
+    private void loadSessionsToPlayer(Player player) {
         Hibernate.initialize(player.getSessions());
     }
 
     public void loadLazyDataToPlayer(Player player) {
         loadSessionsToPlayer(player);
-//        Hibernate.initialize(player.getSessions());
         loadFavouriteTournamentsToPlayer(player);
         loadSuggestedTournamentsToPlayer(player);
         loadLocalTournamentsToPlayer(player);

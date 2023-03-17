@@ -11,7 +11,6 @@ import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 
-//import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -20,8 +19,8 @@ public interface TournamentRepository extends JpaRepository<AbstractTournament, 
 
     @Query(value = "select t.* from player_favourite_tournaments pft " +
             "join tournaments t on t.id = pft.tournament_id " +
-            "where pft.player_id = (:playerId) " +
-            "order by field (t.tournament_scope, 'local','global'),t.id",
+            "where pft.player_id = (:playerId) ",
+//            "order by field (t.tournament_scope, 'local','global'),t.id",
             nativeQuery = true)
     List<AbstractTournament> findFavouriteTournaments(@Param("playerId") Long playerId);
 
@@ -45,11 +44,6 @@ public interface TournamentRepository extends JpaRepository<AbstractTournament, 
     @Query(value = "select * from tournaments where tournament_scope = 'suggestion' and player_id = (:playerId)",
             nativeQuery = true)
     List<TournamentSuggestion> findSuggestedTournamentsById(@Param("playerId") Long playerId);
-
-    @Query(value = "select * from tournaments where tournament_scope = 'global' and player_id = (:playerId)",
-            nativeQuery = true)
-    List<TournamentGlobal> findGlobalTournamentsById(@Param("playerId") Long userId);
-
 
     @Query(value = "select * from tournaments where tournament_scope = 'global'",
             nativeQuery = true)
