@@ -33,7 +33,7 @@ mvn clean package
 
 4. Start the application by running the following command:
 
-java -jar target/PokerSessionManager-1.0.jar
+java -jar target/PokerSessionManager-0.0.1-SNAPSHOT.war
 
 5. The application should now be running on http://localhost:8080.
 
