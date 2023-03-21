@@ -31,7 +31,7 @@ public class PokerRoomService {
         if (pokerRoom == null) {
             throw new RuntimeException("Creating poker room failed. Poker room is null.");
         }
-       setPokerRoomDetails(pokerRoom);
+        setPokerRoomDetails(pokerRoom);
         pokerRoomRepository.save(pokerRoom);
     }
 

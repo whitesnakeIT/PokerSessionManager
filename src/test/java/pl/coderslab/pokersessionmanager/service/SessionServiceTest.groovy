@@ -16,11 +16,11 @@ class SessionServiceTest extends Specification {
     def private static final PLAYER_ID = 1L
     def private static final SESSION_ID = 1L
 
-    def sessionRepository = Mock(SessionRepository)
+    def private final sessionRepository = Mock(SessionRepository)
 
-    def userService = Mock(UserService)
+    def private final userService = Mock(UserService)
 
-    def sessionService = new SessionService(sessionRepository, userService)
+    def private final sessionService = new SessionService(sessionRepository, userService)
 
     def mockedPlayer() {
         def player = new Player()

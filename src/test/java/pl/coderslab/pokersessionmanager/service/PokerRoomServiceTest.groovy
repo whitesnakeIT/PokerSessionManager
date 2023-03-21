@@ -13,29 +13,28 @@ import spock.lang.Ignore
 import spock.lang.Specification
 
 @SpringBootTest
-//(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 class PokerRoomServiceTest extends Specification {
 
     def private static final PLAYER_ID = 1L
     def private static final POKER_ROOM_ID = 1L
 
 
-    def pokerRoomRepository = Mock(PokerRoomRepository.class)
-    def userService = Mock(UserService.class)
-    def pokerRoomMapper = Mock(PokerRoomMapper.class)
+    def private final pokerRoomRepository = Mock(PokerRoomRepository.class)
+    def private final userService = Mock(UserService.class)
+    def private final pokerRoomMapper = Mock(PokerRoomMapper.class)
 
-    def pokerRoomService = new PokerRoomService(pokerRoomRepository, userService, pokerRoomMapper)
+    def private final pokerRoomService = new PokerRoomService(pokerRoomRepository, userService, pokerRoomMapper)
 
-    def mockedPokerRoomService = Mock(PokerRoomService.class)
+    def private final mockedPokerRoomService = Mock(PokerRoomService.class)
 
-    def mockedPlayer() {
+    def private final mockedPlayer() {
         def player = new Player()
         player.id = 1
 
         player
     }
 
-    def mockedPokerRoom() {
+    def private final mockedPokerRoom() {
         def pokerRoom = new PokerRoom()
         pokerRoom.id = 1L
         pokerRoom.name = "testPokerRoom"
@@ -46,18 +45,18 @@ class PokerRoomServiceTest extends Specification {
         pokerRoom
     }
 
-    private mockedPokerRoomSlimWithOnlyId() {
+    def private final mockedPokerRoomSlimWithOnlyId() {
         def pokerRoomSlim = new PokerRoomSlim()
         pokerRoomSlim.id = 1
 
         pokerRoomSlim
     }
 
-    def mockedPokerRoomList() {
+    def private final mockedPokerRoomList() {
         [new PokerRoom(), new PokerRoom()]
     }
 
-    def stubsForFindByIdRepositoryMethod() {
+    def private final stubsForFindByIdRepositoryMethod() {
         pokerRoomRepository.findById(_ as Long) >> Optional.of(mockedPokerRoom())
         userService.getLoggedUser() >> mockedPlayer()
         userService.isLoggedAsAdmin() >> true

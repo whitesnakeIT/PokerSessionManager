@@ -11,15 +11,15 @@ class PlayerServiceTest extends Specification {
 
     def private final static PLAYER_ID = 1L
 
-    def playerRepository = Mock(PlayerRepository.class)
-    def playerService = new PlayerService(playerRepository)
+    def private final playerRepository = Mock(PlayerRepository.class)
+    def private final playerService = new PlayerService(playerRepository)
 
-    def mockedPlayerList() {
+    def private final mockedPlayerList() {
 
         [new Player(), new Player()]
     }
 
-    def mockedPlayer() {
+    def private final mockedPlayer() {
         def player = new Player()
         player.id = PLAYER_ID
         player.firstName = "testPlayer"

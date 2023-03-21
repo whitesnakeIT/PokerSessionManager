@@ -50,7 +50,7 @@ public class UserService {
     public <T extends User> void create(T user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setEnabled(1);
-        user.addRole(roleService.getAdminRole());
+        user.addRole(roleService.findByName(RoleName.ROLE_ADMIN));
         userRepository.save(user);
 
     }

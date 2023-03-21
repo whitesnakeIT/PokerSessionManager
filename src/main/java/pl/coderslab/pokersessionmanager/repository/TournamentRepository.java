@@ -20,17 +20,16 @@ public interface TournamentRepository extends JpaRepository<AbstractTournament, 
     @Query(value = "select t.* from player_favourite_tournaments pft " +
             "join tournaments t on t.id = pft.tournament_id " +
             "where pft.player_id = (:playerId) ",
-//            "order by field (t.tournament_scope, 'local','global'),t.id",
             nativeQuery = true)
     List<AbstractTournament> findFavouriteTournaments(@Param("playerId") Long playerId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "delete from player_favourite_tournaments " +
             "where player_id=(:playerId) and tournament_id=(:tournamentId)",
             nativeQuery = true)
     void deleteTournamentFromFavourites(@Param("playerId") Long playerId, @Param("tournamentId") Long tournamentId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "insert  into  player_favourite_tournaments " +
             "(player_id,tournament_id) values " +
             "((:playerId),(:tournamentId))",

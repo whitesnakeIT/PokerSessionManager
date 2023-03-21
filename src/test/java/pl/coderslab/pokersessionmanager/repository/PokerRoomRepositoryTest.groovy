@@ -8,12 +8,12 @@ import spock.lang.Specification
 class PokerRoomRepositoryTest extends Specification {
 
     @Autowired
-    private PokerRoomRepository pokerRoomRepository;
+    private PokerRoomRepository pokerRoomRepository
 
-    private static final PLAYER_ID = 1L;
+    def private static final PLAYER_ID = 1L
 
-
-    def "should return amount of poker rooms by user id"() {
+    def """should check if repository method findPokerRoomsByPlayerId(@Param("playerId") Long playerId)
+is correctly returning list of player poker rooms based by player id"""() {
         when:
         def playerPokerRooms = pokerRoomRepository.findPokerRoomsByPlayerId(PLAYER_ID)
 
@@ -21,11 +21,13 @@ class PokerRoomRepositoryTest extends Specification {
         playerPokerRooms.size() == 1
     }
 
-    def "should return amount of poker rooms global (without owner), available for every player"() {
+    def """should check if repository method findGlobalPokerRooms()
+is correctly returning list of type PokerRoom without owner"""() {
         when:
         def globalPokerRooms = pokerRoomRepository.findGlobalPokerRooms()
 
         then:
-        globalPokerRooms.size() == 2;
+        globalPokerRooms.size() == 2
+        globalPokerRooms.every { it.player == null }
     }
 }

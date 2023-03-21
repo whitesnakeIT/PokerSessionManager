@@ -10,14 +10,15 @@ class SessionRepositoryTest extends Specification {
     @Autowired
     private SessionRepository sessionRepository
 
-    private static final PLAYER_ID = 1L;
+    def private static final PLAYER_ID = 1L
 
-
-    def "should return all user sessions by user id"() {
+    def """should check if repository method findSessionsByPlayerId(@Param(value = "playerId") Long playerId)
+is correctly returning list of player sessions based on player id"""() {
         when:
         def sessionList = sessionRepository.findSessionsByPlayerId(PLAYER_ID)
 
         then:
-        sessionList.size() == 1;
+        sessionList.size() == 1
+        sessionList.every { it.player.id == PLAYER_ID }
     }
 }
