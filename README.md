@@ -5,7 +5,7 @@ PokerSessionManager is a Java-based web application that helps to manage poker s
 
 Coming soon
 
-1. Graphs will be added + exprot to files
+1. Graphs will be added + export to files
 2. New graphical interface
 3. More useful statistics
 4. Project will be on external server
