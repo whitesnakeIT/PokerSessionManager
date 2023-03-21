@@ -7,7 +7,6 @@ import pl.coderslab.pokersessionmanager.entity.Role;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.RoleRepository;
 
-//import javax.transaction.Transactional;
 
 @Service
 @Transactional
@@ -15,12 +14,11 @@ import pl.coderslab.pokersessionmanager.repository.RoleRepository;
 public class RoleService {
     private final RoleRepository roleRepository;
 
-    public Role getUserRole(){
-        return roleRepository.findByName(RoleName.ROLE_USER.toString());
-    }
-    public Role getAdminRole() {
-
-        return roleRepository.findByName(RoleName.ROLE_ADMIN.toString());
-
+    public Role findByName(RoleName roleName) {
+        if (roleName == null) {
+            throw new RuntimeException("Searching for role failed. Role name is null.");
+        }
+        return roleRepository.findByName(roleName)
+                .orElseThrow(() -> new RuntimeException("Searching for role failed. Unrecognized roleName: " + roleName));
     }
 }

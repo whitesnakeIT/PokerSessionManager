@@ -13,7 +13,6 @@ import pl.coderslab.pokersessionmanager.service.RedirectService;
 import pl.coderslab.pokersessionmanager.service.SessionService;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 import pl.coderslab.pokersessionmanager.service.UserService;
-import pl.coderslab.pokersessionmanager.utilities.Factory;
 
 import java.util.List;
 
@@ -25,27 +24,25 @@ public class SessionController {
     private final SessionService sessionService;
     private final TournamentService tournamentService;
     private final UserService userService;
-
     private final RedirectService redirectService;
 
     @GetMapping("/all")
     public String showAllSessions(Model model) {
-
         User player = userService.getLoggedUser();
         model.addAttribute("allUserSessions",
-                sessionService.findAllUserSessions(player.getId()));
+                sessionService.findSessionsByPlayerId(player.getId()));
 
         return "session/allSessionList";
     }
 
     @GetMapping("/add")
     public String addSessionGet(Model model) {
-        model.addAttribute("session", Factory.create(Session.class));
+        model.addAttribute("session", new Session());
 
         return "session/sessionForm";
     }
 
-    @PostMapping({"/add", "/edit/{id}"})
+    @PostMapping("/add")
     public String addSessionPost(@Valid Session session,
                                  BindingResult result) {
         if (result.hasErrors()) {
@@ -54,45 +51,41 @@ public class SessionController {
         }
         sessionService.create(session);
 
-//        return "redirect:/app/session/all";
-
-        return redirectService.sendRedirectAfterEditingEntity(Session.class, session.getPlayer());
+        return "redirect:/app/session/all";
     }
 
-
-    @GetMapping("/edit/{sessionId}")
-    public String editSessionGet(@PathVariable Long sessionId,
+    @GetMapping("/edit/{id}")
+    public String editSessionGet(@PathVariable(name = "id") Long sessionId,
                                  Model model) {
         model.addAttribute(sessionService.findById(sessionId));
 
         return "session/sessionForm";
     }
 
-//    @PostMapping("/edit/{id}")
-//    public String editSessionPost(@Valid Session session,
-//                                  BindingResult result) {
-//        if (result.hasErrors()) {
-//
-//            return "/session/sessionForm";
-//        }
-//        sessionService.create(session);
-//
-//        return "redirect:/app/session/all";
-//    }
+    @PostMapping("/edit/{id}")
+    public String editSessionPost(@Valid Session session,
+                                  BindingResult result) {
+        if (result.hasErrors()) {
+
+            return "/session/sessionForm";
+        }
+        sessionService.edit(session);
+
+        return redirectService.setRedirectAfterProcessingSession(session.getId());
+    }
 
     @GetMapping("/delete/{id}")
-    public String deleteSession(@PathVariable Long id) {
-        Session session = sessionService.findById(id);
-        sessionService.delete(id);
+    public String deleteSession(@PathVariable(name = "id") Long sessionId) {
+        String redirectUrl = redirectService.setRedirectAfterProcessingSession(sessionId);
+        sessionService.delete(sessionId);
 
-//        return "redirect:/app/session/all";
-        return redirectService.sendRedirectAfterEditingEntity(Session.class, session.getPlayer());
+        return redirectUrl;
     }
 
     @ModelAttribute("availableSessionTournaments")
     public List<AbstractTournament> getAvailableTournamentsForSessionOrderByFavourites() {
         return tournamentService.
-                getAvailableTournamentsForSessionOrderByFavourites(userService.getLoggedUser().getId());
+                getAvailableTournamentsForSessionOrderByFavourites(userService.getLoggedUserId());
     }
 }
 

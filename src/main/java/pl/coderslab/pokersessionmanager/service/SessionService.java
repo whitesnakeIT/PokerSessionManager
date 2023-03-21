@@ -8,7 +8,6 @@ import pl.coderslab.pokersessionmanager.entity.Session;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
-import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.repository.SessionRepository;
 
 import java.util.List;
@@ -18,68 +17,110 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class SessionService {
-
     private final SessionRepository sessionRepository;
 
     private final UserService userService;
 
     public void create(Session session) {
-        sessionRepository.save(setOwnerAndDetails(session));
-    }
-
-    public Session setOwnerAndDetails(Session session) {
-        if (session.getId() == null) {
-            User loggedUser = userService.getLoggedUser();
-            session.setPlayer((Player) loggedUser);
-        } else {
-            Session sessionFromDb = findById(session.getId());
-            session.setPlayer(sessionFromDb.getPlayer());
+        if (session == null) {
+            throw new RuntimeException("Creating session failed. Session is null.");
         }
-        session.setTournamentCount(session.getSessionTournaments().size());
-        session.setTotalCost(countTotalSessionCost(session));
-        return session;
+        setOwner(session);
+        setSessionDetails(session);
+        sessionRepository.save(session);
     }
 
-    public List<Session> findAllUserSessions(Long userId) {
-        return sessionRepository.findSessionsByPlayerId(userId);
+    public void edit(Session session) {
+        if (session == null) {
+            throw new RuntimeException("Editing session failed. Session id is null.");
+        }
+        sessionRepository.save(session);
+    }
+
+    public List<Session> findSessionsByPlayerId(Long playerId) {
+        if (playerId == null) {
+            throw new RuntimeException("Searching all player sessions failed. Player id is null");
+        }
+        return sessionRepository.findSessionsByPlayerId(playerId);
     }
 
     public Session findById(Long sessionId) {
-        Session session = sessionRepository
-                .findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("I can't find/convert session by session Id."));
+        if (sessionId == null) {
+            throw new RuntimeException("Searching for session failed. Session id is null.");
+        }
+        Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new RuntimeException("Searching for session failed. Unrecognized session id: " + sessionId));
 
         loadTournamentsToSession(session);
 
         User user = userService.getLoggedUser();
-        if (!checkIfPokerSessionBelongsToUser(session, user)) {
-            throw new RuntimeException("Session not belongs to You");
+        if (!checkIfSessionBelongsToUser(session, user)) {
+            throw new RuntimeException("Searching for session failed. No permission to processing with this session.");
         }
-        return session;
 
+        return session;
     }
 
     public void delete(Long sessionId) {
+        if (sessionId == null) {
+            throw new RuntimeException("Deleting session failed. Session id is null.");
+        }
         sessionRepository.delete(findById(sessionId));
     }
 
     public void loadTournamentsToSession(Session session) {
+        if (session == null) {
+            throw new RuntimeException("Loading tournaments to session failed. Session is null.");
+        }
         Hibernate.initialize(session.getSessionTournaments());
     }
 
-    public boolean checkIfPokerSessionBelongsToUser(Session session, User user) {
-        // Administrator can't have poker sessions
-        if (user.hasRole(RoleName.ROLE_ADMIN)) {
+    public boolean checkIfSessionBelongsToUser(Session session, User user) {
+        if (session == null) {
+            throw new RuntimeException("Checking if session belongs to user failed. Session is null.");
+        }
+        if (user == null) {
+            throw new RuntimeException("Checking if session belongs to user failed. User is null.");
+        }
+        if (userService.isLoggedAsAdmin()) {
             return true;
         }
         Optional<User> owner = Optional.ofNullable(session.getPlayer());
         if (owner.isEmpty()) {
-            return false;
+            throw new RuntimeException("Checking if session belongs to user failed. Session don't have owner.");
         }
         return session.getPlayer().equals(user);
     }
 
-    public double countTotalSessionCost(Session session) {
-        return session.getSessionTournaments().stream().mapToDouble(AbstractTournament::getBuyIn).sum();
+    private void setOwner(Session session) {
+        if (session == null) {
+            throw new RuntimeException("Setting session owner failed. Session is null");
+        }
+
+        if (userService.isLoggedAsUser()) {
+            session.setPlayer((Player) userService.getLoggedUser());
+        } else
+
+            throw new RuntimeException("Setting owner for session failed. Owner must have Player class.");
     }
+
+    private void setSessionDetails(Session session) {
+        if (session == null) {
+            throw new RuntimeException("Setting session details failed. Session is null");
+        }
+        session.setTournamentCount(session.getSessionTournaments().size());
+        session.setTotalCost(countTotalSessionCost(session));
+    }
+
+    private double countTotalSessionCost(Session session) {
+        if (session == null) {
+            throw new RuntimeException("Counting total session cost failed. Session is null.");
+        }
+        return session.getSessionTournaments()
+                .stream()
+                .mapToDouble(AbstractTournament::getBuyIn)
+                .sum();
+    }
+
+
 }

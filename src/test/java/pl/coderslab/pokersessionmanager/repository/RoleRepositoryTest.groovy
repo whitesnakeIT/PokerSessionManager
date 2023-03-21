@@ -1,29 +1,25 @@
 package pl.coderslab.pokersessionmanager.repository
 
-import org.spockframework.spring.EnableSharedInjection
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
-import pl.coderslab.pokersessionmanager.entity.Role
 import pl.coderslab.pokersessionmanager.enums.RoleName
-import spock.lang.Shared
 import spock.lang.Specification
 
 @DataJpaTest
-@EnableSharedInjection
 class RoleRepositoryTest extends Specification {
 
     @Autowired
     private RoleRepository roleRepository
 
-
-    def "should return Role by role name"() {
+    def """should check if repository method findByName(String roleName) is correctly
+ returning role object when we pass valid argument"""() {
         given:
-        def roleAdminName = RoleName.ROLE_ADMIN.toString()
+        def roleAdmin = RoleName.ROLE_ADMIN
 
         when:
-        Role roleAdmin = roleRepository.findByName(roleAdminName)
+        def optionalRole = roleRepository.findByName(roleAdmin)
 
         then:
-        roleAdmin.name == RoleName.ROLE_ADMIN
+        optionalRole.isPresent()
     }
 }

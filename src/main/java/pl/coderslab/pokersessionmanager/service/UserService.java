@@ -50,7 +50,7 @@ public class UserService {
     public <T extends User> void create(T user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setEnabled(1);
-        user.addRole(roleService.getAdminRole());
+        user.addRole(roleService.findByName(RoleName.ROLE_ADMIN));
         userRepository.save(user);
 
     }
@@ -134,9 +134,16 @@ public class UserService {
     }
 
     public User getLoggedUser() {
+        return findById(((CurrentUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal())
+                .getUser()
+                .getId());
+    }
 
-        return findById(((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUser().getId());
+    public Long getLoggedUserId() {
+        return getLoggedUser().getId();
     }
 
     public Collection<? extends GrantedAuthority> getLoggedUserAuthority() {

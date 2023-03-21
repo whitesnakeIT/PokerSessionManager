@@ -29,7 +29,7 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 //    }
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String redirectUrl = request.getContextPath();
-        System.out.println(redirectUrl);
+//        System.out.println(redirectUrl);
         if (authorities.contains(Factory.create(RoleName.ROLE_ADMIN))) {
             redirectUrl = redirectUrl.concat("app/admin/dashboard");
         } else if (authorities.contains(Factory.create(RoleName.ROLE_USER))) {

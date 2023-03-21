@@ -1,14 +1,11 @@
 package pl.coderslab.pokersessionmanager.service;
 
-import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import pl.coderslab.pokersessionmanager.entity.PokerRoom;
-import pl.coderslab.pokersessionmanager.entity.user.User;
-import pl.coderslab.pokersessionmanager.enums.ClassNamesForFactory;
 import pl.coderslab.pokersessionmanager.enums.PokerRoomScope;
 import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.enums.UserType;
@@ -23,6 +20,7 @@ public class RedirectService {
 
     private final UserService userService;
     private final PokerRoomService pokerRoomService;
+    private final SessionService sessionService;
 
     public String sendRedirectEmptyUrl() {
 
@@ -40,15 +38,7 @@ public class RedirectService {
     }
 
     public String sendRedirectLoginPage() {
-        System.out.println();
-        System.out.println("sendRedirectLoginPage");
-
-        Collection<? extends GrantedAuthority> authorities =
-                userService.getLoggedUserAuthority();
-
-        if (authorities.contains(
-                Factory.create(
-                        RoleName.ROLE_ANONYMOUS))) {
+        if (userService.isAnonymous()) {
             return "authorization/login/loginForm";
         }
 
@@ -73,12 +63,14 @@ public class RedirectService {
     }
 
 
-    public String setRedirectAfterProcessingPokerRoomSlim(Long pokerRoomId) {
-
+    public String setRedirectAfterProcessingPokerRoomSlim(Long pokerRoomSlimId) {
+        if (pokerRoomSlimId == null) {
+            throw new RuntimeException("Setting poker room redirect url failed. Poker room slim id is null.");
+        }
 //        if (userService.isLoggedAsUser()) {
 //            return ("redirect:/app/poker_room/local/all");
 //        } else if (userService.isLoggedAsAdmin()) {
-//            Optional<Player> optionalOwner = pokerRoomService.findPokerRoomOwner(pokerRoomId);
+//            Optional<Player> optionalOwner = pokerRoomService.findPokerRoomOwner(pokerRoomSlimId);
 //            if (optionalOwner.isEmpty()) {
 //                return "redirect:/app/poker_room/global/all";
 //            } else {
@@ -87,7 +79,7 @@ public class RedirectService {
 //        }
         // not for deleting...
 
-        PokerRoom pokerRoom = pokerRoomService.findById(pokerRoomId);
+        PokerRoom pokerRoom = pokerRoomService.findById(pokerRoomSlimId);
 
         switch (pokerRoom.getPokerRoomScope()) {
 
@@ -102,38 +94,22 @@ public class RedirectService {
             case GLOBAL -> {
                 return "redirect:/app/poker_room/global/all";
             }
-
         }
 
-        throw new RuntimeException("I can't set redirect after processing Poker Room.");
+        throw new RuntimeException("Setting poker room redirect url failed.");
     }
 
-    public <T> String sendRedirectAfterEditingEntity(Class<T> clazz, @Nullable User owner) {
-        User loggedUser = userService.getLoggedUser();
-        PokerRoomScope scope = owner != null ? PokerRoomScope.LOCAL : PokerRoomScope.GLOBAL;
-        if (clazz.getSimpleName().equals(ClassNamesForFactory.POKER_ROOM.toString())) {
-
-            // If admin is editing user Entity
-            if (loggedUser.hasRole(RoleName.ROLE_ADMIN) && owner != null) {
-
-                return "redirect:/app/admin/users/details/".concat(String.valueOf(owner.getId()));
-            } else {
-
-                // If User or admin are editing entities
-                return "redirect:/app/poker_room/".concat(scope.toString()).concat("/all");
-            }
+    public String setRedirectAfterProcessingSession(Long sessionId) {
+        if (sessionId == null) {
+            throw new RuntimeException("Setting session redirect url failed. Session id is null.");
         }
-        if (clazz.getSimpleName().equals(ClassNamesForFactory.SESSION.toString())) {
-            if (loggedUser.hasRole(RoleName.ROLE_ADMIN) && owner != null) {
-                return "redirect:/app/admin/users/details/".concat(String.valueOf(owner.getId()));
-            } else {
+        Long sessionOwnerId = sessionService.findById(sessionId).getPlayer().getId();
+        if (userService.isLoggedAsUser()) {
 
-// If User or admin are editing entities
-                return "redirect:/app/session/all";
-            }
+            return "redirect:/app/session/all";
+        } else if (userService.isLoggedAsAdmin()) {
+            return String.format("redirect:/app/admin/users/details/%d", sessionOwnerId);
         }
-        throw new RuntimeException("I can't send redirect");
-
+        throw new RuntimeException("Setting session redirect url failed.");
     }
-
 }

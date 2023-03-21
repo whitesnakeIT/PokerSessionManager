@@ -25,6 +25,8 @@ insert into tournaments(tournament_scope,id, buy_in, handed, name, re_buy, speed
 values ('global',2,200,6,'200$ 6-handed KO',true,'normal','proggressive bounty',null,2);
 insert into tournaments(tournament_scope,id, buy_in, handed, name, re_buy, speed, type, player_id, poker_room_id)
 values ('global',3,300,8,'300$ 8-handed freezout',false,'slow','normal',null,3);
+insert into tournaments(tournament_scope,id, buy_in, handed, name, re_buy, speed, type, player_id, poker_room_id)
+values ('suggestion',4,400,3,'400$ 3-handed freezout',false,'turbo','normal',1,null);
 
 insert into roles (id, name)
 values (1, 'ROLE_ADMIN');

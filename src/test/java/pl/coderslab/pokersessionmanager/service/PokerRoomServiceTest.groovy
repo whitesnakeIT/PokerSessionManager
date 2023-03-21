@@ -12,28 +12,29 @@ import pl.coderslab.pokersessionmanager.repository.PokerRoomRepository
 import spock.lang.Ignore
 import spock.lang.Specification
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest
 class PokerRoomServiceTest extends Specification {
 
-    def pokerRoomRepository = Mock(PokerRoomRepository.class)
-    def userService = Mock(UserService.class)
-    def pokerRoomMapper = Mock(PokerRoomMapper.class)
+    def private static final PLAYER_ID = 1L
+    def private static final POKER_ROOM_ID = 1L
 
-    def pokerRoomService = new PokerRoomService(pokerRoomRepository, userService, pokerRoomMapper)
 
-    def mockedPokerRoomService = Mock(PokerRoomService.class)
+    def private final pokerRoomRepository = Mock(PokerRoomRepository.class)
+    def private final userService = Mock(UserService.class)
+    def private final pokerRoomMapper = Mock(PokerRoomMapper.class)
 
-    def mockedPlayer() {
+    def private final pokerRoomService = new PokerRoomService(pokerRoomRepository, userService, pokerRoomMapper)
+
+    def private final mockedPokerRoomService = Mock(PokerRoomService.class)
+
+    def private final mockedPlayer() {
         def player = new Player()
         player.id = 1
 
         player
     }
 
-    def private static final PLAYER_ID = 1L
-    def private static final POKER_ROOM_ID = 1L
-
-    def mockedPokerRoom() {
+    def private final mockedPokerRoom() {
         def pokerRoom = new PokerRoom()
         pokerRoom.id = 1L
         pokerRoom.name = "testPokerRoom"
@@ -44,22 +45,28 @@ class PokerRoomServiceTest extends Specification {
         pokerRoom
     }
 
-    private mockedPokerRoomSlimWithOnlyId() {
+    def private final mockedPokerRoomSlimWithOnlyId() {
         def pokerRoomSlim = new PokerRoomSlim()
         pokerRoomSlim.id = 1
 
         pokerRoomSlim
     }
 
-    def mockedPokerRoomList() {
+    def private final mockedPokerRoomList() {
         [new PokerRoom(), new PokerRoom()]
     }
 
+    def private final stubsForFindByIdRepositoryMethod() {
+        pokerRoomRepository.findById(_ as Long) >> Optional.of(mockedPokerRoom())
+        userService.getLoggedUser() >> mockedPlayer()
+        userService.isLoggedAsAdmin() >> true
+    }
+
     def """should check if service method create(PokerRoom pokerRoom)
-is invoking method save(PokerRoom pokerRoom) from repository with the same object exactly once"""() {
+ is invoking method save(PokerRoom pokerRoom) from repository with the same object exactly once"""() {
         given:
+        userService.isLoggedAsUser() >> true
         def pokerRoom = new PokerRoom()
-        pokerRoomRepository.save(_ as PokerRoom) >> mockedPokerRoom()
 
         when:
         pokerRoomService.create(pokerRoom)
@@ -69,7 +76,7 @@ is invoking method save(PokerRoom pokerRoom) from repository with the same objec
     }
 
     def """should check if service method create(PokerRoom pokerRoom)
-is throwing an exception when pokerRoom is null"""() {
+ is throwing an exception when pokerRoom is null"""() {
         when:
         pokerRoomService.create(null as PokerRoom)
 
@@ -81,6 +88,7 @@ is throwing an exception when pokerRoom is null"""() {
     def """for service method create(PokerRoomSlim pokerRoomSlim) should first converter DTO to Entity
  and then execute repository method save(PokerRoom pokerRoom) for converted object exactly once"""() {
         given:
+        userService.isLoggedAsUser() >> true
         pokerRoomMapper.pokerRoomSlimToPokerRoom(_ as PokerRoomSlim) >> mockedPokerRoom()
 
         when:
@@ -102,7 +110,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
 
 
     def """should check if service method setPokerRoomScopeByRole()
-is setting PokerRoomScope.GLOBAL when basic administrator is logged"""() {
+ is setting PokerRoomScope.GLOBAL when basic administrator is logged"""() {
         given:
         userService.isLoggedAsAdmin() >> true
 
@@ -115,7 +123,7 @@ is setting PokerRoomScope.GLOBAL when basic administrator is logged"""() {
     }
 
     def """should check if service method setPokerRoomScopeByRole()
-is setting PokerRoomScope.LOCAL when basic user is logged"""() {
+ is setting PokerRoomScope.LOCAL when basic user is logged"""() {
         given:
         userService.isLoggedAsUser() >> true
 
@@ -133,34 +141,29 @@ is setting PokerRoomScope.LOCAL when basic user is logged"""() {
         !userService.isLoggedAsAdmin() || !userService.isLoggedAsUser() >> false
 
         when:
-        userService.isLoggedAsUser()
         pokerRoomService.setPokerRoomScopeByRole()
 
         then:
         def exception = thrown(RuntimeException)
-        exception.message == "Setting poker room scope by role failed."
+        exception.message == "Setting poker room scope by role failed. Unrecognized logged user role."
     }
 
     def """for service method edit(PokerRoomSlim pokerRoomSlim) should first update entity from DTO
  and then execute repository method save(PokerRoom pokerRoom) for converter object exactly once"""() {
         given:
+        stubsForFindByIdRepositoryMethod()
+        pokerRoomMapper.updatePokerRoomFromPokerRoomSlim(_ as PokerRoomSlim, _ as PokerRoom) >> mockedPokerRoom()
         def pokerRoomSlim = mockedPokerRoomSlimWithOnlyId()
 
         when:
         pokerRoomService.edit(pokerRoomSlim)
-
-        then: "need to mock few methods inside, these methods tested below"
-        pokerRoomMapper.updatePokerRoomFromPokerRoomSlim(_ as PokerRoomSlim, _ as PokerRoom) >> mockedPokerRoom()
-        pokerRoomRepository.findById(_ as Long) >> Optional.ofNullable(mockedPokerRoom())
-        userService.getLoggedUser() >> new User()
-        userService.isLoggedAsAdmin() >> true
 
         then:
         1 * pokerRoomRepository.save(mockedPokerRoom())
     }
 
     def """should check if service method edit(PokerRoomSlim pokerRoomSlim) is throwing an exception
-when pokerRoomSlim is null"""() {
+ when pokerRoomSlim is null"""() {
         when:
         pokerRoomService.edit(null)
 
@@ -170,7 +173,7 @@ when pokerRoomSlim is null"""() {
     }
 
     def """should check if service method checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user)
-is returning true when basic user is logged and poker room belongs to him"""() {
+ is returning true when basic user is logged and poker room belongs to him"""() {
         given:
         userService.isLoggedAsUser() >> true
 
@@ -183,7 +186,7 @@ is returning true when basic user is logged and poker room belongs to him"""() {
     }
 
     def """should check if service method checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user)
-is returning false when basic user is logged and poker room not belongs to him"""() {
+ is returning false when basic user is logged but poker room not belongs to him"""() {
         given:
         userService.isLoggedAsUser() >> true
 
@@ -196,7 +199,20 @@ is returning false when basic user is logged and poker room not belongs to him""
     }
 
     def """should check if service method checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user)
-is returning true when administrator is logged"""() {
+ is returning false when basic user is logged but poker room don't have owner"""() {
+        given:
+        userService.isLoggedAsUser() >> true
+
+        when:
+        def result = pokerRoomService
+                .checkIfPokerRoomBelongsToUser(new PokerRoom(), new Player())
+
+        then:
+        !result
+    }
+
+    def """should check if service method checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user)
+ is returning true when administrator is logged"""() {
         given:
         userService.isLoggedAsAdmin() >> true
 
@@ -209,7 +225,7 @@ is returning true when administrator is logged"""() {
     }
 
     def """should check if service method checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user)
-is throwing an exception when User type parameter is null"""() {
+ is throwing an exception when User type parameter is null"""() {
         when:
         pokerRoomService
                 .checkIfPokerRoomBelongsToUser(new PokerRoom(), null)
@@ -220,7 +236,7 @@ is throwing an exception when User type parameter is null"""() {
     }
 
     def """should check if service method checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user)
-is throwing an exception when PokerRoom type parameter is null"""() {
+ is throwing an exception when PokerRoom type parameter is null"""() {
         when:
         pokerRoomService
                 .checkIfPokerRoomBelongsToUser(null, new User())
@@ -231,24 +247,20 @@ is throwing an exception when PokerRoom type parameter is null"""() {
     }
 
     def """should check if service method delete(Long pokerRoomId) is invoking
-method delete(Long pokerRoomId) from repository on the same object"""() {
+ method delete(Long pokerRoomId) from repository on the same object exactly once"""() {
         given:
+        stubsForFindByIdRepositoryMethod()
         def pokerRoom = mockedPokerRoom()
 
         when:
-        pokerRoomService.delete(pokerRoom.getId())
-
-        then:
-        pokerRoomRepository.findById(_ as Long) >> Optional.ofNullable(pokerRoom)
-        userService.getLoggedUser() >> new User()
-        userService.isLoggedAsAdmin() >> true
+        pokerRoomService.delete(POKER_ROOM_ID)
 
         then:
         1 * pokerRoomRepository.delete(pokerRoom)
     }
 
     def """should check if service method delete(Long pokerRoomId) is throwing
-an exception when pokerRoomId is null"""() {
+ an exception when pokerRoomId is null"""() {
         when:
         pokerRoomService.delete(null)
 
@@ -259,7 +271,7 @@ an exception when pokerRoomId is null"""() {
     }
 
     def """should check if service method findPokerRoomsByUserId(Long userId) is returning
-correct size of list"""() {
+ correct size of list"""() {
         given:
         pokerRoomRepository.findPokerRoomsByPlayerId(PLAYER_ID) >> mockedPokerRoomList()
 
@@ -271,7 +283,7 @@ correct size of list"""() {
     }
 
     def """should check if service method findPokerRoomsByUserId(Long userId) is throwing
-an exception when userId is null"""() {
+ an exception when userId is null"""() {
         when:
         pokerRoomService.findPokerRoomsByPlayerId(null)
 
@@ -281,21 +293,19 @@ an exception when userId is null"""() {
     }
 
     def """should check if service method findById(Long pokerRoomId) is returning
-poker room entity object based on the pokerRoomId"""() {
+ poker room entity object based on the pokerRoomId"""() {
+        given:
+        stubsForFindByIdRepositoryMethod()
+
         when:
         def pokerRoom = pokerRoomService.findById(POKER_ROOM_ID)
-
-        then:
-        pokerRoomRepository.findById(_ as Long) >> Optional.ofNullable(mockedPokerRoom())
-        userService.getLoggedUser() >> new User()
-        userService.isLoggedAsAdmin() >> true
 
         then:
         pokerRoom.name == "testPokerRoom"
     }
 
     def """should check if service method findById(Long pokerRoomId) is throwing an exception
-when pokerRoomId is null"""() {
+ when pokerRoomId is null"""() {
         when:
         pokerRoomService.findById(null)
 
@@ -304,9 +314,30 @@ when pokerRoomId is null"""() {
         exception.message == "Searching for poker room failed. Poker room id is null."
     }
 
+    def """should check if service method findById(Long pokerRoomId) is throwing an exception
+ when pokerRoom belongs to logged user"""() {
+        given: "need to prepare other player with other poker room which belongs to him"
+        def pokerRoomNotBelongsToUser = new PokerRoom()
+        pokerRoomNotBelongsToUser.id = 2
+
+        def otherOwner = new Player()
+        pokerRoomNotBelongsToUser.player = otherOwner
+
+        and: "need to stub methods for repository method findById(Long pokerRoomId)"
+        userService.isLoggedAsUser() >> true
+        pokerRoomRepository.findById(_ as Long) >> Optional.of(pokerRoomNotBelongsToUser)
+        userService.getLoggedUser() >> mockedPlayer()
+
+        when:
+        pokerRoomService.findById(pokerRoomNotBelongsToUser.id)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Searching for poker room failed. No permission to processing with this poker room."
+    }
 
     def """should check if service method findGlobalPokerRooms() is returning
-correct size of the list of type PokerRoom"""() {
+ correct size of the list of type PokerRoom"""() {
         given:
         pokerRoomRepository.findGlobalPokerRooms() >> mockedPokerRoomList()
 
@@ -314,12 +345,14 @@ correct size of the list of type PokerRoom"""() {
         def pokerRoomList = pokerRoomService.findGlobalPokerRooms()
 
         then:
-        pokerRoomList.size() == 2
-        pokerRoomList.every { it instanceof PokerRoom }
+        verifyAll {
+            pokerRoomList.size() == 2
+            pokerRoomList.every { it instanceof PokerRoom }
+        }
     }
 
     def """should check if service method findGlobalPokerRoomsSlim() is returning
-correct size of the list of type PokerRoomSlim"""() {
+ correct size of the list of type PokerRoomSlim"""() {
         given:
         pokerRoomRepository.findGlobalPokerRooms() >> mockedPokerRoomList()
         pokerRoomMapper.pokerRoomToPokerRoomSlim(_ as PokerRoom) >> new PokerRoomSlim()
@@ -333,9 +366,9 @@ correct size of the list of type PokerRoomSlim"""() {
     }
 
     def """should check if service method findAvailablePokerRoomForPlayer() is returning
-correct size of the list of type PokerRoom"""() {
+ correct size of the list of type PokerRoom"""() {
         given:
-        userService.getLoggedUser() >> mockedPlayer()
+        userService.getLoggedUserId() >> PLAYER_ID
         pokerRoomRepository.findPokerRoomsByPlayerId(_ as Long) >> mockedPokerRoomList()
         pokerRoomRepository.findGlobalPokerRooms() >> mockedPokerRoomList()
 
@@ -348,9 +381,9 @@ correct size of the list of type PokerRoom"""() {
     }
 
     def """should check if service method findAvailablePokerRoomForPlayer() is returning
-correct size of the list of type PokerRoomSlim"""() {
+ correct size of the list of type PokerRoomSlim"""() {
         given:
-        userService.getLoggedUser() >> mockedPlayer()
+        userService.getLoggedUserId() >> PLAYER_ID
         pokerRoomRepository.findPokerRoomsByPlayerId(_ as Long) >> mockedPokerRoomList()
         pokerRoomRepository.findGlobalPokerRooms() >> mockedPokerRoomList()
         pokerRoomMapper.pokerRoomToPokerRoomSlim(_ as PokerRoom) >> new PokerRoomSlim()
@@ -365,11 +398,11 @@ correct size of the list of type PokerRoomSlim"""() {
     }
 
     def """should check if service method findAllByScope(PokerRoomScope scope) is returning
-correct list size of type PokerRoom based on '#scope'"""() {
+ correct list size of type PokerRoom based on '#scope'"""() {
         given:
         pokerRoomRepository.findPokerRoomsByPlayerId(_ as Long) >> mockedPokerRoomList()
         pokerRoomRepository.findGlobalPokerRooms() >> mockedPokerRoomList()
-        userService.getLoggedUser() >> mockedPlayer()
+        userService.getLoggedUserId() >> PLAYER_ID
 
         when:
         def pokerRoomsByScope = pokerRoomService.findAllByScope(scope)
@@ -385,7 +418,7 @@ correct list size of type PokerRoom based on '#scope'"""() {
     }
 
     def """should check if service method findAllByScope(PokerRoomScope scope) is throwing
-an exception when scope is null"""() {
+ an exception when scope is null"""() {
         when:
         pokerRoomService.findAllByScope(null)
 
@@ -396,8 +429,9 @@ an exception when scope is null"""() {
 
     @Ignore
     def """should check if service method findAllByScope(PokerRoomScope scope) is throwing
-an exception when scope is not recognized"""() {
-        when: "how to declare unrecognized enum"
+ an exception when scope is not recognized"""() {
+        when: "how to declare unrecognized enum? dead code to remove"
+        PokerRoomScope
         pokerRoomService.findAllByScope(null)
 
         then:
@@ -406,11 +440,11 @@ an exception when scope is not recognized"""() {
     }
 
     def """should check if service method findAllSlimByScope(PokerRoomScope scope) is returning
-correct list size of type PokerRoomSlim based on '#scope'"""() {
+ correct list size of type PokerRoomSlim based on '#scope'"""() {
         given:
         pokerRoomRepository.findPokerRoomsByPlayerId(_ as Long) >> mockedPokerRoomList()
         pokerRoomRepository.findGlobalPokerRooms() >> mockedPokerRoomList()
-        userService.getLoggedUser() >> mockedPlayer()
+        userService.getLoggedUserId() >> PLAYER_ID
         pokerRoomMapper.pokerRoomToPokerRoomSlim(_ as PokerRoom) >> new PokerRoomSlim()
 
         when:
@@ -427,7 +461,7 @@ correct list size of type PokerRoomSlim based on '#scope'"""() {
     }
 
     def """should check if service method findAllSlimByScope(PokerRoomScope scope) is throwing
-an exception when scope is null"""() {
+ an exception when scope is null"""() {
         when:
         pokerRoomService.findAllSlimByScope(null)
 
@@ -437,11 +471,9 @@ an exception when scope is null"""() {
     }
 
     def """should check if service method finSlimById(Long pokerRoomSlimId) is returning
-poker room slim object based on the pokerRoomSlimId"""() {
+ poker room slim object based on the pokerRoomSlimId"""() {
         given:
-        pokerRoomRepository.findById(_ as Long) >> Optional.ofNullable(mockedPokerRoom())
-        userService.getLoggedUser() >> new User()
-        userService.isLoggedAsAdmin() >> true
+        stubsForFindByIdRepositoryMethod()
         pokerRoomMapper.pokerRoomToPokerRoomSlim(_ as PokerRoom) >> mockedPokerRoomSlimWithOnlyId()
 
         when:
@@ -452,7 +484,7 @@ poker room slim object based on the pokerRoomSlimId"""() {
     }
 
     def """should check if service method finSlimById(Long pokerRoomSlimId) is throwing
-an exception because pokerRoomSlimId is null"""() {
+ an exception because pokerRoomSlimId is null"""() {
         when:
         pokerRoomService.findSlimById(null)
 
@@ -461,5 +493,51 @@ an exception because pokerRoomSlimId is null"""() {
         exception.message == "Searching for poker room slim failed. Poker room slim id is null."
     }
 
+    def """should check if service method setPokerRoomDetails(PokerRoom pokerRoom) is correctly
+ setting details when user is logged as administrator"""() {
+        given:
+        userService.isLoggedAsAdmin() >> true
+        def pokerRoom = new PokerRoom()
 
+        when:
+        pokerRoomService.setPokerRoomDetails(pokerRoom)
+
+        then: "when logged as administrator, poker room didn't have owner"
+        verifyAll(pokerRoom) {
+            pokerRoom.pokerRoomScope == PokerRoomScope.GLOBAL
+            pokerRoom.player == null
+        }
+    }
+
+    def """should check if service method setPokerRoomDetails(PokerRoom pokerRoom) is correctly
+ setting details when user is logged as basic user"""() {
+        given:
+        userService.isLoggedAsUser() >> true
+        userService.getLoggedUser() >> new Player()
+        def pokerRoom = new PokerRoom()
+
+        when:
+        pokerRoomService.setPokerRoomDetails(pokerRoom)
+
+        then: "when logged as administrator, poker room have owner"
+        verifyAll(pokerRoom) {
+            pokerRoom.pokerRoomScope == PokerRoomScope.LOCAL
+            pokerRoom.player != null
+        }
+    }
+
+    def """should check if service method setPokerRoomDetails(PokerRoom pokerRoom) is throwing
+ an exception when poker room is null"""() {
+        when:
+        pokerRoomService.setPokerRoomDetails(null)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Setting poker room details failed. Poker room is null."
+
+
+    }
 }
+
+
+
