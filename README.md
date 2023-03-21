@@ -33,12 +33,23 @@ mvn clean package
 
 4. Start the application by running the following command:
 
-java -jar target/PokerSessionManager-0.0.1-SNAPSHOT.war
+mvn spring-boot:run
 
 5. The application should now be running on http://localhost:8080.
 
-Note: You may need to have Maven and Java installed on your machine for the above commands to work. If you do not have these tools installed, please refer to their respective documentation for installation instructions.
+6. The fastest way to stop the application is use combination of
 
+ctrl + c / cmd + c
+
+or by following command:
+
+npx kill-port 8080
+
+Note: Use following command to install npx 
+
+sudo apt install npm
+
+Note2: You may need to have Maven and Java installed on your machine for the above commands to work. If you do not have these tools installed, please refer to their respective documentation for installation instructions.
 Usage
 
 To use PokerSessionManager, follow the steps below:
