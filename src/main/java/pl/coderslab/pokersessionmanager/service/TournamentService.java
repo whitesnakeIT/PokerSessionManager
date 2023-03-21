@@ -235,10 +235,10 @@ public class TournamentService {
                 return findGlobalTournaments();
             }
             case LOCAL -> {
-                return findLocalTournamentsById(userService.getLoggedUser().getId());
+                return findLocalTournamentsById(userService.getLoggedUserId());
             }
             case SUGGESTION -> {
-                return findSuggestedTournamentsById(userService.getLoggedUser().getId());
+                return findSuggestedTournamentsById(userService.getLoggedUserId());
             }
             default -> throw new RuntimeException("I can't find list of tournaments by scope: " + tournamentScope);
         }

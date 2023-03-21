@@ -134,9 +134,16 @@ public class UserService {
     }
 
     public User getLoggedUser() {
+        return findById(((CurrentUser) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal())
+                .getUser()
+                .getId());
+    }
 
-        return findById(((CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .getUser().getId());
+    public Long getLoggedUserId() {
+        return getLoggedUser().getId();
     }
 
     public Collection<? extends GrantedAuthority> getLoggedUserAuthority() {

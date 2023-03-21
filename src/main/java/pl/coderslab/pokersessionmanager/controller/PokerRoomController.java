@@ -13,9 +13,6 @@ import pl.coderslab.pokersessionmanager.enums.PokerRoomScope;
 import pl.coderslab.pokersessionmanager.mapstruct.dto.poker_room.PokerRoomSlim;
 import pl.coderslab.pokersessionmanager.service.PokerRoomService;
 import pl.coderslab.pokersessionmanager.service.RedirectService;
-import pl.coderslab.pokersessionmanager.utilities.Factory;
-
-//import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,7 +24,8 @@ public class PokerRoomController {
     private final RedirectService redirectService;
 
     @GetMapping("/all")
-    public String showAllPokerRooms(@PathVariable(name = "pokerRoomScope") PokerRoomScope pokerRoomScope, Model model) {
+    public String showAllPokerRooms(@PathVariable(name = "pokerRoomScope") PokerRoomScope pokerRoomScope,
+                                    Model model) {
         model.addAttribute("pokerRoomSlimList",
                 pokerRoomService.findAllSlimByScope(pokerRoomScope));
 
@@ -36,7 +34,7 @@ public class PokerRoomController {
 
     @GetMapping("/add")
     public String addPokerRoomGet(Model model) {
-        model.addAttribute("pokerRoomSlim", Factory.create(PokerRoomSlim.class));
+        model.addAttribute("pokerRoomSlim", new PokerRoomSlim());
 
         return "poker_room/pokerRoomForm";
     }
@@ -54,9 +52,9 @@ public class PokerRoomController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editPokerRoomGet(@PathVariable Long id,
+    public String editPokerRoomGet(@PathVariable(name = "id") Long pokerRoomSlimId,
                                    Model model) {
-        model.addAttribute("pokerRoomSlim", pokerRoomService.findSlimById(id));
+        model.addAttribute("pokerRoomSlim", pokerRoomService.findSlimById(pokerRoomSlimId));
 
         return "poker_room/pokerRoomForm";
     }
@@ -74,10 +72,10 @@ public class PokerRoomController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deletePokerRoom(@PathVariable Long id) {
-        String redirectUrl = redirectService.setRedirectAfterProcessingPokerRoomSlim(id);
+    public String deletePokerRoom(@PathVariable(name = "id") Long pokerRoomSlimId) {
+        String redirectUrl = redirectService.setRedirectAfterProcessingPokerRoomSlim(pokerRoomSlimId);
 //        PokerRoomSlim pokerRoomSlim = pokerRoomService.findSlimById(id);
-        pokerRoomService.delete(id);
+        pokerRoomService.delete(pokerRoomSlimId);
 
         return redirectUrl;
     }

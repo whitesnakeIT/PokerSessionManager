@@ -13,6 +13,7 @@ import pl.coderslab.pokersessionmanager.entity.user.Player;
 
 //import javax.persistence.*;
 //import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +35,7 @@ public class Session {
 
     private double totalCost = 0;
 
-    private Integer tournamentCount;
+    private Integer tournamentCount = 0;
     @NotEmpty
     @ManyToMany
     @JoinTable(
@@ -44,7 +45,7 @@ public class Session {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
-    private List<AbstractTournament> sessionTournaments;
+    private List<AbstractTournament> sessionTournaments = new ArrayList<>();
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Player player;

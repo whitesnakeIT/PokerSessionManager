@@ -2,7 +2,6 @@ package pl.coderslab.pokersessionmanager.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,16 +27,15 @@ public class SecurityConfig {
         return new AntPathRequestMatcher("/logout", "GET");
     }
 
-    @Profile("1")
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-                .and().
-                csrf().ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
-                .and()
-                .headers(headers -> headers.frameOptions().sameOrigin());
+//        http.authorizeHttpRequests()
+//                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+//                .and().
+//                csrf().ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
+//                .and()
+//                .headers(headers -> headers.frameOptions().sameOrigin());
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
