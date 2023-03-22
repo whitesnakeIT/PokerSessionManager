@@ -203,7 +203,7 @@ class SessionServiceTest extends Specification {
 
         then:
         def exception = thrown(RuntimeException)
-        exception.message == "Checking if session belongs to user failed. Session don't have owner."
+        exception.message == "Checking if session belongs to user failed. Session hasn't owner."
     }
 
     def """should check if service method findById(Long sessionId) is throwing

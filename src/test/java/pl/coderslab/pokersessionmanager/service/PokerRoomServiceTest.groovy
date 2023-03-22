@@ -116,7 +116,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
 
         when:
         userService.isLoggedAsAdmin()
-        def pokerRoomScopeByRole = pokerRoomService.setPokerRoomScopeByRole()
+        def pokerRoomScopeByRole = pokerRoomService.getScopeByRole()
 
         then:
         pokerRoomScopeByRole == PokerRoomScope.GLOBAL
@@ -129,7 +129,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
 
         when:
         userService.isLoggedAsUser()
-        def pokerRoomScopeByRole = pokerRoomService.setPokerRoomScopeByRole()
+        def pokerRoomScopeByRole = pokerRoomService.getScopeByRole()
 
         then:
         pokerRoomScopeByRole == PokerRoomScope.LOCAL
@@ -141,7 +141,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
         !userService.isLoggedAsAdmin() || !userService.isLoggedAsUser() >> false
 
         when:
-        pokerRoomService.setPokerRoomScopeByRole()
+        pokerRoomService.getScopeByRole()
 
         then:
         def exception = thrown(RuntimeException)
@@ -179,7 +179,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
 
         when:
         def result = pokerRoomService
-                .checkIfPokerRoomBelongsToUser(mockedPokerRoom(), mockedPlayer())
+                .checkIfBelongsToUser(mockedPokerRoom(), mockedPlayer())
 
         then:
         result
@@ -192,20 +192,20 @@ is throwing an exception when pokerRoomSlim is null"""() {
 
         when:
         def result = pokerRoomService
-                .checkIfPokerRoomBelongsToUser(mockedPokerRoom(), new Player())
+                .checkIfBelongsToUser(mockedPokerRoom(), new Player())
 
         then:
         !result
     }
 
     def """should check if service method checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user)
- is returning false when basic user is logged but poker room don't have owner"""() {
+ is returning false when basic user is logged but poker room hasn't owner"""() {
         given:
         userService.isLoggedAsUser() >> true
 
         when:
         def result = pokerRoomService
-                .checkIfPokerRoomBelongsToUser(new PokerRoom(), new Player())
+                .checkIfBelongsToUser(new PokerRoom(), new Player())
 
         then:
         !result
@@ -218,7 +218,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
 
         when: "Administrators can edit or delete all poker rooms."
         def result = pokerRoomService
-                .checkIfPokerRoomBelongsToUser(mockedPokerRoom(), new Admin())
+                .checkIfBelongsToUser(mockedPokerRoom(), new Admin())
 
         then:
         result
@@ -228,7 +228,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
  is throwing an exception when User type parameter is null"""() {
         when:
         pokerRoomService
-                .checkIfPokerRoomBelongsToUser(new PokerRoom(), null)
+                .checkIfBelongsToUser(new PokerRoom(), null)
 
         then:
         def exception = thrown(RuntimeException)
@@ -239,7 +239,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
  is throwing an exception when PokerRoom type parameter is null"""() {
         when:
         pokerRoomService
-                .checkIfPokerRoomBelongsToUser(null, new User())
+                .checkIfBelongsToUser(null, new User())
 
         then:
         def exception = thrown(RuntimeException)

@@ -52,7 +52,7 @@
             </c:if>
         </div>
         <c:if test="${empty player.localTournaments}">
-            <h3 class="text-white d-flex justify-content-center mt-5">Player don't have local tournaments</h3>
+            <h3 class="text-white d-flex justify-content-center mt-5">Player hasn't local tournaments</h3>
         </c:if>
     </div>
     <div class="bg-danger my-4">
@@ -101,7 +101,7 @@
         </div>
 
         <c:if test="${empty player.suggestedTournaments}">
-            <h3 class="text-white d-flex justify-content-center mt-5">Player don't have suggested tournaments</h3>
+            <h3 class="text-white d-flex justify-content-center mt-5">Player hasn't suggested tournaments</h3>
         </c:if>
     </div>
     <div class="bg-danger my-4">
@@ -160,7 +160,7 @@
         </c:if>
 
         <c:if test="${empty player.sessions}">
-            <h3 class="text-white d-flex justify-content-center mt-5">Player don't have any sessions.</h3>
+            <h3 class="text-white d-flex justify-content-center mt-5">Player hasn't any sessions.</h3>
         </c:if>
     </div>
 
@@ -205,7 +205,7 @@
             </table>
         </c:if>
         <c:if test="${empty player.pokerRoomsLocal}">
-            <h3 class="text-white d-flex justify-content-center mt-5">Player don't have any local Poker Rooms.</h3>
+            <h3 class="text-white d-flex justify-content-center mt-5">Player hasn't any local Poker Rooms.</h3>
         </c:if>
     </div>
 </div>

@@ -13,6 +13,8 @@ import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.service.RedirectService;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
+import static pl.coderslab.pokersessionmanager.enums.RoleName.ROLE_ANONYMOUS;
+
 //import javax.validation.Valid;
 
 @Controller
@@ -20,11 +22,13 @@ import pl.coderslab.pokersessionmanager.service.UserService;
 public class RegistrationController {
     private final UserService userService;
 
-    private final RedirectService redirectService;
-
     @GetMapping("/registration")
     public String registerNewPlayerGet(Model model) {
-        return redirectService.sendRedirectRegistrationPage(model);
+        if (userService.hasAuthority(ROLE_ANONYMOUS)) {
+            model.addAttribute("newPlayer", new Player());
+            return "authorization/registration/registrationForm";
+        }
+        return "redirect:/";
     }
 
     @PostMapping("/registration")

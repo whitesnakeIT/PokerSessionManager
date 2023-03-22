@@ -25,8 +25,8 @@ public class SessionService {
         if (session == null) {
             throw new RuntimeException("Creating session failed. Session is null.");
         }
-        setOwner(session);
-        setSessionDetails(session);
+        addOwner(session);
+        addSessionDetails(session);
         sessionRepository.save(session);
     }
 
@@ -87,12 +87,12 @@ public class SessionService {
         }
         Optional<User> owner = Optional.ofNullable(session.getPlayer());
         if (owner.isEmpty()) {
-            throw new RuntimeException("Checking if session belongs to user failed. Session don't have owner.");
+            throw new RuntimeException("Checking if session belongs to user failed. Session hasn't owner.");
         }
         return session.getPlayer().equals(user);
     }
 
-    private void setOwner(Session session) {
+    private void addOwner(Session session) {
         if (session == null) {
             throw new RuntimeException("Setting session owner failed. Session is null");
         }
@@ -104,7 +104,7 @@ public class SessionService {
             throw new RuntimeException("Setting owner for session failed. Owner must have Player class.");
     }
 
-    private void setSessionDetails(Session session) {
+    private void addSessionDetails(Session session) {
         if (session == null) {
             throw new RuntimeException("Setting session details failed. Session is null");
         }

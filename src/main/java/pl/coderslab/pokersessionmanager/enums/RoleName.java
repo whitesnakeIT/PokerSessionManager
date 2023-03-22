@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum RoleName {
-
     ROLE_ADMIN,
     ROLE_ANONYMOUS,
     ROLE_MODERATOR,

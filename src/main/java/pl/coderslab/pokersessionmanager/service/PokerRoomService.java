@@ -43,7 +43,7 @@ public class PokerRoomService {
         create(pokerRoom);
     }
 
-    public PokerRoomScope setPokerRoomScopeByRole() {
+    public PokerRoomScope getScopeByRole() {
         if (userService.isLoggedAsAdmin()) {
             return PokerRoomScope.GLOBAL;
         } else if (userService.isLoggedAsUser()) {
@@ -67,7 +67,7 @@ public class PokerRoomService {
         PokerRoom pokerRoom = pokerRoomRepository.findById(pokerRoomId)
                 .orElseThrow(() -> new RuntimeException("Searching for poker room failed. Unrecognized poker room id: " + pokerRoomId));
 
-        if (!checkIfPokerRoomBelongsToUser(pokerRoom, userService.getLoggedUser())) {
+        if (!checkIfBelongsToUser(pokerRoom, userService.getLoggedUser())) {
             throw new RuntimeException("Searching for poker room failed. No permission to processing with this poker room.");
         }
 
@@ -93,7 +93,7 @@ public class PokerRoomService {
         pokerRoomRepository.save(pokerRoom);
     }
 
-    public boolean checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user) {
+    public boolean checkIfBelongsToUser(PokerRoom pokerRoom, User user) {
         if (pokerRoom == null) {
             throw new RuntimeException("Checking if poker room belongs to user failed. Poker room is null.");
         }
@@ -107,7 +107,20 @@ public class PokerRoomService {
         if (owner.isEmpty()) {
             return false;
         }
+
+        if (!hasOwner(pokerRoom)) {
+            return false;
+        }
+
         return pokerRoom.getPlayer().equals(user);
+    }
+
+    public boolean hasOwner(PokerRoom pokerRoom){
+        if (pokerRoom == null) {
+            throw new RuntimeException("Checking if poker room has owner. Poker room is null.");
+        }
+        Optional<User> owner = Optional.ofNullable(pokerRoom.getPlayer());
+        return owner.isPresent();
     }
 
     public List<PokerRoom> findGlobalPokerRooms() {
@@ -174,7 +187,7 @@ public class PokerRoomService {
         if (pokerRoom == null) {
             throw new RuntimeException("Setting poker room details failed. Poker room is null.");
         }
-        pokerRoom.setPokerRoomScope(setPokerRoomScopeByRole());
+        pokerRoom.setPokerRoomScope(getScopeByRole());
         setOwnerIfExist(pokerRoom);
     }
 

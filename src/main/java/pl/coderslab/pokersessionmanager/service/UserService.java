@@ -159,4 +159,10 @@ public class UserService {
     public boolean isAnonymous(){
         return getLoggedUserAuthority().contains(Factory.create(RoleName.ROLE_ANONYMOUS));
     }
+
+    public boolean hasAuthority(RoleName roleName) {
+        if (roleName == null) {
+            throw new RuntimeException("Checking authority failed. Role name is null.");
+        }
+        return getLoggedUserAuthority().contains(roleService.getGrantedAuthority(roleName)); }
 }

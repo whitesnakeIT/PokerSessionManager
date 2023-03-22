@@ -71,12 +71,12 @@ public class SessionController {
         }
         sessionService.edit(session);
 
-        return redirectService.setRedirectAfterProcessingSession(session.getId());
+        return redirectService.getRedirectAfterProcessingSession(session.getId());
     }
 
     @GetMapping("/delete/{id}")
     public String deleteSession(@PathVariable(name = "id") Long sessionId) {
-        String redirectUrl = redirectService.setRedirectAfterProcessingSession(sessionId);
+        String redirectUrl = redirectService.getRedirectAfterProcessingSession(sessionId);
         sessionService.delete(sessionId);
 
         return redirectUrl;
