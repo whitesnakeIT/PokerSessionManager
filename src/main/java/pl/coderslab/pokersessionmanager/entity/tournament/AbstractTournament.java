@@ -30,7 +30,6 @@ public abstract class AbstractTournament {
     @Transient
     protected TournamentScope tournamentScope;
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;

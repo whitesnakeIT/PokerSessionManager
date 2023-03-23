@@ -85,11 +85,15 @@ public class SessionService {
         if (userService.isLoggedAsAdmin()) {
             return true;
         }
-        Optional<User> owner = Optional.ofNullable(session.getPlayer());
-        if (owner.isEmpty()) {
+//        Optional<User> owner = Optional.ofNullable(session.getPlayer());
+        if (!hasOwner(session)) {
             throw new RuntimeException("Checking if session belongs to user failed. Session hasn't owner.");
         }
         return session.getPlayer().equals(user);
+    }
+    public boolean hasOwner(Session session){
+        Optional<User> owner = Optional.ofNullable(session.getPlayer());
+        return owner.isPresent();
     }
 
     private void addOwner(Session session) {

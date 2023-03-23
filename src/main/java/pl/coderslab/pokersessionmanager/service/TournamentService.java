@@ -10,78 +10,73 @@ import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal;
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 import pl.coderslab.pokersessionmanager.entity.user.User;
-import pl.coderslab.pokersessionmanager.enums.RoleName;
 import pl.coderslab.pokersessionmanager.enums.TournamentScope;
 import pl.coderslab.pokersessionmanager.enums.TournamentSpeed;
 import pl.coderslab.pokersessionmanager.enums.TournamentType;
-import pl.coderslab.pokersessionmanager.mapstruct.mappers.TournamentMapper;
 import pl.coderslab.pokersessionmanager.repository.TournamentRepository;
 import pl.coderslab.pokersessionmanager.utilities.Factory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static pl.coderslab.pokersessionmanager.enums.RoleName.ROLE_ADMIN;
+import static pl.coderslab.pokersessionmanager.enums.RoleName.ROLE_USER;
+import static pl.coderslab.pokersessionmanager.enums.TournamentScope.LOCAL;
+import static pl.coderslab.pokersessionmanager.enums.TournamentScope.SUGGESTION;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class TournamentService {
 
-    private final TournamentMapper tournamentMapper;
+    //    private final TournamentMapper tournamentMapper;
     private final TournamentRepository tournamentRepository;
-    private final UtilityService utilityService;
+    //    private final UtilityService utilityService;
     private final UserService userService;
 
     private final PlayerService playerService;
 
-    // boiler ???
     public void create(AbstractTournament abstractTournament) {
-        if (abstractTournament instanceof TournamentSuggestion) {
-            TournamentSuggestion tournament = utilityService.convertAbstractTournament(abstractTournament);
-            tournament.setPlayer((Player) userService.getLoggedUser());
-            tournamentRepository.save(tournament);
-        } else if (abstractTournament instanceof TournamentLocal) {
-            TournamentLocal tournament = utilityService.convertAbstractTournament(abstractTournament);
-            tournament.setPlayer((Player) userService.getLoggedUser());
-            tournamentRepository.save(tournament);
+        if (abstractTournament == null) {
+            throw new RuntimeException("Creating tournament failed. Abstract tournament is null.");
         }
+        setOwnerIfPossible(abstractTournament);
 
         tournamentRepository.save(abstractTournament);
     }
 
+    public boolean ifCanBeOwnedByPlayer(AbstractTournament abstractTournament) {
+        return abstractTournament.getTournamentScope() == LOCAL || abstractTournament.getTournamentScope() == SUGGESTION;
+    }
+
     public AbstractTournament findById(Long tournamentId) {
-        AbstractTournament tournament = tournamentRepository
-                .findById(tournamentId)
+        if (tournamentId == null) {
+            throw new RuntimeException("Searching for tournament failed.Tournament id is null.");
+        }
+        AbstractTournament tournament = tournamentRepository.findById(tournamentId)
                 .orElseThrow(() -> new RuntimeException("I can't find/convert tournament by tournament Id: " + tournamentId));
 
-        User loggedUser = userService.findById(userService.getLoggedUser().getId());
-
-        if (!checkIfTournamentBelongsToUser(tournament, loggedUser)) {
-            throw new RuntimeException("Tournament not belongs to user, tournament Id: " + tournamentId);
+        if (!ifUserHasAuthorityToProcessWithTournament(tournament, userService.getLoggedUser())) {
+            throw new RuntimeException("Searching for tournament failed. No permission to processing with this tournament.");
         }
-        return tournament;
 
+        return tournament;
     }
-//
-//    public List<AbstractTournament> findAll() {
-//        return tournamentRepository.findAll();
-//    }
 
     public void delete(Long tournamentId) {
+        if (tournamentId == null) {
+            throw new RuntimeException("Deleting tournament failed. Tournament id is null.");
+        }
         AbstractTournament tournament = findById(tournamentId);
-        removeTournamentFromSessionsBeforeDeleting(tournament);
-        tournamentRepository.delete(tournament);
+//        removeTournamentFromSessionsBeforeDeleting(tournament);
 
+        tournamentRepository.delete(tournament);
     }
-    //do sprawdzenia
-    // usuwa z bazy z sesji turniej
 
     public <T extends AbstractTournament> void removeTournamentFromSessionsBeforeDeleting(T tournamentToCheck) {
 
         // removing as Administrator
-        if (userService.getLoggedUserAuthority().contains(Factory.create(RoleName.ROLE_ADMIN))) {
+        if (userService.getLoggedUserAuthority().contains(Factory.create(ROLE_ADMIN))) {
             Player tournamentOwner = null;
             if (tournamentToCheck instanceof TournamentLocal) {
                 tournamentOwner = findTournamentOwner((TournamentLocal) tournamentToCheck);
@@ -123,6 +118,15 @@ public class TournamentService {
             }
         }
     }
+    //do sprawdzenia
+    // usuwa z bazy z sesji turniej
+
+    public List<TournamentLocal> findLocalTournamentsById(Long playerId) {
+        if (playerId == null) {
+            throw new RuntimeException("Searching for user local tournaments failed. Player id is null.");
+        }
+        return tournamentRepository.findLocalTournamentsById(playerId);
+    }
 //    public List<TournamentSlimDto> convertTournamentToSlimDto(List<TournamentGlobal> tournaments) {
 //        return tournamentMapper.tournamentToTournamentSlimDto(tournaments);
 //    }
@@ -139,60 +143,55 @@ public class TournamentService {
 //        return tournamentMapper.tournamentLocalToTournamentSlimDto(tournament);
 //    }
 
-    public List<TournamentLocal> findLocalTournamentsById(Long userId) {
-        return tournamentRepository.findLocalTournamentsById(userId);
-    }
-
-    public List<TournamentSuggestion> findSuggestedTournamentsById(Long userId) {
-        return tournamentRepository.findSuggestedTournamentsById(userId);
-    }
-
-//    public List<TournamentGlobal> findGlobalTournamentsById(Long userId) {
-//        return tournamentRepository.findGlobalTournamentsById(userId);
+//    public List<TournamentSuggestion> findSuggestedTournamentsById(Long userId) {
+//        return tournamentRepository.findSuggestedTournamentsById(userId);
 //    }
 
-    public List<AbstractTournament> findAllUserTournamentsById(Long userId) {
-        List<AbstractTournament> allUserTournamentsById = new ArrayList<>();
-//        allUserTournamentsById.addAll(findGlobalTournamentsById(userId));
-        allUserTournamentsById.addAll(findSuggestedTournamentsById(userId));
-        allUserTournamentsById.addAll(findLocalTournamentsById(userId));
-        return allUserTournamentsById;
+//    public List<AbstractTournament> findAllUserTournamentsById(Long userId) {
+//        List<AbstractTournament> allUserTournamentsById = new ArrayList<>();
+////        allUserTournamentsById.addAll(findGlobalTournamentsById(userId));
+//        allUserTournamentsById.addAll(findSuggestedTournamentsById(userId));
+//        allUserTournamentsById.addAll(findLocalTournamentsById(userId));
+//
+//        return allUserTournamentsById;
+//    }
 
+    private List<AbstractTournament> findAllPlayerTournaments(Player player) {
+        if (player == null) {
+            throw new RuntimeException("Searching for all player tournaments failed. Player is null.");
+        }
+        List<AbstractTournament> allUserTournaments = new ArrayList<>();
+        allUserTournaments.addAll(player.getLocalTournaments());
+        allUserTournaments.addAll(player.getSuggestedTournaments());
+
+        return allUserTournaments;
     }
 
     public List<TournamentGlobal> findGlobalTournaments() {
         return tournamentRepository.findGlobalTournaments();
     }
 
-    public List<AbstractTournament> findFavouriteTournaments(Long userId) {
-        List<AbstractTournament> favouriteTournaments = tournamentRepository.findFavouriteTournaments(userId);
-        sortFavouriteTournaments(favouriteTournaments);
+    public List<AbstractTournament> findFavouriteTournaments(Long playerId) {
+        if (playerId == null) {
+            throw new RuntimeException("Searching for user favourite tournaments failed. Player id is null.");
+        }
+        List<AbstractTournament> favouriteTournaments = tournamentRepository.findFavouriteTournaments(playerId);
+        sortFavouriteTournamentsByScopeThenById(favouriteTournaments);
         return favouriteTournaments;
     }
 
-    private void sortFavouriteTournaments(List<AbstractTournament> favouriteTournaments) {
-        favouriteTournaments
-                .sort(Comparator
-                        .comparing(AbstractTournament::getTournamentScope)
-                        .reversed()
-                        .thenComparing(AbstractTournament::getId));
-    }
-
-    public List<AbstractTournament> findTournamentsPossibleToFavourites(Long userId) {
+    public List<AbstractTournament> findTournamentsPossibleToFavourites(Long playerId) {
+        if (playerId == null) {
+            throw new RuntimeException("Searching for tournaments possible to be in user favourites failed. Player id is null.");
+        }
+        Player player = (Player) userService.findById(playerId);
         List<AbstractTournament> tournaments = new ArrayList<>();
-        List<Long> favouriteTournamentsId = findFavouriteTournaments(userId)
-                .stream()
-                .map(AbstractTournament::getId).toList();
-        tournaments.addAll(findLocalTournamentsById(userId));
+
+        tournaments.addAll(player.getLocalTournaments());
         tournaments.addAll(findGlobalTournaments());
 
-        List<AbstractTournament> tournamentsPossibleToFavourites =
-                tournaments
-                        .stream()
-                        .filter(tournament -> !favouriteTournamentsId.contains(tournament.getId()))
-                        .toList();
-
-        return tournamentsPossibleToFavourites;
+        tournaments.removeAll(player.getFavouriteTournaments());
+        return tournaments;
     }
 
     public List<String> getAvailableTournamentSpeed() {
@@ -213,63 +212,67 @@ public class TournamentService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteTournamentFromFavourites(Long userId, Long tournamentId) {
-        tournamentRepository.deleteTournamentFromFavourites(userId, tournamentId);
+    public void deleteFromFavourites(Long playerId, Long tournamentId) {
+        if (playerId == null) {
+            throw new RuntimeException("Deleting tournament from favourites failed. Player id is null.");
+        }
+        if (tournamentId == null) {
+            throw new RuntimeException("Deleting tournament from favourites failed. Tournament id is null.");
+        }
+        tournamentRepository.deleteTournamentFromFavourites(playerId, tournamentId);
     }
 
-    public void addTournamentToFavourites(Long userId, Long tournamentId) {
-        tournamentRepository.addTournamentToFavourites(userId, tournamentId);
+    public void addToFavourites(Long playerId, Long tournamentId) {
+        if (playerId == null) {
+            throw new RuntimeException("Adding tournament to favourites failed. Player id is null.");
+        }
+        if (tournamentId == null) {
+            throw new RuntimeException("Adding tournament to favourites failed. Tournament id is null.");
+        }
+        tournamentRepository.addTournamentToFavourites(playerId, tournamentId);
     }
 
-    public List<AbstractTournament> getAvailableTournamentsForSessionOrderByFavourites(Long userId) {
-        List<AbstractTournament> availableTournamentForSession = new ArrayList<>(findFavouriteTournaments(userId));
-        availableTournamentForSession.addAll(findTournamentsPossibleToFavourites(userId));
+    public List<AbstractTournament> getAvailableTournamentsForSessionOrderedByFavourites(Long playerId) {
+        List<AbstractTournament> availableTournamentForSession = new ArrayList<>();
+        availableTournamentForSession.addAll(findFavouriteTournaments(playerId));
+        availableTournamentForSession.addAll(findTournamentsPossibleToFavourites(playerId));
         return availableTournamentForSession;
     }
-
     public List<? extends AbstractTournament> getTournamentListByTournamentScope(TournamentScope tournamentScope) {
+        Player loggedPlayer = userService.getLoggedPlayer();
 
-//        TournamentScope tournamentScope = convertStringToTournamentScope(tournamentScope);
         switch (tournamentScope) {
             case GLOBAL -> {
                 return findGlobalTournaments();
             }
             case LOCAL -> {
-                return findLocalTournamentsById(userService.getLoggedUserId());
+                return loggedPlayer.getLocalTournaments();
             }
             case SUGGESTION -> {
-                return findSuggestedTournamentsById(userService.getLoggedUserId());
+                return loggedPlayer.getSuggestedTournaments();
             }
-            default -> throw new RuntimeException("I can't find list of tournaments by scope: " + tournamentScope);
+            default -> throw new RuntimeException("Getting tournament list by scope failed. Unrecognized tournament scope: " + tournamentScope);
         }
     }
 
-//    public TournamentScope convertStringToTournamentScope(String tournamentScope) {
-//
-//        switch (tournamentScope) {
-//            case TournamentGlobal.TOURNAMENT_SCOPE -> {
-//                return TournamentScope.GLOBAL;
-//            }
-//            case TournamentLocal.TOURNAMENT_SCOPE -> {
-//                return TournamentScope.LOCAL;
-//            }
-//            case TournamentSuggestion.TOURNAMENT_SCOPE -> {
-//                return TournamentScope.SUGGESTION;
-//            }
-//            default -> throw new RuntimeException("I don't know Tournament cope under string: " + tournamentScope);
-//        }
-//
-//    }
+    public boolean ifUserHasAuthorityToProcessWithTournament(AbstractTournament tournament, User user) {
+        if (tournament == null) {
+            throw new RuntimeException("Checking if user has authority to process with tournament failed. Tournament is null.");
+        }
+        if (user == null) {
+            throw new RuntimeException("Checking if user has authority to process with tournament failed. User is null.");
+        }
 
-    public <T extends AbstractTournament> boolean checkIfTournamentBelongsToUser(T tournament, User user) {
-        // Administrator can delete all tournaments
-        if (user.hasRole(RoleName.ROLE_ADMIN)) {
+        if (userService.hasAuthority(ROLE_ADMIN)) {
             return true;
         }
 
-        return findAllUserTournamentsById(user.getId())
-                .stream()
-                .anyMatch(abstractTournament -> abstractTournament.getId().equals(tournament.getId()));
+        else if (userService.hasAuthority(ROLE_USER)) {
+            return findAllPlayerTournaments((Player) user)
+                    .contains(tournament);
+        }
+
+        throw new RuntimeException("Checking if user has authority to process with tournament failed. Unrecognized authorities.");
     }
 
     public Player findTournamentOwner(TournamentLocal tournament) {
@@ -287,5 +290,19 @@ public class TournamentService {
                 .filter(player -> player.getSuggestedTournaments().contains(tournament))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private void setOwnerIfPossible(AbstractTournament abstractTournament) {
+        if (ifCanBeOwnedByPlayer(abstractTournament)) {
+            abstractTournament.setPlayer(userService.getLoggedPlayer());
+        }
+    }
+
+    private void sortFavouriteTournamentsByScopeThenById(List<AbstractTournament> favouriteTournaments) {
+        favouriteTournaments
+                .sort(Comparator
+                        .comparing(AbstractTournament::getTournamentScope)
+                        .reversed()
+                        .thenComparing(AbstractTournament::getId));
     }
 }

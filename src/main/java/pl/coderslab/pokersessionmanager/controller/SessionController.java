@@ -85,7 +85,7 @@ public class SessionController {
     @ModelAttribute("availableSessionTournaments")
     public List<AbstractTournament> getAvailableTournamentsForSessionOrderByFavourites() {
         return tournamentService.
-                getAvailableTournamentsForSessionOrderByFavourites(userService.getLoggedUserId());
+                getAvailableTournamentsForSessionOrderedByFavourites(userService.getLoggedUserId());
     }
 }
 

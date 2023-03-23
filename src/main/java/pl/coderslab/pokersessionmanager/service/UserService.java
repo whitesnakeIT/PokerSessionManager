@@ -141,6 +141,9 @@ public class UserService {
                 .getUser()
                 .getId());
     }
+    public Player getLoggedPlayer(){
+        return (Player) getLoggedUser();
+    }
 
     public Long getLoggedUserId() {
         return getLoggedUser().getId();

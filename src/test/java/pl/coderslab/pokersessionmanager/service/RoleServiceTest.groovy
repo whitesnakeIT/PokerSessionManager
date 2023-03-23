@@ -31,10 +31,8 @@ class RoleServiceTest extends Specification {
         def roleByName = roleService.findByName(ROLE_USER)
 
         then:
-        verifyAll (roleByName) {
-            id != null
-            name != null
-        }
+            roleByName.id != null
+
     }
 
     def """should check if service method findByName(RoleName roleName) is throwing

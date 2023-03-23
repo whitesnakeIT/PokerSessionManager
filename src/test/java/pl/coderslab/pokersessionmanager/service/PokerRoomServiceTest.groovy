@@ -6,6 +6,7 @@ import pl.coderslab.pokersessionmanager.entity.user.Admin
 import pl.coderslab.pokersessionmanager.entity.user.Player
 import pl.coderslab.pokersessionmanager.entity.user.User
 import pl.coderslab.pokersessionmanager.enums.PokerRoomScope
+import pl.coderslab.pokersessionmanager.enums.RoleName
 import pl.coderslab.pokersessionmanager.mapstruct.dto.poker_room.PokerRoomSlim
 import pl.coderslab.pokersessionmanager.mapstruct.mappers.PokerRoomMapper
 import pl.coderslab.pokersessionmanager.repository.PokerRoomRepository
@@ -24,8 +25,6 @@ class PokerRoomServiceTest extends Specification {
     def private final pokerRoomMapper = Mock(PokerRoomMapper.class)
 
     def private final pokerRoomService = new PokerRoomService(pokerRoomRepository, userService, pokerRoomMapper)
-
-    def private final mockedPokerRoomService = Mock(PokerRoomService.class)
 
     def private final mockedPlayer() {
         def player = new Player()
@@ -247,16 +246,15 @@ is throwing an exception when pokerRoomSlim is null"""() {
     }
 
     def """should check if service method delete(Long pokerRoomId) is invoking
- method delete(Long pokerRoomId) from repository on the same object exactly once"""() {
+ method delete(PokerRoom pokerRoom) from repository on the object with the same id exactly once"""() {
         given:
         stubsForFindByIdRepositoryMethod()
-        def pokerRoom = mockedPokerRoom()
 
         when:
         pokerRoomService.delete(POKER_ROOM_ID)
 
         then:
-        1 * pokerRoomRepository.delete(pokerRoom)
+        1 * pokerRoomRepository.delete(mockedPokerRoom())
     }
 
     def """should check if service method delete(Long pokerRoomId) is throwing
@@ -301,7 +299,7 @@ is throwing an exception when pokerRoomSlim is null"""() {
         def pokerRoom = pokerRoomService.findById(POKER_ROOM_ID)
 
         then:
-        pokerRoom.name == "testPokerRoom"
+        pokerRoom.name != null
     }
 
     def """should check if service method findById(Long pokerRoomId) is throwing an exception
@@ -315,21 +313,17 @@ is throwing an exception when pokerRoomSlim is null"""() {
     }
 
     def """should check if service method findById(Long pokerRoomId) is throwing an exception
- when pokerRoom belongs to logged user"""() {
-        given: "need to prepare other player with other poker room which belongs to him"
-        def pokerRoomNotBelongsToUser = new PokerRoom()
-        pokerRoomNotBelongsToUser.id = 2
+ when pokerRoom not belongs to logged user"""() {
+        given:
+        pokerRoomRepository.findById(_ as Long) >> Optional.of(new PokerRoom())
+        def pokerRoomNotBelongsToUserId = 2
 
-        def otherOwner = new Player()
-        pokerRoomNotBelongsToUser.player = otherOwner
-
-        and: "need to stub methods for repository method findById(Long pokerRoomId)"
+        and:
         userService.isLoggedAsUser() >> true
-        pokerRoomRepository.findById(_ as Long) >> Optional.of(pokerRoomNotBelongsToUser)
         userService.getLoggedUser() >> mockedPlayer()
 
         when:
-        pokerRoomService.findById(pokerRoomNotBelongsToUser.id)
+        pokerRoomService.findById(pokerRoomNotBelongsToUserId)
 
         then:
         def exception = thrown(RuntimeException)

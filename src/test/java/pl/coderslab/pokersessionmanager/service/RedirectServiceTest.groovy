@@ -55,10 +55,10 @@ class RedirectServiceTest extends Specification {
         def url = redirectService.getRedirectEmptyUrl()
 
         then:
-        url == value
+        url == result
 
         where:
-        authority      | value
+        authority      | result
         ROLE_ADMIN     | "redirect:/app/admin/dashboard"
         ROLE_USER      | "redirect:/app/player/dashboard"
         ROLE_ANONYMOUS | "redirect:/login"
@@ -95,10 +95,10 @@ class RedirectServiceTest extends Specification {
         def url = redirectService.getRedirectLoginPage()
 
         then:
-        url == value
+        url == result
 
         where:
-        isLogged | value
+        isLogged | result
         true     | "authorization/login/loginForm"
         false    | "redirect:/"
     }
@@ -194,10 +194,10 @@ class RedirectServiceTest extends Specification {
         def url = redirectService.getRedirectAfterProcessingSession(SESSION_ID)
 
         then:
-        url == value
+        url == result
 
         where:
-        role       | value
+        role       | result
         ROLE_USER  | "redirect:/app/session/all"
         ROLE_ADMIN | String.format("redirect:/app/admin/users/details/%d", PLAYER_ID)
     }

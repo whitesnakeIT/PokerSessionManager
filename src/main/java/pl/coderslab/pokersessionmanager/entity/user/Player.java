@@ -52,7 +52,7 @@ public class Player extends User {
 
     @OneToOne(mappedBy = "player")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private PlayerStats playerStats;
+    private PlayerStats playerStats = new PlayerStats();
 
     @OneToMany
     @OnDelete(action = OnDeleteAction.CASCADE)

@@ -47,6 +47,5 @@ public interface TournamentRepository extends JpaRepository<AbstractTournament, 
     @Query(value = "select * from tournaments where tournament_scope = 'global'",
             nativeQuery = true)
     List<TournamentGlobal> findGlobalTournaments();
-
 }
 
