@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
-import pl.coderslab.pokersessionmanager.entity.user.User;
 import pl.coderslab.pokersessionmanager.service.TournamentService;
 import pl.coderslab.pokersessionmanager.service.UserService;
 
@@ -22,29 +21,26 @@ public class TournamentFavouriteController {
 
     private final UserService userService;
 
-    @GetMapping("/add/{tournamentPossibleToFavourites}")
-    public String addTournamentToFavourites(@PathVariable Long tournamentPossibleToFavourites) {
-        User user = userService.getLoggedUser();
-        tournamentService.addTournamentToFavourites(user.getId(), tournamentPossibleToFavourites);
+    @GetMapping("/add/{tournamentPossibleToFavouritesId}")
+    public String addTournamentToFavourites(@PathVariable Long tournamentPossibleToFavouritesId) {
+        tournamentService.addToFavourites(userService.getLoggedUserId(), tournamentPossibleToFavouritesId);
 
         return "redirect:/app/tournament/favourites";
     }
 
     @GetMapping("/delete/{tournamentId}")
     public String deleteTournamentFromFavourites(@PathVariable Long tournamentId) {
-        User user = userService.getLoggedUser();
-        tournamentService.deleteTournamentFromFavourites(user.getId(), tournamentId);
+        tournamentService.deleteFromFavourites(userService.getLoggedUserId(), tournamentId);
 
         return "redirect:/app/tournament/favourites";
     }
 
     @GetMapping("")
     public String showFavouriteTournamentsIndex(Model model) {
-        User user = userService.getLoggedUser();
-        List<AbstractTournament> tournamentsPossibleToFavourites =
-                tournamentService.findTournamentsPossibleToFavourites(user.getId());
         List<AbstractTournament> favouriteTournaments =
-                tournamentService.findFavouriteTournaments(user.getId());
+                tournamentService.findFavouriteTournaments(userService.getLoggedUserId());
+        List<AbstractTournament> tournamentsPossibleToFavourites =
+                tournamentService.findTournamentsPossibleToFavourites(userService.getLoggedUserId());
 
         model.addAttribute("favouriteTournaments", favouriteTournaments);
         model.addAttribute("tournamentsPossibleToFavourites", tournamentsPossibleToFavourites);

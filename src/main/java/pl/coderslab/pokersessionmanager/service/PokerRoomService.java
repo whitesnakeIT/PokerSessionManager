@@ -27,14 +27,6 @@ public class PokerRoomService {
 
     private final PokerRoomMapper pokerRoomMapper;
 
-    public void create(PokerRoom pokerRoom) {
-        if (pokerRoom == null) {
-            throw new RuntimeException("Creating poker room failed. Poker room is null.");
-        }
-        setPokerRoomDetails(pokerRoom);
-        pokerRoomRepository.save(pokerRoom);
-    }
-
     public void create(PokerRoomSlim pokerRoomSlim) {
         if (pokerRoomSlim == null) {
             throw new RuntimeException("Creating poker room slim failed. Poker room slim is null.");
@@ -43,7 +35,34 @@ public class PokerRoomService {
         create(pokerRoom);
     }
 
-    public PokerRoomScope setPokerRoomScopeByRole() {
+    public void create(PokerRoom pokerRoom) {
+        if (pokerRoom == null) {
+            throw new RuntimeException("Creating poker room failed. Poker room is null.");
+        }
+        setPokerRoomDetails(pokerRoom);
+        pokerRoomRepository.save(pokerRoom);
+    }
+
+    public void setPokerRoomDetails(PokerRoom pokerRoom) {
+        if (pokerRoom == null) {
+            throw new RuntimeException("Setting poker room details failed. Poker room is null.");
+        }
+        pokerRoom.setPokerRoomScope(getScopeByRole());
+        setOwnerIfExist(pokerRoom);
+    }
+
+
+    private void setOwnerIfExist(PokerRoom pokerRoom) {
+        if (pokerRoom == null) {
+            throw new RuntimeException("Setting poker room owner failed. Poker room is null.");
+        }
+        if (userService.isLoggedAsUser()) {
+            Player ower = (Player) userService.getLoggedUser();
+            pokerRoom.setPlayer(ower);
+        }
+    }
+
+    public PokerRoomScope getScopeByRole() {
         if (userService.isLoggedAsAdmin()) {
             return PokerRoomScope.GLOBAL;
         } else if (userService.isLoggedAsUser()) {
@@ -53,27 +72,6 @@ public class PokerRoomService {
         throw new RuntimeException("Setting poker room scope by role failed. Unrecognized logged user role.");
     }
 
-    public List<PokerRoom> findPokerRoomsByPlayerId(Long userId) {
-        if (userId == null) {
-            throw new RuntimeException("Searching for user poker rooms failed. User id is null.");
-        }
-        return pokerRoomRepository.findPokerRoomsByPlayerId(userId);
-    }
-
-    public PokerRoom findById(Long pokerRoomId) {
-        if (pokerRoomId == null) {
-            throw new RuntimeException("Searching for poker room failed. Poker room id is null.");
-        }
-        PokerRoom pokerRoom = pokerRoomRepository.findById(pokerRoomId)
-                .orElseThrow(() -> new RuntimeException("Searching for poker room failed. Unrecognized poker room id: " + pokerRoomId));
-
-        if (!checkIfPokerRoomBelongsToUser(pokerRoom, userService.getLoggedUser())) {
-            throw new RuntimeException("Searching for poker room failed. No permission to processing with this poker room.");
-        }
-
-        return pokerRoom;
-    }
-
     public void delete(Long pokerRoomId) {
         if (pokerRoomId == null) {
             throw new RuntimeException("Deleting poker room failed. Poker room id is null.");
@@ -81,19 +79,20 @@ public class PokerRoomService {
         pokerRoomRepository.delete(findById(pokerRoomId));
     }
 
-    public void edit(PokerRoomSlim pokerRoomSlim) {
-        if (pokerRoomSlim == null) {
-            throw new RuntimeException("Editing poker room failed. Poker room slim id is null.");
+    public PokerRoom findById(Long pokerRoomId) {
+        if (pokerRoomId == null) {
+            throw new RuntimeException("Searching for poker room failed. Poker room id is null.");
         }
-        PokerRoom pokerRoom = pokerRoomMapper.
-                updatePokerRoomFromPokerRoomSlim(
-                        pokerRoomSlim,
-                        findById(pokerRoomSlim.getId()));
+        PokerRoom pokerRoom = pokerRoomRepository.findById(pokerRoomId).orElseThrow(() -> new RuntimeException("Searching for poker room failed. Unrecognized poker room id: " + pokerRoomId));
 
-        pokerRoomRepository.save(pokerRoom);
+        if (!checkIfBelongsToUser(pokerRoom, userService.getLoggedUser())) {
+            throw new RuntimeException("Searching for poker room failed. No permission to processing with this poker room.");
+        }
+
+        return pokerRoom;
     }
 
-    public boolean checkIfPokerRoomBelongsToUser(PokerRoom pokerRoom, User user) {
+    public boolean checkIfBelongsToUser(PokerRoom pokerRoom, User user) {
         if (pokerRoom == null) {
             throw new RuntimeException("Checking if poker room belongs to user failed. Poker room is null.");
         }
@@ -103,22 +102,41 @@ public class PokerRoomService {
         if (userService.isLoggedAsAdmin()) {
             return true;
         }
-        Optional<User> owner = Optional.ofNullable(pokerRoom.getPlayer());
-        if (owner.isEmpty()) {
+
+        if (!hasOwner(pokerRoom)) {
             return false;
         }
+
         return pokerRoom.getPlayer().equals(user);
+    }
+
+    public boolean hasOwner(PokerRoom pokerRoom) {
+        if (pokerRoom == null) {
+            throw new RuntimeException("Checking if poker room has owner. Poker room is null.");
+        }
+        Optional<User> owner = Optional.ofNullable(pokerRoom.getPlayer());
+        return owner.isPresent();
+    }
+
+    public void edit(PokerRoomSlim pokerRoomSlim) {
+        if (pokerRoomSlim == null) {
+            throw new RuntimeException("Editing poker room failed. Poker room slim id is null.");
+        }
+        PokerRoom pokerRoom = pokerRoomMapper.updatePokerRoomFromPokerRoomSlim(pokerRoomSlim, findById(pokerRoomSlim.getId()));
+
+        pokerRoomRepository.save(pokerRoom);
+    }
+
+    public List<PokerRoomSlim> findGlobalPokerRoomsSlim() {
+        return findGlobalPokerRooms().stream().map(pokerRoomMapper::pokerRoomToPokerRoomSlim).toList();
     }
 
     public List<PokerRoom> findGlobalPokerRooms() {
         return pokerRoomRepository.findGlobalPokerRooms();
     }
 
-    public List<PokerRoomSlim> findGlobalPokerRoomsSlim() {
-        return findGlobalPokerRooms()
-                .stream()
-                .map(pokerRoomMapper::pokerRoomToPokerRoomSlim)
-                .toList();
+    public List<PokerRoomSlim> findAvailablePokerRoomsSlimForPlayer() {
+        return findAvailablePokerRoomsForPlayer().stream().map(pokerRoomMapper::pokerRoomToPokerRoomSlim).toList();
     }
 
     public List<PokerRoom> findAvailablePokerRoomsForPlayer() {
@@ -129,10 +147,18 @@ public class PokerRoomService {
         return allPokerRooms;
     }
 
-    public List<PokerRoomSlim> findAvailablePokerRoomsSlimForPlayer() {
-        return findAvailablePokerRoomsForPlayer()
-                .stream().map(pokerRoomMapper::pokerRoomToPokerRoomSlim)
-                .toList();
+    public List<PokerRoom> findPokerRoomsByPlayerId(Long userId) {
+        if (userId == null) {
+            throw new RuntimeException("Searching for user poker rooms failed. User id is null.");
+        }
+        return pokerRoomRepository.findPokerRoomsByPlayerId(userId);
+    }
+
+    public List<PokerRoomSlim> findAllSlimByScope(PokerRoomScope scope) {
+        if (scope == null) {
+            throw new RuntimeException("Searching for poker rooms slim failed. Poker room slim scope is null.");
+        }
+        return findAllByScope(scope).stream().map(pokerRoomMapper::pokerRoomToPokerRoomSlim).toList();
     }
 
     public List<PokerRoom> findAllByScope(PokerRoomScope scope) {
@@ -151,41 +177,13 @@ public class PokerRoomService {
         throw new RuntimeException("Searching for poker rooms failed. Unrecognized poker room scope: " + scope);
     }
 
-    public List<PokerRoomSlim> findAllSlimByScope(PokerRoomScope scope) {
-        if (scope == null) {
-            throw new RuntimeException("Searching for poker rooms slim failed. Poker room slim scope is null.");
-        }
-        return findAllByScope(scope)
-                .stream()
-                .map(pokerRoomMapper::pokerRoomToPokerRoomSlim)
-                .toList();
-    }
-
     public PokerRoomSlim findSlimById(Long pokerRoomSlimId) {
         if (pokerRoomSlimId == null) {
             throw new RuntimeException("Searching for poker room slim failed. Poker room slim id is null.");
 
         }
-        return pokerRoomMapper
-                .pokerRoomToPokerRoomSlim(findById(pokerRoomSlimId));
+        return pokerRoomMapper.pokerRoomToPokerRoomSlim(findById(pokerRoomSlimId));
     }
 
-    public void setPokerRoomDetails(PokerRoom pokerRoom) {
-        if (pokerRoom == null) {
-            throw new RuntimeException("Setting poker room details failed. Poker room is null.");
-        }
-        pokerRoom.setPokerRoomScope(setPokerRoomScopeByRole());
-        setOwnerIfExist(pokerRoom);
-    }
-
-    private void setOwnerIfExist(PokerRoom pokerRoom) {
-        if (pokerRoom == null) {
-            throw new RuntimeException("Setting poker room owner failed. Poker room is null.");
-        }
-        if (userService.isLoggedAsUser()) {
-            Player ower = (Player) userService.getLoggedUser();
-            pokerRoom.setPlayer(ower);
-        }
-    }
 
 }

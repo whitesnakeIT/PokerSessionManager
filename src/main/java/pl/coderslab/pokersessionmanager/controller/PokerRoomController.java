@@ -48,7 +48,7 @@ public class PokerRoomController {
         }
         pokerRoomService.create(pokerRoomSlim);
 
-        return redirectService.setRedirectAfterCreatingPokerRoom();
+        return redirectService.getRedirectForPokerRoomListByRole();
     }
 
     @GetMapping("/edit/{id}")
@@ -68,12 +68,12 @@ public class PokerRoomController {
         }
         pokerRoomService.edit(pokerRoomSlim);
 
-        return redirectService.setRedirectAfterProcessingPokerRoomSlim(pokerRoomSlim.getId());
+        return redirectService.getRedirectAfterProcessingPokerRoomSlim(pokerRoomSlim.getId());
     }
 
     @GetMapping("/delete/{id}")
     public String deletePokerRoom(@PathVariable(name = "id") Long pokerRoomSlimId) {
-        String redirectUrl = redirectService.setRedirectAfterProcessingPokerRoomSlim(pokerRoomSlimId);
+        String redirectUrl = redirectService.getRedirectAfterProcessingPokerRoomSlim(pokerRoomSlimId);
 //        PokerRoomSlim pokerRoomSlim = pokerRoomService.findSlimById(id);
         pokerRoomService.delete(pokerRoomSlimId);
 

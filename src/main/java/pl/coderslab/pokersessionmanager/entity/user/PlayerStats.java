@@ -22,19 +22,19 @@ public class PlayerStats {
     @Column(name = "player_id")
     private Long id;
 
-    private double balance;
+    private double balance = 0.0;
 
 
-    private int tournamentCount;
+    private int tournamentCount = 0;
 
 
-    private int tournamentWins;
+    private int tournamentWins = 0;
 
 
-    private double profit;
+    private double profit = 0.0;
 
 
-    private double averageProfit;
+    private double averageProfit = 0.0;
 
 
     @OneToOne

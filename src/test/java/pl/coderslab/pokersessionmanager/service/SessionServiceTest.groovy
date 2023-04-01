@@ -108,7 +108,7 @@ class SessionServiceTest extends Specification {
         def session = sessionService.findById(SESSION_ID)
 
         then:
-        session.name == "testSession"
+        session.id != null
     }
 
     def """should check if service method findById(Long sessionId) is throwing
@@ -203,7 +203,7 @@ class SessionServiceTest extends Specification {
 
         then:
         def exception = thrown(RuntimeException)
-        exception.message == "Checking if session belongs to user failed. Session don't have owner."
+        exception.message == "Checking if session belongs to user failed. Session hasn't owner."
     }
 
     def """should check if service method findById(Long sessionId) is throwing

@@ -12,11 +12,10 @@ import pl.coderslab.pokersessionmanager.service.UserService;
 @Transactional
 public class LoginController {
     private final RedirectService redirectService;
-    private final UserService userService;
 
     @GetMapping("/login")
 
     public String login() {
-        return redirectService.sendRedirectLoginPage();
+        return redirectService.getRedirectLoginPage();
     }
 }
