@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.Collection;
 
 public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
 
@@ -28,14 +30,13 @@ public class LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessH
 //        response.sendRedirect(redirectUrl);
 //    }
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        String redirectUrl = request.getContextPath();
-//        System.out.println(redirectUrl);
+        StringBuilder redirectUrl = new StringBuilder(request.getContextPath());
         if (authorities.contains(Factory.create(RoleName.ROLE_ADMIN))) {
-            redirectUrl = redirectUrl.concat("app/admin/dashboard");
+            redirectUrl.append("/app/admin/dashboard");
         } else if (authorities.contains(Factory.create(RoleName.ROLE_USER))) {
-            redirectUrl = redirectUrl.concat("app/player/dashboard");
+            redirectUrl.append("/app/player/dashboard");
         }
 
-        response.sendRedirect(redirectUrl);
+        response.sendRedirect(redirectUrl.toString());
     }
 }
