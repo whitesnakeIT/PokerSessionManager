@@ -1,0 +1,27 @@
+FROM openjdk:18.0.2.1-slim-bullseye
+
+LABEL authors="tomasz"
+
+RUN apt update && \
+    apt install wget -y && \
+    apt autoremove -y --purge && \
+    rm -rf /var/lib/apt/lists/* && \
+    wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.8/bin/apache-tomcat-10.1.8.tar.gz && \
+    mkdir opt/tomcat && \
+    mv apache-tomcat-10.1.8.tar.gz /opt/tomcat/ && \
+    cd opt/tomcat/ && \
+    tar -xf apache-tomcat-10.1.8.tar.gz && \
+    rm apache-tomcat-10.1.8.tar.gz && \
+    cd apache-tomcat-10.1.8/ && \
+    mkdir webapps.dist && \
+    mv webapps/* webapps.dist/
+
+ENV PATH="$PATH:/opt/tomcat/apache-tomcat-10.1.8/bin"
+
+COPY target/PokerSessionManager-0.0.1-SNAPSHOT.war opt/tomcat/apache-tomcat-10.1.8/webapps/ROOT.war
+
+WORKDIR opt/tomcat/apache-tomcat-10.1.8
+
+EXPOSE 8080
+
+CMD ["catalina.sh", "run"]
