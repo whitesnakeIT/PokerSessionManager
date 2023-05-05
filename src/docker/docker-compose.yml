@@ -1,0 +1,32 @@
+version: "3.8"
+name: poker-manager
+
+services:
+  app:
+    depends_on:
+      - db
+    restart: on-failure
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/poker_session_manager?createDatabaseIfNotExist=true
+    build:
+      context: ../../
+      dockerfile: src/docker/DockerFile
+    image: poker-session-manager:d1.0.0
+    container_name: poker
+    expose:
+      - "8080"
+    ports:
+      - "8081:8080"
+  db:
+    image: mysql:latest
+    restart: on-failure
+    container_name: mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: coderslab
+      MYSQL_DATABASE: poker_session_manager
+    expose:
+      - "3306"
+      - "33060"
+    ports:
+      - "3307:3306"
+      - "33070:33060"
