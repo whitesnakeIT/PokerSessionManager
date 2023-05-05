@@ -11,6 +11,8 @@ import org.hibernate.annotations.OnDeleteAction;
 import pl.coderslab.pokersessionmanager.entity.tournament.AbstractTournament;
 import pl.coderslab.pokersessionmanager.entity.user.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.TreeSet;
 
@@ -42,7 +44,7 @@ public class Session {
     )
     @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
-    private TreeSet<AbstractTournament> sessionTournaments = new TreeSet<>();
+    private List<AbstractTournament> sessionTournaments = new ArrayList<>();
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Player player;
