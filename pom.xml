@@ -16,6 +16,7 @@
     <description>PokerSessionManager</description>
     <properties>
         <java.version>18</java.version>
+        <flyway.version>9.17.0</flyway.version>
     </properties>
     <dependencies>
         <dependency>
@@ -118,6 +119,18 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+
+
     </dependencies>
     <build>
         <plugins>
