@@ -34,6 +34,9 @@ public class SessionService {
         if (session == null) {
             throw new RuntimeException("Editing session failed. Session id is null.");
         }
+        Session sessionFromDb = findById(session.getId());
+        Player owner = sessionFromDb.getPlayer();
+        session.setPlayer(owner);
         sessionRepository.save(session);
     }
 

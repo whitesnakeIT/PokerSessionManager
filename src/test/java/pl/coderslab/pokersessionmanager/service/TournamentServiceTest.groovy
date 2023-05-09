@@ -5,7 +5,10 @@ import pl.coderslab.pokersessionmanager.entity.tournament.TournamentGlobal
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentLocal
 import pl.coderslab.pokersessionmanager.entity.tournament.TournamentSuggestion
 import pl.coderslab.pokersessionmanager.entity.user.Player
+import pl.coderslab.pokersessionmanager.enums.TournamentSpeed
+import pl.coderslab.pokersessionmanager.enums.TournamentType
 import pl.coderslab.pokersessionmanager.repository.TournamentRepository
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import static pl.coderslab.pokersessionmanager.enums.RoleName.ROLE_ADMIN
@@ -22,7 +25,7 @@ class TournamentServiceTest extends Specification {
     def private final userService = Mock(UserService)
     def private final playerService = Mock(PlayerService)
 
-    private TournamentService tournamentService =
+    private  TournamentService tournamentService =
             new TournamentService(tournamentRepository, userService, playerService)
 
     private final mockedGlobalTournament() {
@@ -51,6 +54,7 @@ class TournamentServiceTest extends Specification {
         tournamentGlobal1.id = 4L
         def tournamentGlobal2 = new TournamentGlobal()
         tournamentGlobal2.id = 5L
+
         [tournamentGlobal1, tournamentGlobal2]
     }
 
@@ -78,6 +82,7 @@ class TournamentServiceTest extends Specification {
         player.suggestedTournaments = mockedSuggestionTournamentList()
         player.localTournaments = mockedLocalTournamentList()
         player.favouriteTournaments = [mockedGlobalTournament(), mockedLocalTournament()]
+
         player
     }
 
@@ -183,7 +188,7 @@ class TournamentServiceTest extends Specification {
 
         then:
         def exception = thrown(RuntimeException)
-        exception.message == "Searching for tournament failed.Tournament id is null."
+        exception.message == "Searching for tournament failed. Tournament id is null."
     }
 
     def """should check if service method getTournamentListByTournamentScope
@@ -203,6 +208,15 @@ class TournamentServiceTest extends Specification {
         LOCAL           | TournamentLocal.class
         SUGGESTION      | TournamentSuggestion.class
         GLOBAL          | TournamentGlobal.class
+    }
+    def """should check if service method getTournamentListByTournamentScope
+(TournamentScope tournamentScope) is throwing an exception when tournament scope is null"""(){
+        when:
+        tournamentService.getTournamentListByTournamentScope(null)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Searching for tournaments failed. Tournament scope is null."
 
     }
 
@@ -323,7 +337,7 @@ class TournamentServiceTest extends Specification {
     }
 
     def """should check if service method addToFavourites(Long Player, Long tournamentId)
- is throwing an exception when tournamentId is null """() {
+ is throwing an exception when tournamentId is null"""() {
         when:
         tournamentService.addToFavourites(PLAYER_ID, null)
 
@@ -332,7 +346,145 @@ class TournamentServiceTest extends Specification {
         exception.message == "Adding tournament to favourites failed. Tournament id is null."
     }
 
-    def """should check if service method """() {
+    def """should check if service method findLocalTournamentsById(Long playerId)
+ is invoking repository method findLocalTournamentsById(Long playerId) with same parameters exactly once"""() {
+        given:
+        tournamentRepository.findLocalTournamentsById(_ as Long) >> mockedLocalTournamentList()
+
+        when:
+        tournamentService.findLocalTournamentsById(PLAYER_ID)
+
+        then:
+        1 * tournamentRepository.findLocalTournamentsById(PLAYER_ID)
+
+    }
+
+    def """should check if service method findLocalTournamentsById(Long playerId)
+ is throwing an exception when playerId is null """() {
+        when:
+        tournamentService.findLocalTournamentsById(null)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Searching for player's local tournaments failed. Player id is null."
+    }
+
+    @Ignore("method is private")
+    def """should check if service method findAllPlayerTournaments(Player player)
+ is throwing an exception when player is null"""() {
+        when:
+        tournamentService.findAllPlayerTournaments(null)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Searching for all player tournaments failed. Player is null."
+    }
+
+    def """should check if service method findFavouriteTournaments(Long playerId)
+ is throwing an exception when player id is null"""() {
+        when:
+        tournamentService.findFavouriteTournaments(null)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Searching for player's favourite tournaments failed. Player id is null."
+    }
+
+    def """should check if service method findFavouriteTournaments(Long playerId)
+ is correctly returning list of favourite tournaments in right order"""() {
+        given:
+        def mixedTournamentList = mockedGlobalTournamentList() + mockedLocalTournamentList()
+
+        tournamentRepository.findFavouriteTournaments(_ as Long) >> mixedTournamentList
+
+
+        when:
+        def favouriteTournaments = tournamentService.findFavouriteTournaments(PLAYER_ID)
+
+        then:
+        favouriteTournaments.size() > 0
+
+        and:
+        favouriteTournaments[0] instanceof TournamentLocal
+        favouriteTournaments[favouriteTournaments.size() - 1] instanceof TournamentGlobal
+    }
+
+    def """should check if service method addToFavourites(Long playerId, Long tournamentId)
+ is throwing an exception when player id is null"""() {
+        when:
+        tournamentService.addToFavourites(null, TOURNAMENT_ID)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Adding tournament to favourites failed. Player id is null."
+    }
+
+    def """should check if service method addToFavourites(Long playerId, Long tournamentId)
+ is throwing an exception when tournament id is null"""() {
+        when:
+        tournamentService.addToFavourites(PLAYER_ID, null)
+
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Adding tournament to favourites failed. Tournament id is null."
+    }
+
+    def """should check if service method addToFavourites(Long playerId, Long tournamentId)
+ is invoking repository method addTournamentToFavourites(Long playerId, Long tournamentId) exactly once"""() {
+        when:
+        tournamentService.addToFavourites(PLAYER_ID, TOURNAMENT_ID)
+
+        then:
+        1 * tournamentRepository.addTournamentToFavourites(PLAYER_ID, TOURNAMENT_ID)
+    }
+
+    def """should check if service method getAvailableTournamentsForSessionOrderedByFavourites(Long player id
+ is returning correct size of list tournaments available for session"""() {
+        given:
+        tournamentRepository.findFavouriteTournaments(_ as Long) >> []
+        tournamentRepository.findGlobalTournaments() >> mockedGlobalTournamentList()
+
+        and:
+        def player = mockedPlayer()
+        player.setLocalTournaments([])
+        userService.findById(_ as Long) >> player
+
+        when:
+        def tournamentsForSessionOrderedByFavourites =
+                tournamentService.getAvailableTournamentsForSessionOrderedByFavourites(PLAYER_ID)
+
+        then:
+        tournamentsForSessionOrderedByFavourites.size()>0
+    }
+
+    def """should check if service method getAvailableTournamentSpeed
+ is correctly returning size and mapping values"""(){
+        when:
+        def speedList = tournamentService.getAvailableTournamentSpeed()
+
+        then: "the result should contain expected values"
+        verifyAll (speedList){
+            size() == TournamentSpeed.values().length
+            containsAll(TournamentSpeed.values()
+                    *.name()
+                    *.toLowerCase()
+                    *.replaceAll("_", " "))
+        }
+    }
+
+ def """should check if service method getAvailableTournamentTypes
+ is correctly returning size and mapping values"""(){
+        when:
+        def typeList = tournamentService.getAvailableTournamentTypes()
+
+        then: "the result should contain expected values"
+        verifyAll (typeList){
+            size() == TournamentType.values().length
+            containsAll(TournamentType.values()
+                    *.name()
+                    *.toLowerCase()
+                    *.replaceAll("_", " "))
+        }
     }
 
 
